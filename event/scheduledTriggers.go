@@ -27,7 +27,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func addScheduledTriggers(dc *discordgo.Session, t *twitchgo.IRCSession, webChan chan struct{}) {
+func addScheduledTriggers(dc *discordgo.Session, t *twitchgo.Session, webChan chan struct{}) {
 	go scheduleFunction(dc, t, 0, 0,
 		adventcalendar.Midnight,
 	)
@@ -40,7 +40,7 @@ func addScheduledTriggers(dc *discordgo.Session, t *twitchgo.IRCSession, webChan
 	go refreshYoutube(webChan)
 }
 
-func scheduleFunction(dc *discordgo.Session, t *twitchgo.IRCSession, hour, min int, callbacks ...interface{}) {
+func scheduleFunction(dc *discordgo.Session, t *twitchgo.Session, hour, min int, callbacks ...interface{}) {
 	if len(callbacks) == 0 {
 		return
 	}
@@ -59,7 +59,7 @@ func scheduleFunction(dc *discordgo.Session, t *twitchgo.IRCSession, hour, min i
 			switch f := c.(type) {
 			case func(*discordgo.Session):
 				f(dc)
-			case func(*twitchgo.IRCSession):
+			case func(*twitchgo.Session):
 				f(t)
 			}
 		}

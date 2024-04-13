@@ -27,29 +27,29 @@ import (
 var log = *logger.New(logger.Writer(), "[Events] ", logger.LstdFlags|logger.Lmsgprefix)
 
 // PostRegister registers all events, like commands after the bots are started.
-func PostRegister(dc *discordgo.Session, tICR *twitchgo.IRCSession, guildID string) error {
+func PostRegister(dc *discordgo.Session, t *twitchgo.Session, guildID string) error {
 	err := command.Register(dc, guildID)
 	if err != nil {
 		return err
 	}
 	component.Register()
 
-	twitch.Register(tICR)
+	twitch.Register(t)
 
 	return nil
 }
 
 // AddListeners adds all event handlers to the given bots.
-func AddListeners(dc *discordgo.Session, t *twitchgo.Session, tIRC *twitchgo.IRCSession, webChan chan struct{}) {
+func AddListeners(dc *discordgo.Session, t *twitchgo.Session, webChan chan struct{}) {
 	dc.AddHandler(handleInteractionCreate)
 	addVoiceStateListeners(dc)
 
-	tIRC.OnChannelCommandMessage("ticket", true, twitch.HandleCmdJoin)
-	tIRC.OnChannelCommandMessage("tickets", true, twitch.HandleCmdTickets)
-	tIRC.OnChannelCommandMessage("draw", true, twitch.HandleCmdDraw)
-	tIRC.OnChannelMessage(twitch.MessageHandler)
+	t.OnChannelCommandMessage("ticket", true, twitch.HandleCmdJoin)
+	t.OnChannelCommandMessage("tickets", true, twitch.HandleCmdTickets)
+	t.OnChannelCommandMessage("draw", true, twitch.HandleCmdDraw)
+	t.OnChannelMessage(twitch.MessageHandler)
 
 	addYouTubeListeners(dc)
 	addTwitchListeners(dc, t)
-	addScheduledTriggers(dc, tIRC, webChan)
+	addScheduledTriggers(dc, t, webChan)
 }

@@ -23,10 +23,10 @@ import (
 
 // Register is setting up the twitch bot. Like joining channels and other stuff that is available
 // after the bot is connected
-func Register(bot *twitchgo.IRCSession) {
+func Register(t *twitchgo.Session) {
 	channels := viper.GetStringSlice("twitch.channels")
 	for _, channel := range channels {
-		bot.SendCommandf("JOIN #%s", channel)
+		t.SendCommandf("JOIN #%s", channel)
 	}
 	log.Printf("Channel list set to %v\n", channels)
 

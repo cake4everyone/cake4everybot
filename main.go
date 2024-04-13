@@ -73,11 +73,10 @@ func main() {
 		log.Printf("Logged in to Discord as %s#%s\n", s.State.User.Username, s.State.User.Discriminator)
 	})
 
-	twitchbot := twitchgo.New(viper.GetString("twitch.clientID"), viper.GetString("twitch.clientSecret"))
-	twitchIRC := twitchgo.NewIRC(viper.GetString("twitch.name"), viper.GetString("twitch.token"))
+	twitchBot := twitchgo.New(viper.GetString("twitch.clientID"), viper.GetString("twitch.clientSecret"), viper.GetString("twitch.token"))
 
 	// adding listeners for events
-	event.AddListeners(discordBot, twitchbot, twitchIRC, webChan)
+	event.AddListeners(discordBot, twitchBot, webChan)
 
 	// open connection and login to Discord and Twitch
 	log.Println("Logging in to Discord")
@@ -88,14 +87,14 @@ func main() {
 	defer discordBot.Close()
 
 	log.Println("Logging in to Twitch")
-	err = twitchIRC.Connect()
+	err = twitchBot.Connect()
 	if err != nil {
 		log.Fatalf("could not open the twitch connection: %v", err)
 	}
-	defer twitchIRC.Close()
+	defer twitchBot.Close()
 
 	// register all events.
-	err = event.PostRegister(discordBot, twitchIRC, viper.GetString("discord.guildID"))
+	err = event.PostRegister(discordBot, twitchBot, viper.GetString("discord.guildID"))
 	if err != nil {
 		log.Printf("Error registering events: %v\n", err)
 	}
