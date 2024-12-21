@@ -8,49 +8,30 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func (c Component) handleModalSetAddress(ids []string) {
-	c.Interaction.GuildID = util.ShiftL(ids)
-	players, err := c.getPlayers()
-	if err != nil {
-		log.Printf("ERROR: could not get players: %+v", err)
-		c.ReplyError()
-		return
-	}
-	if len(players) == 0 {
-		log.Printf("ERROR: no players in guild %s", c.Interaction.GuildID)
-		c.ReplyError()
-		return
-	}
-	player, ok := players[c.Interaction.User.ID]
-	if !ok {
-		log.Printf("ERROR: could not find player %s in guild %s: %+v", c.Interaction.User.ID, c.Interaction.GuildID, c.Interaction.User.ID)
-		c.ReplyError()
-		return
-	}
-
+func (c Component) handleModalSetAddress() {
 	addressFiled := c.modal.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput)
-	if addressFiled.Value == player.Address {
+	if addressFiled.Value == c.player.Address {
 		c.ReplyHidden(lang.GetDefault(tp + "msg.invite.set_address.not_changed"))
 		return
 	}
 
-	player.Address = addressFiled.Value
-	player.PendingNudge = false
-	err = c.setPlayers(players)
+	c.player.Address = addressFiled.Value
+	c.player.PendingNudge = false
+	err := c.setPlayers()
 	if err != nil {
 		log.Printf("ERROR: could not set players: %+v", err)
 		c.ReplyError()
 		return
 	}
 
-	_, err = c.Session.ChannelMessageEditEmbed(c.Interaction.ChannelID, player.MessageID, player.InviteEmbed(c.Session))
+	_, err = c.Session.ChannelMessageEditEmbed(c.Interaction.ChannelID, c.player.MessageID, c.player.InviteEmbed(c.Session))
 	if err != nil {
-		log.Printf("ERROR: could not update bot message for %s '%s/%s': %+v", player.DisplayName(), c.Interaction.ChannelID, player.MessageID, err)
+		log.Printf("ERROR: could not update bot message for %s '%s/%s': %+v", c.player.DisplayName(), c.Interaction.ChannelID, c.player.MessageID, err)
 		c.ReplyError()
 		return
 	}
 
-	santaPlayer := c.getSantaForPlayer(player.User.ID)
+	santaPlayer := c.getSantaForPlayer(c.player.User.ID)
 	santaChannel, err := c.Session.UserChannelCreate(santaPlayer.User.ID)
 	if err != nil {
 		log.Printf("ERROR: could not get user channel for %s: %+v", santaPlayer.DisplayName(), err)
@@ -85,7 +66,7 @@ func (c Component) handleModalSetAddress(ids []string) {
 		Color: 0x00FF00,
 		Fields: []*discordgo.MessageEmbedField{{
 			Name:  lang.GetDefault(tp + "msg.invite.set_address.changed"),
-			Value: fmt.Sprintf("```\n%s\n```", player.Address),
+			Value: fmt.Sprintf("```\n%s\n```", c.player.Address),
 		}},
 	}
 
@@ -93,34 +74,15 @@ func (c Component) handleModalSetAddress(ids []string) {
 	c.ReplyHiddenEmbed(e)
 }
 
-func (c Component) handleModalAddPackageTracking(ids []string) {
-	c.Interaction.GuildID = util.ShiftL(ids)
-	players, err := c.getPlayers()
-	if err != nil {
-		log.Printf("ERROR: could not get players: %+v", err)
-		c.ReplyError()
-		return
-	}
-	if len(players) == 0 {
-		log.Printf("ERROR: no players in guild %s", c.Interaction.GuildID)
-		c.ReplyError()
-		return
-	}
-	player, ok := players[c.Interaction.User.ID]
-	if !ok {
-		log.Printf("ERROR: could not find player %s in guild %s: %+v", c.Interaction.User.ID, c.Interaction.GuildID, c.Interaction.User.ID)
-		c.ReplyError()
-		return
-	}
-
+func (c Component) handleModalAddPackageTracking() {
 	packageTrackingField := c.modal.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput)
-	if packageTrackingField.Value == player.PackageTracking {
+	if packageTrackingField.Value == c.player.PackageTracking {
 		c.ReplyHidden(lang.GetDefault(tp + "msg.invite.add_package_tracking.not_changed"))
 		return
 	}
 
-	player.PackageTracking = packageTrackingField.Value
-	err = c.setPlayers(players)
+	c.player.PackageTracking = packageTrackingField.Value
+	err := c.setPlayers()
 	if err != nil {
 		log.Printf("ERROR: could not set players: %+v", err)
 		c.ReplyError()
@@ -128,14 +90,15 @@ func (c Component) handleModalAddPackageTracking(ids []string) {
 	}
 
 	var matchChannel *discordgo.Channel
-	if matchChannel, _, ok = c.updateInviteMessage(player.Match); !ok {
+	var ok bool
+	if matchChannel, _, ok = c.updateInviteMessage(c.player.Match); !ok {
 		c.ReplyError()
 		return
 	}
-	if player.PackageTracking != "" {
+	if c.player.PackageTracking != "" {
 		_, err = c.Session.ChannelMessageSendComplex(matchChannel.ID, &discordgo.MessageSend{
 			Content:   lang.GetDefault(tp + "msg.invite.add_package_tracking.santa_updated"),
-			Reference: &discordgo.MessageReference{MessageID: player.Match.MessageID},
+			Reference: &discordgo.MessageReference{MessageID: c.player.Match.MessageID},
 			Components: []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{
 				util.CreateButtonComponent(
 					"secretsanta.invite.delete",
@@ -146,7 +109,7 @@ func (c Component) handleModalAddPackageTracking(ids []string) {
 			}}},
 		})
 		if err != nil {
-			log.Printf("ERROR: could not send package tracking update message for %s '%s/%s': %+v", player.Match.DisplayName(), matchChannel.ID, player.Match.MessageID, err)
+			log.Printf("ERROR: could not send package tracking update message for %s '%s/%s': %+v", c.player.Match.DisplayName(), matchChannel.ID, c.player.Match.MessageID, err)
 			c.ReplyError()
 			return
 		}

@@ -25,6 +25,29 @@ type secretSantaBase struct {
 	util.InteractionUtil
 	member *discordgo.Member
 	user   *discordgo.User
+	player *player
+}
+
+// getPlayer gets the player for the current user in the current guild.
+func (ssb *secretSantaBase) getPlayer() error {
+	if ssb.Interaction.GuildID == "" {
+		return fmt.Errorf("guild ID is empty")
+	}
+
+	players, err := ssb.getPlayers()
+	if err != nil {
+		return fmt.Errorf("get players: %w", err)
+	}
+	if len(players) == 0 {
+		return fmt.Errorf("no players in guild %s", ssb.Interaction.GuildID)
+	}
+
+	player, ok := players[ssb.Interaction.User.ID]
+	if !ok {
+		return fmt.Errorf("could not find player %s in guild %s", ssb.Interaction.User.ID, ssb.Interaction.GuildID)
+	}
+	ssb.player = player
+	return nil
 }
 
 // getPlayers returns the list of players for the current guild. If it is the first time, it loads
@@ -81,12 +104,16 @@ func (ssb secretSantaBase) getSantaForPlayer(playerID string) *player {
 }
 
 // setPlayers sets the players for the current guild.
-func (ssb secretSantaBase) setPlayers(players map[string]*player) (err error) {
-	if _, err = ssb.getPlayers(); err != nil {
-		return err
+func (ssb secretSantaBase) setPlayers() (err error) {
+	if allPlayers == nil {
+		players, err := ssb.getPlayers()
+		if err != nil {
+			return fmt.Errorf("get players: %w", err)
+		}
+
+		allPlayers[ssb.Interaction.GuildID] = players
 	}
 
-	allPlayers[ssb.Interaction.GuildID] = players
 	playersData, err := json.Marshal(allPlayers)
 	if err != nil {
 		return fmt.Errorf("marshal players file: %v", err)
