@@ -48,7 +48,7 @@ func AuthoredEmbed[T *discordgo.User | *discordgo.Member](s *discordgo.Session, 
 			panic("Given generic type is not an discord user or member")
 		}
 		user = member.User
-		username = member.Nick
+		username = member.DisplayName()
 	}
 
 	if username == "" {
@@ -150,4 +150,79 @@ func GetChannelsFromDatabase(s *discordgo.Session, channelName string) (map[stri
 	}
 
 	return IDMap, nil
+}
+
+// GetConfigComponentEmoji returns a configured [discordgo.ComponentEmoji] for the given name.
+func GetConfigComponentEmoji(name string) *discordgo.ComponentEmoji {
+	e := GetConfigEmoji(name)
+	return &discordgo.ComponentEmoji{
+		Name:     e.Name,
+		ID:       e.ID,
+		Animated: e.Animated,
+	}
+}
+
+// GetConfigEmoji returns a configured [discordgo.Emoji] for the given name.
+func GetConfigEmoji(name string) (e *discordgo.Emoji) {
+	override := viper.GetString("event.emoji." + name)
+	if override != "" && override != name {
+		return GetConfigEmoji(override)
+	}
+	e = &discordgo.Emoji{
+		Name:     viper.GetString("event.emoji." + name + ".name"),
+		ID:       viper.GetString("event.emoji." + name + ".id"),
+		Animated: viper.GetBool("event.emoji." + name + ".animated"),
+	}
+	if e.Name == "" && e.ID == "" {
+		log.Printf("Warning: tried to get emoji '%s', but its not configured or empty\n", name)
+	}
+	return e
+}
+
+// CompareEmoji returns true if the two emoji are the same
+func CompareEmoji[E1, E2 *discordgo.Emoji | *discordgo.ComponentEmoji](e1 E1, e2 E2) bool {
+	return *componentEmoji(e1) == *componentEmoji(e2)
+}
+
+// componentEmoji returns a [discordgo.ComponentEmoji] for the given [discordgo.Emoji] or [discordgo.ComponentEmoji].
+func componentEmoji[E *discordgo.Emoji | *discordgo.ComponentEmoji](e E) *discordgo.ComponentEmoji {
+	if ee, ok := any(e).(*discordgo.Emoji); ok {
+		return &discordgo.ComponentEmoji{
+			Name:     ee.Name,
+			ID:       ee.ID,
+			Animated: ee.Animated,
+		}
+	}
+	if ce, ok := any(e).(*discordgo.ComponentEmoji); ok {
+		return ce
+	}
+	panic("Given generic type is not an emoji or component emoji")
+}
+
+// MessageComplexEdit converts a [discordgo.MessageSend] to a [discordgo.MessageEdit]
+func MessageComplexEdit(src *discordgo.MessageSend, channel, id string) *discordgo.MessageEdit {
+	return &discordgo.MessageEdit{
+		Content:         &src.Content,
+		Components:      &src.Components,
+		Embeds:          &src.Embeds,
+		AllowedMentions: src.AllowedMentions,
+		Flags:           src.Flags,
+		Files:           src.Files,
+
+		Channel: channel,
+		ID:      id,
+	}
+}
+
+// MessageComplexSend converts a [discordgo.MessageEdit] to a [discordgo.MessageSend]
+func MessageComplexSend(src *discordgo.MessageEdit) *discordgo.MessageSend {
+	return &discordgo.MessageSend{
+		Content:         *src.Content,
+		Components:      *src.Components,
+		Embeds:          *src.Embeds,
+		AllowedMentions: src.AllowedMentions,
+		Flags:           src.Flags,
+		Files:           src.Files,
+	}
+
 }

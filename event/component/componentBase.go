@@ -2,6 +2,7 @@ package component
 
 import (
 	"cake4everybot/modules/adventcalendar"
+	"cake4everybot/modules/secretsanta"
 	"log"
 
 	"github.com/bwmarrin/discordgo"
@@ -31,6 +32,7 @@ func Register() {
 	var componentList []Component
 
 	componentList = append(componentList, adventcalendar.Component{})
+	componentList = append(componentList, secretsanta.Component{})
 
 	if len(componentList) == 0 {
 		return

@@ -24,7 +24,7 @@ import "github.com/bwmarrin/discordgo"
 //	id                 // Custom id to identify the button when pressed (automatically prefixed)
 //	style              // Style of the button (see https://discord.com/developers/docs/interactions/message-components#button-object-button-styles)
 //	Optional: emoji    // An emoji to put in the label, can be empty
-func CreateButtonComponent(id, label string, style discordgo.ButtonStyle, emoji discordgo.ComponentEmoji) discordgo.Button {
+func CreateButtonComponent(id, label string, style discordgo.ButtonStyle, emoji *discordgo.ComponentEmoji) discordgo.Button {
 	return discordgo.Button{
 		CustomID: id,
 		Label:    label,
@@ -41,7 +41,7 @@ func CreateButtonComponent(id, label string, style discordgo.ButtonStyle, emoji 
 //	id                 // Custom id to generate labels
 //	url                // The link to open when clicked
 //	Optional: emoji    // An emoji to put in the label, can be empty
-func CreateURLButtonComponent(id, label, url string, emoji discordgo.ComponentEmoji) discordgo.Button {
+func CreateURLButtonComponent(id, label, url string, emoji *discordgo.ComponentEmoji) discordgo.Button {
 	return discordgo.Button{
 		CustomID: id,
 		Label:    label,

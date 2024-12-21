@@ -17,22 +17,22 @@ import (
 
 // HandleChannelUpdate is the event handler for the "channel.update" event from twitch.
 func HandleChannelUpdate(s *discordgo.Session, t *twitchgo.Session, e *webTwitch.ChannelUpdateEvent) {
-	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, "")
+	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, e.Title, "")
 }
 
 // HandleStreamOnline is the event handler for the "stream.online" event from twitch.
 func HandleStreamOnline(s *discordgo.Session, t *twitchgo.Session, e *webTwitch.StreamOnlineEvent) {
-	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, lang.GetDefault("module.twitch.msg.nofification"))
+	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, "", lang.GetDefault("module.twitch.msg.nofification"))
 }
 
 // HandleStreamOffline is the event handler for the "stream.offline" event from twitch.
 func HandleStreamOffline(s *discordgo.Session, t *twitchgo.Session, e *webTwitch.StreamOfflineEvent) {
-	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, "")
+	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, "", "")
 }
 
 // HandleStreamAnnouncementChange is a general event handler for twitch events, that should update
 // the discord announcement embed.
-func HandleStreamAnnouncementChange(s *discordgo.Session, t *twitchgo.Session, platformID string, notification string) {
+func HandleStreamAnnouncementChange(s *discordgo.Session, t *twitchgo.Session, platformID, title, notification string) {
 	announcements, err := database.GetAnnouncement(database.AnnouncementPlatformTwitch, platformID)
 	if err == sql.ErrNoRows {
 		return
@@ -42,7 +42,7 @@ func HandleStreamAnnouncementChange(s *discordgo.Session, t *twitchgo.Session, p
 	}
 
 	for _, announcement := range announcements {
-		err = updateAnnouncementMessage(s, t, announcement, notification)
+		err = updateAnnouncementMessage(s, t, announcement, title, notification)
 		if err != nil {
 			log.Printf("Error: %v", err)
 		}
@@ -72,7 +72,7 @@ func newAnnouncementMessage(s *discordgo.Session, announcement *database.Announc
 	return msg, announcement.UpdateAnnouncementMessage(msg.ID)
 }
 
-func updateAnnouncementMessage(s *discordgo.Session, t *twitchgo.Session, announcement *database.Announcement, notification string) error {
+func updateAnnouncementMessage(s *discordgo.Session, t *twitchgo.Session, announcement *database.Announcement, title, notification string) error {
 	msg, err := getAnnouncementMessage(s, announcement)
 	if err != nil {
 		return fmt.Errorf("get announcement in channel '%s': %v", announcement, err)
@@ -109,7 +109,7 @@ func updateAnnouncementMessage(s *discordgo.Session, t *twitchgo.Session, announ
 	}
 
 	if stream != nil {
-		setOnlineEmbed(embed, user, stream)
+		setOnlineEmbed(embed, title, user, stream)
 	} else {
 		setOfflineEmbed(embed, user)
 	}
@@ -152,10 +152,14 @@ func setDefaultEmbed(embed *discordgo.MessageEmbed, user *twitchgo.User) {
 	embed.Image.Height = 1080
 }
 
-func setOnlineEmbed(embed *discordgo.MessageEmbed, user *twitchgo.User, stream *twitchgo.Stream) {
+func setOnlineEmbed(embed *discordgo.MessageEmbed, title string, user *twitchgo.User, stream *twitchgo.Stream) {
 	setDefaultEmbed(embed, user)
 
-	embed.Title = stream.Title
+	if title == "" {
+		embed.Title = stream.Title
+	} else {
+		embed.Title = title
+	}
 	embed.URL = fmt.Sprintf("https://twitch.tv/%s", user.Login)
 	embed.Color = 9520895
 
