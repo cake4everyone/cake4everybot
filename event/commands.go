@@ -17,6 +17,7 @@ package event
 import (
 	"cake4everybot/event/command"
 	"cake4everybot/event/component"
+	"cake4everybot/event/modal"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -41,6 +42,12 @@ func handleInteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreat
 			c.Handle(s, i)
 		} else {
 			log.Printf("got component interaction from unknown module '%s' (full id '%s')", strings.Split(data.CustomID, ".")[0], data.CustomID)
+		}
+
+	case discordgo.InteractionModalSubmit:
+		data := i.ModalSubmitData()
+		if m, ok := modal.ModalMap[strings.Split(data.CustomID, ".")[0]]; ok {
+			m.HandleModal(s, i)
 		}
 	}
 }

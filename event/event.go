@@ -17,6 +17,7 @@ package event
 import (
 	"cake4everybot/event/command"
 	"cake4everybot/event/component"
+	"cake4everybot/event/modal"
 	"cake4everybot/event/twitch"
 	logger "log"
 
@@ -33,6 +34,7 @@ func PostRegister(dc *discordgo.Session, t *twitchgo.Twitch, guildID string) err
 		return err
 	}
 	component.Register()
+	modal.Register()
 
 	twitch.Register(t)
 

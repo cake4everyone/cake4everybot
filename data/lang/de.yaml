@@ -123,6 +123,88 @@ discord.command:
     msg.winner.details: "__Gewinner: %s__\nTickets: %d/24\nGewinnchance: %.2f%%"
     msg.winner.congratulation: "Herzlichen Glückwunsch, %s! :heart:\nFrohe Weihnachten an alle!"
 
+  secretsanta:
+    base: Wichteln
+    display: Wichteln
+
+    title: Wichteln
+
+    cmd:
+      base: wichteln
+      base.description: Admin Commands für das Wichteln
+      option.show: auflisten
+      option.show.description: Alle Teilnehmer anzeigen
+      option.update: aktualisieren
+      option.update.description: Die Nachricht all Teilnehmer aktualisieren
+
+    msg.setup.no_reactions: Diese Nachricht hat keine Reaktionen. Nur Leute, die mit %s reagiert haben, werden eingeschlossen.
+    msg.setup.not_enough_reactions: Nicht genug Reaktionen um zu starten. Es werden mindestens %d Reaktionen benötigt.
+    msg.setup.users: Teilnehmer
+    msg.setup.match_error: Fehler beim Auslosen
+    msg.setup.invite: Einladen
+    msg.setup.invite.error: "Einladung(en) konnte(n) nicht verschickt werden an:%s"
+    msg.setup.error: "%d Einladungen konnten nicht verschickt werden."
+    msg.setup.success: Einladungen wurden verschickt!
+
+    msg.cmd.update.error: "%d Einladung(en) konnte(n) nicht aktualisiert werden.%s"
+    msg.cmd.update.success: "%d Einladungen wurden aktualisiert!"
+
+    msg.invite.title: Einladung zum Wichteln.
+    msg.invite.description: Du nimmst am Cake4Everyone Wichteln teil. Klicke die Knöpfe unten, um deinen Partner zu sehen und deine Adresse einzutragen.
+    msg.invite.set_address.match: Dein Partner hat eine Adresse eingetragen
+    msg.invite.button.show_match: Partner anzeigen
+    msg.invite.show_match.title: Dein Partner ist %s
+    msg.invite.show_match.description: Bitte breite ein Wichtelgeschenk vor und schicke es ihm/ihr. Halte dich dabei an unsere vereinbarten Regeln.
+    msg.invite.show_match.address: Adresse
+    msg.invite.show_match.address_not_set: Dein Partner hat noch keine Adresse eingetragen.
+
+      Falls schon einige Tage vergangen sind, kannst du den "Anstupsen" Knopf drücken. Dein Partner bekommt daraufhin einen Hinweis die Adresse einzutragen.
+    msg.invite.show_match.nudge_description: Wenn du vermutest, dass die eingetragene Adresse einen Fehler enthält, kannst du unten den den "Anstupsen" Knopf drücken. Dein Partner bekommt daraufhin einen Hinweis die Adresse zu aktualisieren.
+    msg.invite.set_address: Deine Adresse wurde eingetragen
+    msg.invite.button.set_address: Deine Adresse eintragen
+    msg.invite.set_address.changed: Deine Adresse wurde aktualisiert auf
+    msg.invite.set_address.not_changed: Deine Adresse wurde nicht aktualisiert, weil es die gleiche ist wie vorher.
+    msg.invite.set_address.match_updated: Dein Partner hat gerade seine/ihre Adresse aktualisiert. Das ist nur um dich zu informieren - Boop Boop 🤖
+    msg.invite.button.delete: Schließen
+    msg.invite.button.nudge_match: Anstupsen
+    msg.invite.nudge_match.confirm: Bist du sicher, dass du deinen Partner anstupsen möchtest?
+    
+      Bestätige, dass du deinen Partner anstupsen möchtest. Er/Sie bekommt dann einen Hinweis die Adresse zu aktualisieren.
+    msg.invite.nudge_match.success: Dein Partner wurde erfolgreich angestupst
+    msg.invite.nudge_match.pending: Du hast deinen Partner angestupst. Ich melde mich, sobald er/sie die Adresse aktualisiert hat.
+    msg.invite.nudge_received: Dein Wichtel hat dich anstupst. Bitte trage eine Adresse ein falls du es noch nicht gemacht hast oder überprüfe deine bereits eingetragene Adresse ob sie eventuell einen Tippfehler oder ähnliches enthält.
+
+    msg.invite.button.send_package: Paket verschicken
+    msg.invite.send_package.status: Dein Paket Status
+    msg.invite.send_package.status.not_sent: Du hast dein Geschenk noch nicht verschickt.
+    msg.invite.send_package.status.sent: Dein Paket ist auf dem Weg zu deinem Partner.
+    msg.invite.send_package.status.received: Dein Geschenk wurde von deinem Partner erhalten.
+    msg.invite.send_package: Dein Wichtel hat gerade das Geschenk als verschickt markiert. Du kannst ab jetzt nicht mehr deine Adresse eintragen. Stattdessen kannst du das Geschenk als erhalten markieren um deinen Wichtel zu informieren, dass das Geschenk bei dir angekommen ist.
+    msg.invite.send_package.confirm: Bis du sicher, dass du dein Geschenk als verschickt markieren möchtest?
+
+      Bestätige, dass du dein Geschenk als verschickt markieren möchtest. Dein Partner bekommt daraufhin einen Hinweis, dass das Paket unterwegs ist.
+    msg.invite.send_package.success: Dein Geschenk wurde als verschickt markiert!
+    msg.invite.button.received_package: Geschenk erhalten
+    msg.invite.received_package: Dein Partner hat das Geschenk gerade als erhalten markiert!
+    msg.invite.received_package.confirm: Bist du sicher, dass du das Geschenk als erhalten markieren möchtest?
+
+      Bestätige, dass du das Geschenk als erhalten markieren möchtest. Dein Wichtel bekommt daraufhin einen Hinweis, dass das Geschenk bei dir angekommen ist.
+    msg.invite.received_package.success: Du hast das Geschenk als erhalten markiert!
+    msg.invite.button.add_package_tracking: Sendungsverfolgung eintragen
+    msg.invite.button.show_package_tracking: Sendungsverfolgung anzeigen
+    msg.invite.package_tracking.title: "Die Sendungsverfolgung deines Wichtels ist:"
+    msg.invite.add_package_tracking.not_changed: Deine Sendungsverfolgung wurde nicht aktualisiert, weil es die gleiche ist wie vorher.
+    msg.invite.add_package_tracking.success: Deine Sendungsverfolgung wurde aktualisiert!
+    msg.invite.add_package_tracking.santa_updated: Dein Wichtel hat gerade eine Sendungsverfolgung eingetragen. Das ist nur um dich zu informieren - Boop Boop 🤖
+
+    msg.invite.modal.set_address.title: Deine Adresse eintragen
+    msg.invite.modal.set_address.label: Deine Adresse wird deinem Wichtel angezeigt
+    msg.invite.modal.set_address.placeholder: "Max Mustermann\nMusterstraße 1\n12345 Musterstadt"
+    msg.invite.modal.add_package_tracking.title: Deine Sendungsverfolgung eintragen
+    msg.invite.modal.add_package_tracking.label: Die Sendungsverfolgung geht an deinen Wichtel
+    msg.invite.modal.add_package_tracking.placeholder: Wenn du eine hast, kannst du sie hier deinem Partner schicken
+      zB Sendungsverfolgungsnummer oder Link
+
 module:
   adventcalendar:
     post.message: Noch %d Mal schlafen bis Heilig Abend! Heute öffnet sich das **Türchen %d**.

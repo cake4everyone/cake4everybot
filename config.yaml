@@ -1,5 +1,5 @@
 # Version of the bot. DO NOT CHANGE
-version: 1.0.7
+version: 1.2.1
 
 # Loading aditional files. This is primarily used to load tokens,
 # keys, and other cridentials from files that are filtered by the
@@ -34,27 +34,83 @@ event:
   morning_minute: 0
 
   adventcalendar:
-    images: data/images/adventcalendar
-    # Name:     The name of this emoji, e.g. '🎅', '❤️' when a default emoji
-    # ID:       The snowflake ID if when a custom emoji
-    # Animated: Whether this emoji is animated. Defaults to false
-    emoji.name: ✅
-    #emoji.id:
-    #emoji.animated: true
+    images: modules/adventcalendar/images
+
+  secretsanta:
+    # the filepath for the players
+    players: modules/secretsanta/players.json
+    # the filepath for the blacklist
+    # the blacklist maps a user ID to a list of user IDs that should not be matched
+    blacklist: modules/secretsanta/blacklist.json
 
   twitch_giveaway:
     # The amount of points a single giveaway ticket costs.
     ticket_cost: 1000
-    # Cooldown in minutes before beeing able to by another ticket
+    # Cooldown in minutes before beeing able to buy another ticket
     cooldown: 15
     # the filepath for of the json giveaway prizes
     prizes: twitch/prizes.json
     # the filepath for storing the giveaway cooldown times
     times: twitch/times.json
 
+  emoji:
+    # Configuration for emojis used by the bot
+    # Name:     The name of this emoji, e.g. '🎅', '❤️' when a default emoji
+    # ID:       The snowflake ID when a custom emoji
+    # Animated: Whether this emoji is animated. Defaults to false if not set
+
+    # Voting for yes
+    vote.yes:
+      name: 👍
+      #id:
+      #animated: true
+    # Voting for no
+    vote.no:
+      name: 👎
+      #id:
+      #animated: true
+    vote.check:
+      name: ✅
+      #id:
+      #animated: true
+    # Emoji for entering the advent calendar giveaway
+    adventcalendar: vote.check
+    secretsanta: vote.yes
+    secretsanta.invite.show_match:
+      name: 🎁
+      #id:
+      #animated: true
+    secretsanta.invite.set_address:
+      name: 🏠
+      #id:
+      #animated: true
+    secretsanta.invite.delete:
+      name: 🗑️
+      #id:
+      #animated: true
+    secretsanta.invite.nudge_match:
+      name: 👉
+      #id:
+      #animated: true
+    secretsanta.invite.send_package:
+      name: 📦
+      #id:
+      #animated: true
+    secretsanta.invite.received_package:
+      name: 📬
+      #id:
+      #animated: true
+    secretsanta.invite.add_package_tracking:
+      name: 📯
+      #id:
+      #animated: true
+    secretsanta.invite.show_package_tracking:
+      name: 📪
+      #id:
+      #animated: true
+
 webserver:
   favicon: webserver/favicon.png
-  birthday_hour: 8 # Time to trigger daily birthday check (24h format)
 
 twitch:
   name: c4e_bot

@@ -123,6 +123,88 @@ discord.command:
     msg.winner.details: "__Winner: %s__\nTickets: %d/24\nProbability of winning: %.2f%%"
     msg.winner.congratulation: "Congratulations, %s! :heart:\nMerry XMas everyone!"
 
+  secretsanta:
+    base: Secret Santa
+    display: Secret Santa
+
+    title: Secret Santa
+
+    cmd:
+      base: secretsanta
+      base.description: Admin commands for the Secret Santa Game
+      option.show: show
+      option.show.description: Show all participants
+      option.update: update
+      option.update.description: Update the message off all participants
+
+    msg.setup.no_reactions: This message doesn't have any vote reactions. Only members who reated with %s are included.
+    msg.setup.not_enough_reactions: Not enough votes to start a game. At least %d votes are required.
+    msg.setup.users: Members
+    msg.setup.match_error: Failed to match
+    msg.setup.invite: Invite
+    msg.setup.invite.error: "Failed to send invite(s) to:%s"
+    msg.setup.error: Failed to send %d invites.
+    msg.setup.success: Invites sent!
+
+    msg.cmd.update.error: Failed to update %d invites.%s
+    msg.cmd.update.success: "%d invites updated!"
+
+    msg.invite.title: Invite for secret santa.
+    msg.invite.description: You are participating in Cake4Everyone Secret Santa. Click the buttons below to see your partner and set your address.
+    msg.invite.set_address.match: Your partner has set an address
+    msg.invite.button.show_match: Show partner
+    msg.invite.show_match.title: Your partner is %s
+    msg.invite.show_match.description: Please prepare and send them a secret gift according to our agreed rules.
+    msg.invite.show_match.address: Address
+    msg.invite.show_match.address_not_set: Your partner has not set an address yet.
+
+      If some days passed, you can click the "Nudge" button below. Your partner will receive a notification saying that they enter  their address.
+    msg.invite.show_match.nudge_description: If you think the entered address is wrong, you can click the "Nudge" button below. Your partner will receive a notification saying that they should update their address.
+    msg.invite.set_address: Your address is set
+    msg.invite.button.set_address: Set your address
+    msg.invite.set_address.changed: Your address was updated to
+    msg.invite.set_address.not_changed: Your address was not updated, because it is the same as before.
+    msg.invite.set_address.match_updated: Your partner just updated their address. This is just to inform you - Beep Boop 🤖
+    msg.invite.button.delete: Close
+    msg.invite.button.nudge_match: Nudge
+    msg.invite.nudge_match.confirm: Are you sure you want to nudge your partner?
+
+      Please confirm that you want to nudge your partner. They will receive a notification that they should update their address.
+    msg.invite.nudge_match.success: Your partner was nudged!
+    msg.invite.nudge_match.pending: You nudged your partner. I will notify you, when they updated their address.
+    msg.invite.nudge_received: Your santa nudged you. Please enter an address if you haven't done it yet or check your already entered address for any typos.
+
+    msg.invite.button.send_package: Send package
+    msg.invite.send_package.status: Your package status
+    msg.invite.send_package.status.not_sent: You have not sent your package yet.
+    msg.invite.send_package.status.sent: Your package is on the way to your partner.
+    msg.invite.send_package.status.received: Your gift was received by your partner.
+    msg.invite.send_package: Your santa just marked their gift as sent. You no longer have the option to change your address. Instead you can mark your package as received to notify your santa that the package was received successfully. 
+    msg.invite.send_package.confirm: Are you sure you want to mark your package as sent?
+
+      Please confirm that you want to mark your package as sent. Your partner will receive a notification that the package is on the way.
+    msg.invite.send_package.success: Your package was marked as sent!
+    msg.invite.button.received_package: Received package
+    msg.invite.received_package: Your partner just marked your gift as received!
+    msg.invite.received_package.confirm: Are you sure you want to mark your package as received?
+
+      Please confirm that you want to mark your package as received. Your santa will receive a notification that the package was received.
+    msg.invite.received_package.success: You marked the gift as received!
+    msg.invite.button.add_package_tracking: Add package tracking
+    msg.invite.button.show_package_tracking: Show package tracking
+    msg.invite.package_tracking.title: "The package tracking reference provided by your secret santa is:"
+    msg.invite.add_package_tracking.not_changed: Your package tracking reference was not updated, because it is the same as before.
+    msg.invite.add_package_tracking.success: Your package tracking reference was updated!
+    msg.invite.add_package_tracking.santa_updated: Your secret santa just set a package tracking reference. This is just to inform you - Beep Boop 🤖
+
+    msg.invite.modal.set_address.title: Set your address
+    msg.invite.modal.set_address.label: Your address will be shown your secret santa
+    msg.invite.modal.set_address.placeholder: "Mr. John Doe\n123 Main Street\nAnytown, USA 12345"
+    msg.invite.modal.add_package_tracking.title: Set your package tracking reference
+    msg.invite.modal.add_package_tracking.label: Your tracking reference is shown your parnter
+    msg.invite.modal.add_package_tracking.placeholder: If you have any you can provide a tracking reference.
+      e.g. Tracking number or URL
+
 module:
   adventcalendar:
     post.message: Just sleep %d more times! Its time for **door %d**.
