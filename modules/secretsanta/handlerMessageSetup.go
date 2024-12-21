@@ -70,7 +70,8 @@ func (cmd MsgCmd) handler() {
 	}
 	util.AddEmbedField(e, lang.GetDefault(tp+"msg.setup.users"), names, false)
 
-	err = cmd.setPlayers(players)
+	allPlayers[cmd.Interaction.GuildID] = players
+	err = cmd.setPlayers()
 	if err != nil {
 		log.Printf("Error on set players: %v\n", err)
 		cmd.ReplyError()
