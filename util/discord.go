@@ -91,8 +91,8 @@ func AddEmbedField(e *discordgo.MessageEmbed, name, value string, inline bool) {
 // given embed.
 func AddReplyHiddenField(e *discordgo.MessageEmbed) {
 	AddEmbedField(e,
-		lang.Get("discord.command.generic.msg.self_hidden", lang.FallbackLang()),
-		lang.Get("discord.command.generic.msg.self_hidden.desc", lang.FallbackLang()),
+		lang.GetDefault("discord.command.generic.msg.self_hidden"),
+		lang.GetDefault("discord.command.generic.msg.self_hidden.desc"),
 		false,
 	)
 }

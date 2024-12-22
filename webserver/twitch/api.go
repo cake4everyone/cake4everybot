@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io"
 	logger "log"
 	"net/http"
@@ -14,8 +15,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-// RawEvent represents the http body comming with a call to the /twitch_pubsub enpoints
-type RawEvent struct {
+// rawEvent represents the http body comming with a call to the /twitch_pubsub enpoints
+type rawEvent struct {
 	// Challenge cointains the string to return when receiving a webhook callback verification.
 	// Otherwise it is an empty string
 	Challenge string `json:"challenge"`
@@ -52,7 +53,7 @@ func HandlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var rEvent RawEvent
+	var rEvent rawEvent
 	err = json.Unmarshal(body, &rEvent)
 	if err != nil {
 		log.Printf("Failed to unmarshal body: %v", err)
@@ -66,7 +67,14 @@ func HandlePost(w http.ResponseWriter, r *http.Request) {
 		handleVerification(w, r, rEvent)
 		return
 	case "notification":
-		log.Printf("Event notification: %+v", rEvent)
+		data, _ := json.Marshal(rEvent.Event)
+		if err := handleNotification(data, rEvent.Subscription.Type); err != nil {
+			log.Printf("Error on notification event: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	case "revocation":
+		log.Println("requested to revoke")
 	default:
 		log.Printf("Unknown message type '%s'", messageType)
 		w.WriteHeader(http.StatusBadRequest)
@@ -91,6 +99,7 @@ func verifyTwitchMessage(header http.Header, body []byte) bool {
 
 	signature := []byte(header.Get("Twitch-Eventsub-Message-Signature"))
 	if !hmac.Equal(hmacHex, signature) {
+		log.Printf("calculated sha does not match, got '%s' want '%s'", hmacHex, signature)
 		return false
 	}
 
@@ -100,24 +109,26 @@ func verifyTwitchMessage(header http.Header, body []byte) bool {
 		return false
 	}
 
-	if time.Until(t) > -10*time.Minute {
+	if time.Until(t) < -10*time.Minute {
+		log.Printf("message is older than 10 minutes: %v (%s)", time.Until(t), t)
 		return false
 	}
 
 	if slices.Contains(lastMessages, msgID) {
+		log.Printf("message id already verified: id '%s' found in last messages: %v", msgID, lastMessages)
 		return false
 	}
 	lastMessages = append(lastMessages[1:], msgID)
 	return true
 }
 
-func handleVerification(w http.ResponseWriter, r *http.Request, rEvent RawEvent) {
+func handleVerification(w http.ResponseWriter, _ *http.Request, rEvent rawEvent) {
 	if rEvent.Challenge == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	broadcaster := rEvent.Subscription.Condition["broadcaster_user_id"]
-	if broadcaster != "404257324" {
+	if subscribtions[broadcaster] {
 		log.Printf("Declined verification for broadcaster '%s'!", broadcaster)
 		w.WriteHeader(http.StatusConflict)
 		w.Write([]byte("{\"conflict\":\"that broadcaster is not allowed\"}"))
@@ -128,4 +139,33 @@ func handleVerification(w http.ResponseWriter, r *http.Request, rEvent RawEvent)
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusAccepted)
 	w.Write([]byte(rEvent.Challenge))
+}
+
+func handleNotification(data []byte, notificationType string) error {
+	switch notificationType {
+	case "channel.update":
+		var e ChannelUpdateEvent
+		err := json.Unmarshal(data, &e)
+		if err != nil {
+			return fmt.Errorf("parse channel update: %v", err)
+		}
+		go dcChannelUpdateHandler(dcSession, &e)
+	case "stream.online":
+		var e StreamOnlineEvent
+		err := json.Unmarshal(data, &e)
+		if err != nil {
+			return fmt.Errorf("parse online: %v", err)
+		}
+		go dcStreamOnlineHandler(dcSession, &e)
+	case "stream.offline":
+		var e StreamOfflineEvent
+		err := json.Unmarshal(data, &e)
+		if err != nil {
+			return fmt.Errorf("parse offline: %v", err)
+		}
+		go dcStreamOfflineHandler(dcSession, &e)
+	default:
+		log.Printf("Unhandled notification type '%s': %s", notificationType, data)
+	}
+	return nil
 }

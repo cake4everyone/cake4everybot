@@ -17,6 +17,10 @@ twitch:
   name: twitch_username
   # twitch oauth token, starts with "oauth:"
   token: 
+  # the client ID for the twitch app
+  clientID: 
+  # the clients secret used to generate access tokens
+  clientSecret: 
   # a custom secret for the webhook, used for verifying hashes
   webhookSecret: 
 

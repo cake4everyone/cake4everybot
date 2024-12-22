@@ -1,4 +1,4 @@
-// Copyright 2023 Kesuaheli
+// Copyright 2024 Kesuaheli
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,19 +15,21 @@
 package event
 
 import (
-	"cake4everybot/event/youtube"
-	webYT "cake4everybot/webserver/youtube"
+	"cake4everybot/event/twitch"
+	webTwitch "cake4everybot/webserver/twitch"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/spf13/viper"
 )
 
-func addYouTubeListeners(s *discordgo.Session) {
-	webYT.SetDiscordSession(s)
-	webYT.SetDiscordHandler(youtube.Announce)
+func addTwitchListeners(s *discordgo.Session) {
+	webTwitch.SetDiscordSession(s)
+	webTwitch.SetDiscordChannelUpdateHandler(twitch.HandleChannelUpdate)
+	webTwitch.SetDiscordStreamOnlineHandler(twitch.HandleStreamOnline)
+	webTwitch.SetDiscordStreamOfflineHandler(twitch.HandleStreamOffline)
 
-	channels := viper.GetStringSlice("announce.youtube")
+	channels := viper.GetStringSlice("announce.twitch")
 	for _, channelID := range channels {
-		webYT.SubscribeChannel(channelID)
+		webTwitch.SubscribeChannel(channelID)
 	}
 }

@@ -19,12 +19,14 @@ discord:
   name: Cake4Everybot
   credits: Cake4Everybot, developed by @Kesuaheli (Discord) and the ideas of the community ♥
 
-youtube:
+announce:
   # The channels ID's to subscribe to
   # Its sort of a whitelist. Each channel in this list is allowed to send
-  # announcement events through th bot
-  announce:
+  # announcement events through the bot
+  youtube:
     - UC6sb0bkXREewXp2AkSOsOqg # Taomi
+  twitch:
+    - "404257324" # Taomi_
 
 event:
   # Time (24h format) to trigger daily events like birthday check and advent calendar post

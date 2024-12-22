@@ -50,7 +50,7 @@ func HandleCmdJoin(t *twitchgo.Twitch, channel string, user *twitchgo.User, args
 	p, err := database.NewGiveawayPrize(viper.GetString("event.twitch_giveaway.prizes"))
 	if err != nil {
 		log.Printf("Error reading prizes file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 	if !p.HasPrizeAvailable() {
@@ -77,14 +77,14 @@ func HandleCmdJoin(t *twitchgo.Twitch, channel string, user *twitchgo.User, args
 		data = []byte("{}")
 	} else if err != nil {
 		log.Printf("Error reading times file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 	var times = map[string]time.Time{}
 	err = json.Unmarshal(data, &times)
 	if err != nil {
 		log.Printf("Error parsing times file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 
@@ -134,13 +134,13 @@ func HandleCmdJoin(t *twitchgo.Twitch, channel string, user *twitchgo.User, args
 	data, err = json.Marshal(times)
 	if err != nil {
 		log.Printf("Error marshaling times file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 	err = os.WriteFile(viper.GetString("event.twitch_giveaway.times"), data, 0644)
 	if err != nil {
 		log.Printf("Error writing times file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 
@@ -169,7 +169,7 @@ func HandleCmdTickets(t *twitchgo.Twitch, channel string, source *twitchgo.User,
 	p, err := database.NewGiveawayPrize(viper.GetString("event.twitch_giveaway.prizes"))
 	if err != nil {
 		log.Printf("Error reading prizes file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 	if p.HasPrizeWon(userID) {
@@ -230,14 +230,14 @@ skipPoints:
 		data = []byte("{}")
 	} else if err != nil {
 		log.Printf("Error reading times file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 	var times = map[string]time.Time{}
 	err = json.Unmarshal(data, &times)
 	if err != nil {
 		log.Printf("Error parsing times file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 
@@ -266,7 +266,7 @@ func HandleCmdDraw(t *twitchgo.Twitch, channel string, user *twitchgo.User, args
 	p, err := database.NewGiveawayPrize(viper.GetString("event.twitch_giveaway.prizes"))
 	if err != nil {
 		log.Printf("Error reading prizes file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 	prize, ok := p.GetNextPrize()
@@ -286,7 +286,7 @@ func HandleCmdDraw(t *twitchgo.Twitch, channel string, user *twitchgo.User, args
 	err = database.DeleteGiveawayEntry(winner.UserID)
 	if err != nil {
 		log.Printf("Error deleting database giveaway entry: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 
@@ -294,7 +294,7 @@ func HandleCmdDraw(t *twitchgo.Twitch, channel string, user *twitchgo.User, args
 	err = p.SaveFile()
 	if err != nil {
 		log.Printf("Error saving prizes file: %v", err)
-		t.SendMessagef(channel, lang.GetDefault("twitch.command.generic.error"))
+		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
 }
