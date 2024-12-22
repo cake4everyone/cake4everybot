@@ -49,7 +49,7 @@ func (c Component) Handle(s *discordgo.Session, i *discordgo.InteractionCreate) 
 
 	switch util.ShiftL(ids) {
 	case "post":
-		c.handlePost(s, ids)
+		c.handlePost(ids)
 		return
 	default:
 		log.Printf("Unknown component interaction ID: %s", c.data.CustomID)
@@ -61,7 +61,7 @@ func (Component) ID() string {
 	return "adventcalendar"
 }
 
-func (c *Component) handlePost(s *discordgo.Session, ids []string) {
+func (c Component) handlePost(ids []string) {
 	var (
 		buttonYear  = util.ShiftL(ids)
 		buttonMonth = util.ShiftL(ids)
@@ -78,7 +78,7 @@ func (c *Component) handlePost(s *discordgo.Session, ids []string) {
 	if now := time.Now(); now.Year() != postTime.Year() ||
 		now.Month() != postTime.Month() ||
 		now.Day() != postTime.Day() {
-		c.ReplyHiddenSimpleEmbedf(0xFF0000, lang.GetDefault("module.adventcalendar.enter.invalid"))
+		c.ReplyHiddenSimpleEmbed(0xFF0000, lang.GetDefault("module.adventcalendar.enter.invalid"))
 		return
 	}
 

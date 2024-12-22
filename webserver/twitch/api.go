@@ -64,7 +64,7 @@ func HandlePost(w http.ResponseWriter, r *http.Request) {
 	messageType := r.Header.Get("Twitch-Eventsub-Message-Type")
 	switch messageType {
 	case "webhook_callback_verification":
-		handleVerification(w, r, rEvent)
+		handleVerification(w, rEvent)
 		return
 	case "notification":
 		data, _ := json.Marshal(rEvent.Event)
@@ -122,7 +122,7 @@ func verifyTwitchMessage(header http.Header, body []byte) bool {
 	return true
 }
 
-func handleVerification(w http.ResponseWriter, _ *http.Request, rEvent rawEvent) {
+func handleVerification(w http.ResponseWriter, rEvent rawEvent) {
 	if rEvent.Challenge == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
