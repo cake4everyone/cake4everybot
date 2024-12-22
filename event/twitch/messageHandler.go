@@ -37,13 +37,13 @@ var se *streamelements.Streamelements
 
 // MessageHandler handles new messages from the twitch chat(s). It will be called on every new
 // message.
-func MessageHandler(t *twitchgo.Twitch, channel string, user *twitchgo.User, message string) {
+func MessageHandler(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, message, msgID string, tags twitchgo.IRCMessageTags) {
 	log.Printf("<%s@%s> %s", user.Nickname, channel, message)
 }
 
 // HandleCmdJoin is the handler for a command in a twitch chat. This handler buys a giveaway ticket
 // and removes the configured cost amount for a ticket.
-func HandleCmdJoin(t *twitchgo.Twitch, channel string, user *twitchgo.User, args []string) {
+func HandleCmdJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "join."
 
@@ -155,7 +155,7 @@ func HandleCmdJoin(t *twitchgo.Twitch, channel string, user *twitchgo.User, args
 
 // HandleCmdTickets is the handler for the tickets command in a twitch chat. This handler simply
 // prints the users amount of tickets
-func HandleCmdTickets(t *twitchgo.Twitch, channel string, source *twitchgo.User, args []string) {
+func HandleCmdTickets(t *twitchgo.Session, channel string, source *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "tickets."
 
@@ -254,7 +254,7 @@ skipPoints:
 
 // HandleCmdDraw is the handler for the draw command in a twitch chat. This handler selects a random
 // winner and removes their tickets.
-func HandleCmdDraw(t *twitchgo.Twitch, channel string, user *twitchgo.User, args []string) {
+func HandleCmdDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "draw."
 

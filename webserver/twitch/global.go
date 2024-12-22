@@ -1,15 +1,7 @@
 package twitch
 
 import (
-	"bytes"
-	"cake4everybot/webserver/oauth"
-	"encoding/json"
-	"io"
-	"net/http"
-	"os"
 	"time"
-
-	"github.com/spf13/viper"
 )
 
 // Subscription represents a single subscription to an event.
@@ -93,89 +85,4 @@ type StreamOfflineEvent struct {
 	BroadcasterUserID    string `json:"broadcaster_user_id"`    // The broadcaster’s user id.
 	BroadcasterUserLogin string `json:"broadcaster_user_login"` // The broadcaster’s user login.
 	BroadcasterUserName  string `json:"broadcaster_user_name"`  // The broadcaster’s user display name.
-}
-
-// RegisterEventSubscription registers the callback URL for a twitch API event at twitch.
-func RegisterEventSubscription() {
-	reqURL := "https://api.twitch.tv/helix/eventsub/subscriptions"
-	clientID := viper.GetString("twitch.clientID")
-	clientSecret := viper.GetString("twitch.clientSecret")
-	webhookSecret := viper.GetString("twitch.webhookSecret")
-
-	for id := range subscribtions {
-		log.Printf("Requesting subscription refresh for id '%s'...", id)
-
-		var (
-			body []byte
-			err  error
-		)
-		if body, err = json.Marshal(Subscription{
-			Type:    "channel.update",
-			Version: "1",
-			Condition: map[string]string{
-				"broadcaster_user_id": id,
-			},
-			Transport: SubscriptionTransport{
-				Method:             "webhook",
-				WebhookCallbackURI: "https://webhook.cake4everyone.de/api/twitch_pubsub",
-				WebhookSecret:      webhookSecret,
-			},
-		}); err != nil {
-			log.Printf("Failed to marshal request body")
-			return
-		}
-
-		req, err := http.NewRequest(http.MethodPost, reqURL, bytes.NewReader(body))
-		if err != nil {
-			log.Printf("Failed to create refresh subscription: %v", err)
-			return
-		}
-
-		// App Token
-		appToken := oauth.New(
-			"https://id.twitch.tv/oauth2/token",
-			clientID,
-			clientSecret,
-			"",
-		)
-		t, err := appToken.GenerateToken()
-		if err != nil {
-			log.Printf("Failed to generate token: %v", err)
-			return
-		}
-		log.Printf("Token: %s", t)
-
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Authorization", "Bearer "+t)
-		req.Header.Set("Client-Id", clientID)
-
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			log.Printf("Failed to do refresh subscription request: %v", err)
-			return
-		}
-
-		resp.Request = nil
-		buf, err := json.MarshalIndent(resp, "", "	")
-		if err != nil {
-			log.Printf("Failed to read refresh subscription response: %v", err)
-			return
-		}
-		var name string = "response.json"
-		err = os.WriteFile(name, buf, 0644)
-		if err != nil {
-			log.Printf("Failed to save response to file: %v", err)
-			return
-		}
-		log.Printf("Saved reponse to file: ./%s", name)
-
-		buf, err = io.ReadAll(resp.Body)
-		if err != nil {
-			log.Printf("Failed to read response body: %v", err)
-			return
-		}
-		log.Printf("Body:\n%s", string(buf))
-
-		log.Printf("Successfully refreshed subscription for channel '%s'", id)
-	}
 }

@@ -23,7 +23,6 @@ import (
 	"cake4everybot/config"
 	"cake4everybot/database"
 	"cake4everybot/event"
-	"cake4everybot/twitch"
 	"cake4everybot/webserver"
 
 	"github.com/bwmarrin/discordgo"
@@ -74,8 +73,7 @@ func main() {
 		log.Printf("Logged in to Discord as %s#%s\n", s.State.User.Username, s.State.User.Discriminator)
 	})
 
-	twitch.Connect()
-	twitchBot := twitchgo.New(viper.GetString("twitch.name"), viper.GetString("twitch.token"))
+	twitchBot := twitchgo.New(viper.GetString("twitch.clientID"), viper.GetString("twitch.clientSecret"), viper.GetString("twitch.token"))
 
 	// adding listeners for events
 	event.AddListeners(discordBot, twitchBot, webChan)

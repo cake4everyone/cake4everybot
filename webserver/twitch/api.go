@@ -149,21 +149,21 @@ func handleNotification(data []byte, notificationType string) error {
 		if err != nil {
 			return fmt.Errorf("parse channel update: %v", err)
 		}
-		go dcChannelUpdateHandler(dcSession, &e)
+		go dcChannelUpdateHandler(dcSession, tSession, &e)
 	case "stream.online":
 		var e StreamOnlineEvent
 		err := json.Unmarshal(data, &e)
 		if err != nil {
 			return fmt.Errorf("parse online: %v", err)
 		}
-		go dcStreamOnlineHandler(dcSession, &e)
+		go dcStreamOnlineHandler(dcSession, tSession, &e)
 	case "stream.offline":
 		var e StreamOfflineEvent
 		err := json.Unmarshal(data, &e)
 		if err != nil {
 			return fmt.Errorf("parse offline: %v", err)
 		}
-		go dcStreamOfflineHandler(dcSession, &e)
+		go dcStreamOfflineHandler(dcSession, tSession, &e)
 	default:
 		log.Printf("Unhandled notification type '%s': %s", notificationType, data)
 	}

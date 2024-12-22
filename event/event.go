@@ -28,7 +28,7 @@ import (
 var log = *logger.New(logger.Writer(), "[Events] ", logger.LstdFlags|logger.Lmsgprefix)
 
 // PostRegister registers all events, like commands after the bots are started.
-func PostRegister(dc *discordgo.Session, t *twitchgo.Twitch, guildID string) error {
+func PostRegister(dc *discordgo.Session, t *twitchgo.Session, guildID string) error {
 	err := command.Register(dc, guildID)
 	if err != nil {
 		return err
@@ -42,7 +42,7 @@ func PostRegister(dc *discordgo.Session, t *twitchgo.Twitch, guildID string) err
 }
 
 // AddListeners adds all event handlers to the given bots.
-func AddListeners(dc *discordgo.Session, t *twitchgo.Twitch, webChan chan struct{}) {
+func AddListeners(dc *discordgo.Session, t *twitchgo.Session, webChan chan struct{}) {
 	dc.AddHandler(handleInteractionCreate)
 	addVoiceStateListeners(dc)
 
@@ -52,6 +52,6 @@ func AddListeners(dc *discordgo.Session, t *twitchgo.Twitch, webChan chan struct
 	t.OnChannelMessage(twitch.MessageHandler)
 
 	addYouTubeListeners(dc)
-	addTwitchListeners(dc)
+	addTwitchListeners(dc, t)
 	addScheduledTriggers(dc, t, webChan)
 }

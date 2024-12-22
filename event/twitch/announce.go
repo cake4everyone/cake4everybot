@@ -3,7 +3,6 @@ package twitch
 import (
 	"cake4everybot/data/lang"
 	"cake4everybot/database"
-	"cake4everybot/twitch"
 	"cake4everybot/util"
 	webTwitch "cake4everybot/webserver/twitch"
 	"database/sql"
@@ -13,26 +12,27 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/kesuaheli/twitchgo"
 )
 
 // HandleChannelUpdate is the event handler for the "channel.update" event from twitch.
-func HandleChannelUpdate(s *discordgo.Session, e *webTwitch.ChannelUpdateEvent) {
-	HandleStreamAnnouncementChange(s, e.BroadcasterUserID, e.Title, "")
+func HandleChannelUpdate(s *discordgo.Session, t *twitchgo.Session, e *webTwitch.ChannelUpdateEvent) {
+	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, e.Title, "")
 }
 
 // HandleStreamOnline is the event handler for the "stream.online" event from twitch.
-func HandleStreamOnline(s *discordgo.Session, e *webTwitch.StreamOnlineEvent) {
-	HandleStreamAnnouncementChange(s, e.BroadcasterUserID, "", lang.GetDefault("module.twitch.msg.nofification"))
+func HandleStreamOnline(s *discordgo.Session, t *twitchgo.Session, e *webTwitch.StreamOnlineEvent) {
+	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, "", lang.GetDefault("module.twitch.msg.nofification"))
 }
 
 // HandleStreamOffline is the event handler for the "stream.offline" event from twitch.
-func HandleStreamOffline(s *discordgo.Session, e *webTwitch.StreamOfflineEvent) {
-	HandleStreamAnnouncementChange(s, e.BroadcasterUserID, "", "")
+func HandleStreamOffline(s *discordgo.Session, t *twitchgo.Session, e *webTwitch.StreamOfflineEvent) {
+	HandleStreamAnnouncementChange(s, t, e.BroadcasterUserID, "", "")
 }
 
 // HandleStreamAnnouncementChange is a general event handler for twitch events, that should update
 // the discord announcement embed.
-func HandleStreamAnnouncementChange(s *discordgo.Session, platformID, title, notification string) {
+func HandleStreamAnnouncementChange(s *discordgo.Session, t *twitchgo.Session, platformID, title, notification string) {
 	announcements, err := database.GetAnnouncement(database.AnnouncementPlatformTwitch, platformID)
 	if err == sql.ErrNoRows {
 		return
@@ -42,7 +42,7 @@ func HandleStreamAnnouncementChange(s *discordgo.Session, platformID, title, not
 	}
 
 	for _, announcement := range announcements {
-		err = updateAnnouncementMessage(s, announcement, title, notification)
+		err = updateAnnouncementMessage(s, t, announcement, title, notification)
 		if err != nil {
 			log.Printf("Error: %v", err)
 		}
@@ -72,7 +72,7 @@ func newAnnouncementMessage(s *discordgo.Session, announcement *database.Announc
 	return msg, announcement.UpdateAnnouncementMessage(msg.ID)
 }
 
-func updateAnnouncementMessage(s *discordgo.Session, announcement *database.Announcement, title, notification string) error {
+func updateAnnouncementMessage(s *discordgo.Session, t *twitchgo.Session, announcement *database.Announcement, title, notification string) error {
 	msg, err := getAnnouncementMessage(s, announcement)
 	if err != nil {
 		return fmt.Errorf("get announcement in channel '%s': %v", announcement, err)
@@ -80,8 +80,8 @@ func updateAnnouncementMessage(s *discordgo.Session, announcement *database.Anno
 
 	var (
 		embed  *discordgo.MessageEmbed
-		user   *twitch.User
-		stream *twitch.Stream
+		user   *twitchgo.User
+		stream *twitchgo.Stream
 	)
 
 	if msg == nil || len(msg.Embeds) == 0 {
@@ -90,7 +90,7 @@ func updateAnnouncementMessage(s *discordgo.Session, announcement *database.Anno
 	} else {
 		embed = msg.Embeds[0]
 	}
-	users, err := twitch.GetUsersByID(announcement.PlatformID)
+	users, err := t.GetUsersByID(announcement.PlatformID)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func updateAnnouncementMessage(s *discordgo.Session, announcement *database.Anno
 		return fmt.Errorf("get users: found no user with ID '%s'", announcement.PlatformID)
 	}
 	user = users[0]
-	streams, err := twitch.GetStreamsByID(announcement.PlatformID)
+	streams, err := t.GetStreamsByID(announcement.PlatformID)
 	if err != nil {
 		return err
 	}
@@ -139,7 +139,7 @@ func updateAnnouncementMessage(s *discordgo.Session, announcement *database.Anno
 	return nil
 }
 
-func setDefaultEmbed(embed *discordgo.MessageEmbed, user *twitch.User) {
+func setDefaultEmbed(embed *discordgo.MessageEmbed, user *twitchgo.User) {
 	embed.Author = &discordgo.MessageEmbedAuthor{
 		URL:     fmt.Sprintf("https://twitch.tv/%s/about", user.Login),
 		Name:    user.DisplayName,
@@ -152,7 +152,7 @@ func setDefaultEmbed(embed *discordgo.MessageEmbed, user *twitch.User) {
 	embed.Image.Height = 1080
 }
 
-func setOnlineEmbed(embed *discordgo.MessageEmbed, title string, user *twitch.User, stream *twitch.Stream) {
+func setOnlineEmbed(embed *discordgo.MessageEmbed, title string, user *twitchgo.User, stream *twitchgo.Stream) {
 	setDefaultEmbed(embed, user)
 
 	if title == "" {
@@ -171,7 +171,7 @@ func setOnlineEmbed(embed *discordgo.MessageEmbed, title string, user *twitch.Us
 	embed.Image.URL = strings.ReplaceAll(stream.ThumbnailURL, "{width}x{height}", "1920x1080")
 }
 
-func setOfflineEmbed(embed *discordgo.MessageEmbed, user *twitch.User) {
+func setOfflineEmbed(embed *discordgo.MessageEmbed, user *twitchgo.User) {
 	setDefaultEmbed(embed, user)
 
 	embed.Title = ""

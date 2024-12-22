@@ -1,34 +1,44 @@
 package twitch
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/bwmarrin/discordgo"
+	"github.com/kesuaheli/twitchgo"
+)
 
 var dcSession *discordgo.Session
-var dcChannelUpdateHandler func(*discordgo.Session, *ChannelUpdateEvent)
-var dcStreamOnlineHandler func(*discordgo.Session, *StreamOnlineEvent)
-var dcStreamOfflineHandler func(*discordgo.Session, *StreamOfflineEvent)
+var tSession *twitchgo.Session
+var dcChannelUpdateHandler func(*discordgo.Session, *twitchgo.Session, *ChannelUpdateEvent)
+var dcStreamOnlineHandler func(*discordgo.Session, *twitchgo.Session, *StreamOnlineEvent)
+var dcStreamOfflineHandler func(*discordgo.Session, *twitchgo.Session, *StreamOfflineEvent)
 var subscribtions = make(map[string]bool)
 
-// SetDiscordSession sets the discord.Sesstion to use for calling
+// SetDiscordSession sets the discordgo.Session to use for calling
 // event handlers.
 func SetDiscordSession(s *discordgo.Session) {
 	dcSession = s
 }
 
+// SetTwitchSession sets the twitchgo.Session to use for calling
+// event handlers.
+func SetTwitchSession(t *twitchgo.Session) {
+	tSession = t
+}
+
 // SetDiscordChannelUpdateHandler sets the function to use when calling event
 // handlers.
-func SetDiscordChannelUpdateHandler(f func(*discordgo.Session, *ChannelUpdateEvent)) {
+func SetDiscordChannelUpdateHandler(f func(*discordgo.Session, *twitchgo.Session, *ChannelUpdateEvent)) {
 	dcChannelUpdateHandler = f
 }
 
 // SetDiscordStreamOnlineHandler sets the function to use when calling event
 // handlers.
-func SetDiscordStreamOnlineHandler(f func(*discordgo.Session, *StreamOnlineEvent)) {
+func SetDiscordStreamOnlineHandler(f func(*discordgo.Session, *twitchgo.Session, *StreamOnlineEvent)) {
 	dcStreamOnlineHandler = f
 }
 
 // SetDiscordStreamOfflineHandler sets the function to use when calling event
 // handlers.
-func SetDiscordStreamOfflineHandler(f func(*discordgo.Session, *StreamOfflineEvent)) {
+func SetDiscordStreamOfflineHandler(f func(*discordgo.Session, *twitchgo.Session, *StreamOfflineEvent)) {
 	dcStreamOfflineHandler = f
 }
 
