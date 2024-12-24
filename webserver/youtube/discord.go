@@ -60,35 +60,40 @@ func UnsubscribeChannel(channelID string) {
 // RefreshSubscriptions sends a subscription request to the youtube hub
 func RefreshSubscriptions() {
 	for id := range subscribtions {
-		log.Printf("Requesting subscription refresh for id '%s'...", id)
-
-		reqURL := "https://pubsubhubbub.appspot.com/subscribe"
-
-		form := url.Values{}
-		form.Set("hub.callback", "https://webhook.cake4everyone.de/api/yt_pubsubhubbub/")
-		form.Set("hub.topic", "https://www.youtube.com/xml/feeds/videos.xml?channel_id="+id)
-		form.Set("hub.verify", "sync")
-		form.Set("hub.mode", "subscribe")
-		body := strings.NewReader(form.Encode())
-
-		req, err := http.NewRequest(http.MethodPost, reqURL, body)
-		if err != nil {
-			log.Printf("Error on creating refresh subscription: %v", err)
-			continue
-		}
-
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			log.Printf("Refresh request failed: %v", err)
-		}
-
-		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-			//delete(subscribtions, id)
-			b, _ := io.ReadAll(resp.Body)
-			log.Printf("Refreshing for channel '%s' failed with status %d. Body: %s", id, resp.StatusCode, string(b))
-			continue
-		}
-
-		log.Printf("Successfully refreshed subscription for channel '%s'", id)
+		go refreshSubscription(id)
 	}
+}
+
+func refreshSubscription(id string) {
+	log.Printf("Requesting subscription refresh for id '%s'...", id)
+
+	reqURL := "https://pubsubhubbub.appspot.com/subscribe"
+
+	form := url.Values{}
+	form.Set("hub.callback", "https://webhook.cake4everyone.de/api/yt_pubsubhubbub/")
+	form.Set("hub.topic", "https://www.youtube.com/xml/feeds/videos.xml?channel_id="+id)
+	form.Set("hub.verify", "sync")
+	form.Set("hub.mode", "subscribe")
+	body := strings.NewReader(form.Encode())
+
+	req, err := http.NewRequest(http.MethodPost, reqURL, body)
+	if err != nil {
+		log.Printf("Error on creating refresh subscription: %v", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Printf("Refresh request failed: %v", err)
+		return
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		//delete(subscribtions, id)
+		b, _ := io.ReadAll(resp.Body)
+		log.Printf("Refreshing for channel '%s' failed with status %d. Body: %s", id, resp.StatusCode, string(b))
+		return
+	}
+
+	log.Printf("Successfully refreshed subscription for channel '%s'", id)
 }
