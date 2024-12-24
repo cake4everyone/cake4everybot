@@ -15,12 +15,13 @@
 package event
 
 import (
+	"cake4everybot/database"
 	"cake4everybot/event/twitch"
+	"cake4everybot/util"
 	webTwitch "cake4everybot/webserver/twitch"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/kesuaheli/twitchgo"
-	"github.com/spf13/viper"
 )
 
 func addTwitchListeners(s *discordgo.Session, t *twitchgo.Session) {
@@ -30,8 +31,10 @@ func addTwitchListeners(s *discordgo.Session, t *twitchgo.Session) {
 	webTwitch.SetDiscordStreamOnlineHandler(twitch.HandleStreamOnline)
 	webTwitch.SetDiscordStreamOfflineHandler(twitch.HandleStreamOffline)
 
-	channels := viper.GetStringSlice("announce.twitch")
-	for _, channelID := range channels {
+	err := util.ForAllPlatformIDs(database.AnnouncementPlatformTwitch, func(channelID string) {
 		webTwitch.SubscribeChannel(channelID)
+	})
+	if err != nil {
+		log.Printf("Error on subscribing to Twitch channels: %v", err)
 	}
 }

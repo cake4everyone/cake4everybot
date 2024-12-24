@@ -50,6 +50,28 @@ func (p Platform) GoString() string {
 	}
 }
 
+// GetAllAnnouncementIDs returns all platform IDs for a given platform.
+//
+// If no result matches the given platform the returned error will be sql.ErrNoRows.
+// Other errors may exist.
+func GetAllAnnouncementIDs(platform Platform) (platformIDs []string, err error) {
+	rows, err := Query("SELECT DISTINCT platform_id FROM announcements WHERE platform=?", platform)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	platformIDs = make([]string, 0)
+	for rows.Next() {
+		var platformID string
+		if err := rows.Scan(&platformID); err != nil {
+			return nil, err
+		}
+		platformIDs = append(platformIDs, platformID)
+	}
+	return platformIDs, nil
+}
+
 // GetAnnouncement reads all Discord announcement channels from the database for a given channel ID
 // on a platform.
 // A platform could be "twitch" or "youtube".
