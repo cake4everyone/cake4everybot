@@ -82,7 +82,7 @@ func (c *Component) handlePost(s *discordgo.Session, ids []string) {
 		return
 	}
 
-	entry := database.GetGiveawayEntry("xmas", c.user.ID)
+	entry := database.GetGiveawayEntry("xmas", c.user.ID, database.AnnouncementPlatformDiscord, c.Interaction.GuildID)
 	if entry.UserID != c.user.ID {
 		log.Printf("ERROR: getEntry() returned with userID '%s' but want '%s'", entry.UserID, c.user.ID)
 		c.ReplyError()
@@ -93,7 +93,7 @@ func (c *Component) handlePost(s *discordgo.Session, ids []string) {
 		return
 	}
 
-	entry = database.AddGiveawayWeight("xmas", c.user.ID, 1)
+	entry = database.AddGiveawayWeight("xmas", c.user.ID, 1, database.AnnouncementPlatformDiscord, c.Interaction.GuildID)
 
 	c.ReplyHiddenSimpleEmbedf(0x00FF00, lang.GetDefault("module.adventcalendar.enter.success"), entry.Weight)
 }

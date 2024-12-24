@@ -36,6 +36,10 @@ type GiveawayEntry struct {
 	Weight int
 	// The day of last entry. Useful to check when only one ticket per day is allowed.
 	LastEntry time.Time
+	// The platform the giveaway is for
+	Platform Platform
+	// The platform identifier e.g. the channel id for the platform
+	PlatformID string
 }
 
 // ToEmbedField formats the giveaway entry to an discord message embed field.
@@ -59,14 +63,14 @@ func (e GiveawayEntry) ToEmbedField(s *discordgo.Session, totalTickets int) (f *
 // prefixed with prefix.
 //
 // If an error occours or it doesn't match prefix, an emtpy GiveawayEntry is returned instead.
-func GetGiveawayEntry(prefix, userID string) GiveawayEntry {
+func GetGiveawayEntry(prefix, userID string, platform Platform, platformID string) GiveawayEntry {
 	var (
 		weight      int
 		lastEntryID string
 	)
-	err := QueryRow("SELECT weight,last_entry_id FROM giveaway WHERE id=?", userID).Scan(&weight, &lastEntryID)
+	err := QueryRow("SELECT weight,last_entry_id FROM giveaway WHERE id=? AND platform=? AND platform_id=?", userID, platform, platformID).Scan(&weight, &lastEntryID)
 	if err == sql.ErrNoRows {
-		return GiveawayEntry{UserID: userID, Weight: 0}
+		return GiveawayEntry{UserID: userID, Weight: 0, Platform: platform, PlatformID: platformID}
 	}
 	if err != nil {
 		log.Printf("Database failed to get giveaway entries for '%s': %v", userID, err)
@@ -74,7 +78,7 @@ func GetGiveawayEntry(prefix, userID string) GiveawayEntry {
 	}
 
 	if lastEntryID == "" {
-		return GiveawayEntry{UserID: userID, Weight: weight}
+		return GiveawayEntry{UserID: userID, Weight: weight, Platform: platform, PlatformID: platformID}
 	}
 
 	dateValue, ok := strings.CutPrefix(lastEntryID, prefix+"-")
@@ -87,7 +91,7 @@ func GetGiveawayEntry(prefix, userID string) GiveawayEntry {
 		log.Printf("could not convert last_entry_id '%s' to time: %v", lastEntryID, err)
 		return GiveawayEntry{}
 	}
-	return GiveawayEntry{userID, weight, lastEntry}
+	return GiveawayEntry{userID, weight, lastEntry, platform, platformID}
 }
 
 // DeleteGiveawayEntry deletes the giveaway entry for the given user identifier from the database.
@@ -95,8 +99,8 @@ func GetGiveawayEntry(prefix, userID string) GiveawayEntry {
 // If an error occours it will be returned. However if no datbase entry matched it returns err ==
 // nil, not err == sql.ErrNoRows. Because sql.ErrNoRows also results in the non-existence of the
 // requested row and therefore is treated as a successful call.
-func DeleteGiveawayEntry(userID string) error {
-	_, err := Exec("DELETE FROM giveaway WHERE id=?", userID)
+func DeleteGiveawayEntry(userID string, platform Platform, platformID string) error {
+	_, err := Exec("DELETE FROM giveaway WHERE id=? AND platform=? AND platform_id=?", userID, platform, platformID)
 	if err == sql.ErrNoRows {
 		return nil
 	}
@@ -110,13 +114,13 @@ func DeleteGiveawayEntry(userID string) error {
 //
 // If there was no error the modified entry is returned. If there was an error, an emtpy
 // GiveawayEntry is returned instead.
-func AddGiveawayWeight(prefix, userID string, amount int) GiveawayEntry {
+func AddGiveawayWeight(prefix, userID string, amount int, platform Platform, platformID string) GiveawayEntry {
 	var (
 		weight      int
 		lastEntryID string
 		new         bool
 	)
-	err := QueryRow("SELECT weight,last_entry_id FROM giveaway WHERE id=?", userID).Scan(&weight, &lastEntryID)
+	err := QueryRow("SELECT weight,last_entry_id FROM giveaway WHERE id=? AND platform=? AND platform_id=?", userID, platform, platformID).Scan(&weight, &lastEntryID)
 	if err == sql.ErrNoRows {
 		new = true
 	} else if err != nil {
@@ -140,20 +144,22 @@ func AddGiveawayWeight(prefix, userID string, amount int) GiveawayEntry {
 			log.Printf("Database failed to insert giveaway for '%s': %v", userID, err)
 			return GiveawayEntry{}
 		}
-		return GiveawayEntry{userID, weight, lastEntry}
+		return GiveawayEntry{userID, weight, lastEntry, platform, platformID}
 	}
 	_, err = Exec("UPDATE giveaway SET weight=?,last_entry_id=? WHERE id=?", weight, lastEntryID, userID)
 	if err != nil {
 		log.Printf("Database failed to update weight (new: %d) for '%s': %v", weight, userID, err)
 		return GiveawayEntry{}
 	}
-	return GiveawayEntry{userID, weight, lastEntry}
+	return GiveawayEntry{userID, weight, lastEntry, platform, platformID}
 }
 
 // GetAllGiveawayEntries gets all giveaway entries that matches prefix.
-func GetAllGiveawayEntries(prefix string) []GiveawayEntry {
-	rows, err := Query("SELECT id,weight,last_entry_id FROM giveaway")
-	if err != nil {
+func GetAllGiveawayEntries(prefix string, platform Platform, platformID string) []GiveawayEntry {
+	rows, err := Query("SELECT id,weight,last_entry_id FROM giveaway WHERE platform=? AND platform_id=?", platform, platformID)
+	if err == sql.ErrNoRows {
+		return []GiveawayEntry{}
+	} else if err != nil {
 		log.Printf("ERROR: could not get entries from database: %v", err)
 		return []GiveawayEntry{}
 	}
@@ -173,7 +179,7 @@ func GetAllGiveawayEntries(prefix string) []GiveawayEntry {
 		}
 
 		if lastEntryID == "" {
-			entries = append(entries, GiveawayEntry{UserID: userID, Weight: weight})
+			entries = append(entries, GiveawayEntry{UserID: userID, Weight: weight, Platform: platform, PlatformID: platformID})
 			continue
 		}
 
@@ -187,7 +193,7 @@ func GetAllGiveawayEntries(prefix string) []GiveawayEntry {
 			log.Printf("ERROR: could not convert last_entry_id '%s' to time: %v", lastEntryID, err)
 			continue
 		}
-		entries = append(entries, GiveawayEntry{userID, weight, lastEntry})
+		entries = append(entries, GiveawayEntry{userID, weight, lastEntry, platform, platformID})
 	}
 	return entries
 }

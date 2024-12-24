@@ -32,28 +32,57 @@ func Midnight(s *discordgo.Session) {
 	}
 	log.Printf("Summary for %s", t.Add(-1*time.Hour).Format("_2. Jan"))
 
-	entries := database.GetAllGiveawayEntries("xmas")
-	slices.SortFunc(entries, func(a, b database.GiveawayEntry) int {
-		if a.Weight < b.Weight {
-			return -1
-		} else if a.Weight > b.Weight {
-			return 1
-		}
-		if a.LastEntry.Before(b.LastEntry) {
-			return -1
-		} else if a.LastEntry.After(b.LastEntry) {
-			return 1
-		}
-		return 0
-	})
-	slices.Reverse(entries)
-	data := &discordgo.MessageSend{
-		Embeds: splitEntriesToEmbeds(s, entries),
+	adventChannels, err := util.GetChannelsFromDatabase(s, "adventcalendar_channel")
+	if err != nil {
+		log.Printf("ERROR: Could not get advent calendar channel: %+v", err)
+		return
+	} else if len(adventChannels) == 0 {
+		log.Printf("No advent calendar channels found")
+		return
 	}
-	if len(data.Embeds) == 0 {
-		data.Content = "Ticket Summary: *No Tickets!*"
-	} else {
+
+	guildIDs := make([]string, 0, len(adventChannels))
+	for k := range adventChannels {
+		guildIDs = append(guildIDs, k)
+	}
+	logChannels, err := util.GetChannelsFromDatabase(s, "log_channel", guildIDs...)
+	if err != nil {
+		log.Printf("ERROR: Could not get log channel: %+v", err)
+		return
+	}
+
+	for guild := range adventChannels {
+		var logChannel string
+		var ok bool
+		if logChannel, ok = logChannels[guild]; !ok {
+			log.Printf("Warning: No log channel found for guild '%s'. Skipping", guild)
+			continue
+		}
+
+		entries := database.GetAllGiveawayEntries("xmas", database.AnnouncementPlatformDiscord, guild)
+		if len(entries) == 0 {
+			log.Printf("No entries for guild '%s'", guild)
+			continue
+		}
+		slices.SortFunc(entries, func(a, b database.GiveawayEntry) int {
+			if a.Weight < b.Weight {
+				return -1
+			} else if a.Weight > b.Weight {
+				return 1
+			}
+			if a.LastEntry.Before(b.LastEntry) {
+				return -1
+			} else if a.LastEntry.After(b.LastEntry) {
+				return 1
+			}
+			return 0
+		})
+		slices.Reverse(entries)
+		data := &discordgo.MessageSend{
+			Embeds: splitEntriesToEmbeds(s, entries),
+		}
 		data.Embeds[0].Title = "Current Tickets"
+
 		if len(entries) > 1 {
 			var totalTickets int
 			for _, e := range entries {
@@ -61,18 +90,10 @@ func Midnight(s *discordgo.Session) {
 			}
 			data.Embeds[0].Description = fmt.Sprintf("__Total: %d Tickets (%d users)__\nProbability per Ticket: %.2f%%\n%s", totalTickets, len(entries), 100.0/float64(totalTickets), data.Embeds[0].Description)
 		}
-	}
 
-	channels, err := util.GetChannelsFromDatabase(s, "log_channel")
-	if err != nil {
-		log.Printf("ERROR: Could not get advent calendar channel: %+v", err)
-		return
-	}
-
-	for _, channelID := range channels {
-		_, err = s.ChannelMessageSendComplex(channelID, data)
+		_, err = s.ChannelMessageSendComplex(logChannel, data)
 		if err != nil {
-			log.Printf("ERROR: could not send log message to channel '%s': %+v", channelID, err)
+			log.Printf("ERROR: could not send log message to channel '%s': %+v", logChannel, err)
 			continue
 		}
 	}
