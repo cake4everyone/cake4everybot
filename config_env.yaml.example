@@ -13,10 +13,8 @@ discord:
   guildID: 0
 
 twitch:
-  # username of the bot account
-  name: twitch_username
   # twitch oauth token, starts with "oauth:"
-  token: 
+  token: oauth:YOURTOKEN
   # the client ID for the twitch app
   clientID: 
   # the clients secret used to generate access tokens
@@ -26,4 +24,4 @@ twitch:
 
 streamelements:
   # Streamelements JSON Web Token (JWT)
-  token: PUT TOKEN.HERE
+  token: PUT.TOKEN.HERE

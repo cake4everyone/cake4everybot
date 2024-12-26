@@ -111,7 +111,6 @@ event:
       #animated: true
 
 twitch:
-  name: c4e_bot
   channels:
     - kesuaheli
     - taomi_
