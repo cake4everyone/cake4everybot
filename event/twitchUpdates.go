@@ -24,7 +24,7 @@ import (
 	"github.com/kesuaheli/twitchgo"
 )
 
-func addTwitchListeners(s *discordgo.Session, t *twitchgo.Session) {
+func addTwitchListeners(s *discordgo.Session, t *twitchgo.Session, webChan chan struct{}) {
 	webTwitch.SetDiscordSession(s)
 	webTwitch.SetTwitchSession(t)
 	webTwitch.SetDiscordChannelUpdateHandler(twitch.HandleChannelUpdate)
@@ -37,4 +37,9 @@ func addTwitchListeners(s *discordgo.Session, t *twitchgo.Session) {
 	if err != nil {
 		log.Printf("Error on subscribing to Twitch channels: %v", err)
 	}
+
+	go func() {
+		<-webChan
+		webTwitch.RefreshSubscriptions()
+	}()
 }

@@ -70,7 +70,7 @@ func refreshSubscription(id string) {
 	reqURL := "https://pubsubhubbub.appspot.com/subscribe"
 
 	form := url.Values{}
-	form.Set("hub.callback", "https://webhook.cake4everyone.de/api/yt_pubsubhubbub/")
+	form.Set("hub.callback", CALLBACKURL)
 	form.Set("hub.topic", "https://www.youtube.com/xml/feeds/videos.xml?channel_id="+id)
 	form.Set("hub.verify", "sync")
 	form.Set("hub.mode", "subscribe")

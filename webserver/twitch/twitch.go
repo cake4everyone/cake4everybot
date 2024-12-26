@@ -4,6 +4,13 @@ import (
 	"time"
 )
 
+const (
+	// CALLBACKPATH is the endpoint that twitch will call to send events.
+	CALLBACKPATH string = "/api/twitch_pubsub"
+	// CALLBACKURL is the full URL to the CALLBACKPATH.
+	CALLBACKURL string = "https://webhook.cake4everyone.de" + CALLBACKPATH
+)
+
 // Subscription represents a single subscription to an event.
 type Subscription struct {
 	// ID is the unique identifier for this subscription.

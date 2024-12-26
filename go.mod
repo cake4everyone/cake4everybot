@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gorilla/mux v1.8.1
-	github.com/kesuaheli/twitchgo v1.0.0
+	github.com/kesuaheli/twitchgo v1.0.1-0.20241226023447-67ad1943851d
 	github.com/spf13/viper v1.19.0
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f
 )

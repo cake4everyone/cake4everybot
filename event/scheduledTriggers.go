@@ -28,11 +28,11 @@ import (
 )
 
 func addScheduledTriggers(dc *discordgo.Session, t *twitchgo.Session, webChan chan struct{}) {
-	go scheduleFunction(dc, t, 0, 0,
+	go scheduleFunction(dc, t, 0, 0, webChan,
 		adventcalendar.Midnight,
 	)
 
-	go scheduleFunction(dc, t, viper.GetInt("event.morning_hour"), viper.GetInt("event.morning_minute"),
+	go scheduleFunction(dc, t, viper.GetInt("event.morning_hour"), viper.GetInt("event.morning_minute"), webChan,
 		birthday.Check,
 		adventcalendar.Post,
 	)
@@ -40,10 +40,11 @@ func addScheduledTriggers(dc *discordgo.Session, t *twitchgo.Session, webChan ch
 	go refreshYoutube(webChan)
 }
 
-func scheduleFunction(dc *discordgo.Session, t *twitchgo.Session, hour, min int, callbacks ...interface{}) {
+func scheduleFunction(dc *discordgo.Session, t *twitchgo.Session, hour, min int, webChan chan struct{}, callbacks ...interface{}) {
 	if len(callbacks) == 0 {
 		return
 	}
+	<-webChan
 	log.Printf("scheduled %d function(s) for %2d:%02d!", len(callbacks), hour, min)
 	time.Sleep(time.Second * 5)
 	for {
