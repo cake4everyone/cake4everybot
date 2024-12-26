@@ -21,6 +21,7 @@ import (
 	"syscall"
 
 	"cake4everybot/config"
+	"cake4everybot/data/lang"
 	"cake4everybot/database"
 	"cake4everybot/event"
 	"cake4everybot/webserver"
@@ -51,6 +52,7 @@ const banner string = "\n" +
 
 func init() {
 	config.Load("config.yaml")
+	lang.Load()
 }
 
 func main() {

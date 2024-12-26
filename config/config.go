@@ -17,8 +17,6 @@ package config
 import (
 	logger "log"
 
-	"cake4everybot/data/lang"
-
 	"github.com/spf13/viper"
 )
 
@@ -50,7 +48,4 @@ func Load(config string) {
 	}
 
 	log.Println("Loaded configuration file(s)!")
-
-	// additional loadings
-	lang.Load()
 }
