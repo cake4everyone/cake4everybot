@@ -222,11 +222,9 @@ module:
   twitch:
     embed_category: Category
     embed_footer: Twitch notification bell
-    msg.nofification: "%s went live on Twitch!"
 
 youtube:
   embed_footer: YouTube notification bell
-  msg.new_vid: "%s just uploaded a new video"
 
 twitch.command:
   generic:

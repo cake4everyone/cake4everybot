@@ -52,6 +52,6 @@ func AddListeners(dc *discordgo.Session, t *twitchgo.Session, webChan chan struc
 	t.OnChannelMessage(twitch.MessageHandler)
 
 	addYouTubeListeners(dc)
-	addTwitchListeners(dc, t)
+	addTwitchListeners(dc, t, webChan)
 	addScheduledTriggers(dc, t, webChan)
 }

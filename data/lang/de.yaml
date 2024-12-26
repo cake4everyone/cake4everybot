@@ -222,11 +222,9 @@ module:
   twitch:
     embed_category: Kategorie
     embed_footer: Twitch Glocke
-    msg.nofification: "%s ist auf Twitch live gegangen!"
 
 youtube:
   embed_footer: YouTube Glocke
-  msg.new_vid: "%s hat ein neues Video hochgeladen"
 
 twitch.command:
   generic:

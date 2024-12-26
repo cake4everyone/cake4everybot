@@ -10,7 +10,7 @@ import (
 )
 
 func (cmd Chat) handleSubcommandDraw() {
-	winner, totalTickets := database.DrawGiveawayWinner(database.GetAllGiveawayEntries("xmas"))
+	winner, totalTickets := database.DrawGiveawayWinner(database.GetAllGiveawayEntries("xmas", database.AnnouncementPlatformDiscord, cmd.Interaction.GuildID))
 	if totalTickets == 0 {
 		cmd.ReplyHidden(lang.GetDefault(tp + "msg.no_entries.draw"))
 		return

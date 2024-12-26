@@ -179,6 +179,10 @@ func (c Category) String() string {
 
 const (
 	youtubeAPIBaseURL string = "https://youtube.googleapis.com/youtube/v3"
+	// CALLBACKPATH is the endpoint that youtube will call to send events.
+	CALLBACKPATH string = "/api/yt_pubsubhubbub/"
+	// CALLBACKURL is the full URL to the CALLBACKPATH.
+	CALLBACKURL string = "https://webhook.cake4everyone.de" + CALLBACKPATH
 )
 
 // checkVideo checks if a video really is from the provided channel

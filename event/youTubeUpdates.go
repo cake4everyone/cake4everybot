@@ -15,19 +15,22 @@
 package event
 
 import (
+	"cake4everybot/database"
 	"cake4everybot/event/youtube"
+	"cake4everybot/util"
 	webYT "cake4everybot/webserver/youtube"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/spf13/viper"
 )
 
 func addYouTubeListeners(s *discordgo.Session) {
 	webYT.SetDiscordSession(s)
 	webYT.SetDiscordHandler(youtube.Announce)
 
-	channels := viper.GetStringSlice("announce.youtube")
-	for _, channelID := range channels {
+	err := util.ForAllPlatformIDs(database.AnnouncementPlatformYoutube, func(channelID string) {
 		webYT.SubscribeChannel(channelID)
+	})
+	if err != nil {
+		log.Printf("Error on subscribing to YouTube channels: %v", err)
 	}
 }

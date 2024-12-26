@@ -75,7 +75,8 @@ func main() {
 		log.Printf("Logged in to Discord as %s#%s\n", s.State.User.Username, s.State.User.Discriminator)
 	})
 
-	twitchBot := twitchgo.New(viper.GetString("twitch.clientID"), viper.GetString("twitch.clientSecret"), viper.GetString("twitch.token"))
+	twitchBot := twitchgo.New(viper.GetString("twitch.clientID"), viper.GetString("twitch.clientSecret"), viper.GetString("twitch.token")).
+		SetWebhookSecret(viper.GetString("twitch.webhookSecret"))
 
 	// adding listeners for events
 	event.AddListeners(discordBot, twitchBot, webChan)

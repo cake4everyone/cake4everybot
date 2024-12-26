@@ -15,7 +15,9 @@
 package util
 
 import (
+	"database/sql"
 	"fmt"
+	"strings"
 
 	"cake4everybot/data/lang"
 	"cake4everybot/database"
@@ -115,8 +117,20 @@ func MentionCommand(base string, subcommand ...string) string {
 }
 
 // GetChannelsFromDatabase returns a map from guild IDs to channel IDs
-func GetChannelsFromDatabase(s *discordgo.Session, channelName string) (map[string]string, error) {
-	rows, err := database.Query("SELECT id," + channelName + " FROM guilds")
+func GetChannelsFromDatabase(s *discordgo.Session, channelName string, guildIDs ...string) (map[string]string, error) {
+	var rows *sql.Rows
+	var err error
+	if len(guildIDs) == 0 {
+		rows, err = database.Query("SELECT id," + channelName + " FROM guilds")
+	} else {
+		placeholders := strings.Repeat("?,", len(guildIDs))
+		query := fmt.Sprintf("SELECT id,%s FROM guilds WHERE id IN (%s)", channelName, placeholders[:len(placeholders)-1])
+		args := make([]interface{}, len(guildIDs))
+		for i, guildID := range guildIDs {
+			args[i] = guildID
+		}
+		rows, err = database.Query(query, args...)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +152,7 @@ func GetChannelsFromDatabase(s *discordgo.Session, channelName string) (map[stri
 		// validate channel
 		channel, err := s.Channel(channelID)
 		if err != nil {
-			log.Printf("Warning: could not get %s channel for id '%s: %+v\n", channelName, channelID, err)
+			log.Printf("Warning: could not get %s channel for id '%s/%s: %+v\n", channelName, guildID, channelID, err)
 			continue
 		}
 		if channel.GuildID != guildID {

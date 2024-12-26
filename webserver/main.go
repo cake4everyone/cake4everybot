@@ -35,9 +35,9 @@ func initHTTP() http.Handler {
 	r.NotFoundHandler = http.HandlerFunc(handle404)
 
 	r.HandleFunc("/favicon.ico", favicon)
-	r.HandleFunc("/api/twitch_pubsub", twitch.HandlePost).Methods(http.MethodPost)
-	r.HandleFunc("/api/yt_pubsubhubbub/", youtube.HandleGet).Methods("GET")
-	r.HandleFunc("/api/yt_pubsubhubbub/", youtube.HandlePost).Methods("POST")
+	r.HandleFunc(twitch.CALLBACKPATH, twitch.HandlePost).Methods(http.MethodPost)
+	r.HandleFunc(youtube.CALLBACKPATH, youtube.HandleGet).Methods(http.MethodGet)
+	r.HandleFunc(youtube.CALLBACKPATH, youtube.HandlePost).Methods(http.MethodPost)
 
 	return r
 }

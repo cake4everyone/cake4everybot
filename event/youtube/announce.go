@@ -15,10 +15,10 @@
 package youtube
 
 import (
-	"cake4everybot/data/lang"
 	"cake4everybot/database"
 	"cake4everybot/util"
 	webYT "cake4everybot/webserver/youtube"
+	"database/sql"
 
 	"fmt"
 	"strings"
@@ -31,28 +31,19 @@ const (
 	channelBaseURL string = "https://youtube.com/channel/%s"
 )
 
-type guild struct {
-	guild   *discordgo.Guild
-	channel *discordgo.Channel
-	ping    string
-}
-
 // Announce takes a youtube video and announces it in discord channels
 func Announce(s *discordgo.Session, event *webYT.Video) {
-	guilds, err := getGuilds(s)
-	if err != nil {
-		log.Printf("Error on getting channels: %v\n", err)
+	announcements, err := database.GetAnnouncement(database.AnnouncementPlatformYoutube, event.ChannelID)
+	if err == sql.ErrNoRows {
 		return
-	}
-	if len(guilds) == 0 {
-		log.Printf("No channels to announce video. Dropping announcement for 'www.youtu.be/%s'", event.ID)
+	} else if err != nil {
+		log.Printf("Error on get announcement: %v", err)
 		return
 	}
 
 	var (
 		videoURL   = fmt.Sprintf(videoBaseURL, event.ID)
 		channelURL = fmt.Sprintf(channelBaseURL, event.ChannelID)
-		title      = fmt.Sprintf(lang.GetDefault("youtube.msg.new_vid"), event.Channel)
 		thumb      = event.Thumbnails["high"]
 	)
 
@@ -61,76 +52,41 @@ func Announce(s *discordgo.Session, event *webYT.Video) {
 		Description: saveTrimText(event.Description, 100),
 		URL:         videoURL,
 		Color:       0xFF0000,
-		Author:      &discordgo.MessageEmbedAuthor{URL: channelURL, Name: title},
+		Author:      &discordgo.MessageEmbedAuthor{URL: channelURL, Name: event.Channel},
 		Image:       &discordgo.MessageEmbedImage{URL: thumb.URL, Width: thumb.Width, Height: thumb.Height},
 	}
 	util.SetEmbedFooter(s, "youtube.embed_footer", embed)
+	embeds := []*discordgo.MessageEmbed{embed}
 
 	// send the embed to the channels
-	for _, g := range guilds {
+	for _, announcement := range announcements {
+		if announcement.Notification != "" && strings.Contains(announcement.Notification, "%s") {
+			embed.Author.Name = fmt.Sprintf(announcement.Notification, event.Channel)
+		} else if announcement.Notification != "" {
+			embed.Author.Name = announcement.Notification
+		}
+
 		var err error
-		if g.ping == "<@&0>" {
+		if announcement.RoleID == "" {
 			// send without a ping
-			_, err = s.ChannelMessageSendEmbed(g.channel.ID, embed)
+			_, err = s.ChannelMessageSendEmbeds(announcement.ChannelID, embeds)
 		} else {
 			// send with a ping
 			data := &discordgo.MessageSend{
-				Content: g.ping,
-				Embed:   embed,
+				Content: fmt.Sprintf("<@&%s>", announcement.RoleID),
+				Embeds:  embeds,
 			}
-			_, err = s.ChannelMessageSendComplex(g.channel.ID, data)
+			var msg *discordgo.Message
+			msg, err = s.ChannelMessageSendComplex(announcement.ChannelID, data)
+			if err == nil {
+				_, err = s.ChannelMessageEditEmbeds(announcement.ChannelID, msg.ID, embeds)
+			}
 		}
 
 		if err != nil {
-			log.Printf("Error on sending video announcement to channel %s (#%s) in guild %s (%s): %v", g.channel.ID, g.channel.Name, g.guild.ID, g.guild.Name, err)
+			log.Printf("Error on sending video announcement to channel %s/%s: %v", announcement.GuildID, announcement.ChannelID, err)
 		}
 	}
-}
-
-// getGuilds returns a list of guild object containing all guilds
-// (that specified an youtube announcement channel) as well as the
-// announcement channel an the role as pingable string.
-func getGuilds(s *discordgo.Session) (guilds []guild, err error) {
-	rows, err := database.Query("SELECT id,youtube_channel,youtube_role FROM guilds")
-	if err != nil {
-		return guilds, err
-	}
-	defer rows.Close()
-
-	var guildID, channelID, roleID uint64
-	for rows.Next() {
-		err = rows.Scan(&guildID, &channelID, &roleID)
-		if err != nil {
-			log.Printf("Error on scanning row (channel/%d/%d) from database: %v\n", guildID, channelID, err)
-			continue
-		}
-
-		if guildID == 0 || channelID == 0 {
-			continue
-		}
-
-		g, err := s.Guild(fmt.Sprint(guildID))
-		if err != nil {
-			log.Printf("Error on getting guild for id %d: %v\n", guildID, err)
-			continue
-		}
-		c, err := s.Channel(fmt.Sprint(channelID))
-		if err != nil {
-			log.Printf("Error on getting youtube channel for id %d: %v\n", channelID, err)
-			continue
-		}
-		if c.GuildID != g.ID {
-			log.Printf("Warning: tried to announce video in channel/%s/%s, but this channel (#%s) is from guild %s ('%s')\n", g.ID, c.ID, c.Name, c.GuildID, g.Name)
-			continue
-		}
-
-		guilds = append(guilds, guild{
-			guild:   g,
-			channel: c,
-			ping:    fmt.Sprintf("<@&%d>", roleID),
-		})
-	}
-	return guilds, nil
 }
 
 // saveTrimText returns a trimmed version of the given string. It

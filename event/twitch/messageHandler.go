@@ -33,7 +33,7 @@ const tp string = "twitch.command."
 // MessageHandler handles new messages from the twitch chat(s). It will be called on every new
 // message.
 func MessageHandler(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, message, msgID string, tags twitchgo.IRCMessageTags) {
-	log.Printf("<%s@%s> %s", user.Nickname, channel, message)
+	//log.Printf("<%s@%s> %s", user.Nickname, channel, message)
 }
 
 // HandleCmdJoin is the handler for a command in a twitch chat. This handler buys a giveaway ticket
@@ -56,7 +56,7 @@ func HandleCmdJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, 
 		t.SendMessagef(channel, lang.GetDefault(tp+"msg.won"), user.Nickname)
 		return
 	}
-	entry := database.GetGiveawayEntry("tw11", user.Nickname)
+	entry := database.GetGiveawayEntry("tw11", user.Nickname, database.AnnouncementPlatformTwitch, channel) // FIXME: use channel ID instead of name
 	if entry.UserID == "" {
 		log.Printf("Error getting database giveaway entry: %v", err)
 		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
@@ -118,7 +118,7 @@ func HandleCmdJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, 
 		t.SendMessagef(channel, lang.GetDefault(tp+"msg.too_few_points"), user.Nickname, sePoints.Points, joinCost-sePoints.Points, joinCost)
 		return
 	}
-	entry = database.AddGiveawayWeight("tw11", user.Nickname, 1)
+	entry = database.AddGiveawayWeight("tw11", user.Nickname, 1, database.AnnouncementPlatformTwitch, channel) // FIXME: use channel ID instead of name
 	if entry.UserID == "" {
 		log.Printf("Error getting database giveaway entry: %v", err)
 		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
@@ -176,7 +176,7 @@ func HandleCmdTickets(t *twitchgo.Session, channel string, source *twitchgo.IRCU
 		return
 	}
 
-	entry := database.GetGiveawayEntry("tw11", userID)
+	entry := database.GetGiveawayEntry("tw11", userID, database.AnnouncementPlatformTwitch, channel) // FIXME: use channel ID instead of name
 	if entry.Weight >= 10 {
 		if source.Nickname == userID {
 			t.SendMessagef(channel, lang.GetDefault(tp+"msg.max_tickets"), source.Nickname)
@@ -270,7 +270,7 @@ func HandleCmdDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, 
 		return
 	}
 
-	winner, totalTickets := database.DrawGiveawayWinner(database.GetAllGiveawayEntries("tw11"))
+	winner, totalTickets := database.DrawGiveawayWinner(database.GetAllGiveawayEntries("tw11", database.AnnouncementPlatformTwitch, channel)) // FIXME: use channel ID instead of name
 	if totalTickets == 0 {
 		t.SendMessagef(channel, lang.GetDefault(tp+"msg.no_entries"), user.Nickname)
 		return
@@ -278,7 +278,7 @@ func HandleCmdDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, 
 
 	t.SendMessagef(channel, lang.GetDefault(tp+"msg.winner"), winner.UserID, prize.Name, winner.Weight, float64(winner.Weight*100)/float64(totalTickets))
 
-	err = database.DeleteGiveawayEntry(winner.UserID)
+	err = database.DeleteGiveawayEntry(winner.UserID, database.AnnouncementPlatformTwitch, channel) // FIXME: use channel ID instead of name
 	if err != nil {
 		log.Printf("Error deleting database giveaway entry: %v", err)
 		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
