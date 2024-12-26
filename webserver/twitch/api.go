@@ -128,7 +128,7 @@ func handleVerification(w http.ResponseWriter, _ *http.Request, rEvent rawEvent)
 		return
 	}
 	broadcaster := rEvent.Subscription.Condition["broadcaster_user_id"]
-	if subscriptions[broadcaster] {
+	if !subscriptions[broadcaster] {
 		log.Printf("Declined verification for broadcaster '%s'!", broadcaster)
 		w.WriteHeader(http.StatusConflict)
 		w.Write([]byte("{\"conflict\":\"that broadcaster is not allowed\"}"))
