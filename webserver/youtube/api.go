@@ -171,8 +171,9 @@ func HandlePost(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Content will be checked and could be ignored on mismatch"))
 
 	go func() {
-		age := feed.Updated.Sub(feed.Published)
-		log.Printf("DEBUG: Video ('%s') age: %s", feed.Video.ID, age)
+		if age := feed.Updated.Sub(feed.Published); age > time.Minute*15 {
+			return
+		}
 		video, ok := checkVideo(feed.Video.ID, feed.Channel.ID)
 		if !ok {
 			return
