@@ -18,6 +18,7 @@ import (
 	"cake4everybot/webserver/twitch"
 	"cake4everybot/webserver/youtube"
 	logger "log"
+	"net"
 	"net/http"
 	"time"
 
@@ -42,9 +43,10 @@ func initHTTP() http.Handler {
 }
 
 // Run starts the webserver at the given address
-func Run(addr string, webChan chan struct{}) {
+func Run(webChan chan struct{}) {
 	handler := initHTTP()
 
+	var addr string = net.JoinHostPort(viper.GetString("webserver.host"), viper.GetString("webserver.port"))
 	var err error
 
 	go func() {

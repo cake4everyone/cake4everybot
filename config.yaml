@@ -7,6 +7,7 @@ version: 1.2.1
 additionalConfigs:
   - config_env.yaml # For tokens and access keys
   - database/connection_env.yaml # Connection data for mySQL databse
+  - webserver/config.yaml # Config for the webserver
 
 # The language translation files to search for in 'data/lang/'
 # The first one in this list will also be the fallback when trying to
@@ -108,9 +109,6 @@ event:
       name: 📪
       #id:
       #animated: true
-
-webserver:
-  favicon: webserver/favicon.png
 
 twitch:
   name: c4e_bot

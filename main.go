@@ -100,8 +100,7 @@ func main() {
 	}
 
 	log.Println("Starting webserver...")
-	addr := ":8080"
-	webserver.Run(addr, webChan)
+	webserver.Run(webChan)
 
 	// Wait to end the bot
 	log.Println("Press Ctrl+C to exit")
