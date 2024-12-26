@@ -38,7 +38,7 @@ var se *streamelements.Streamelements
 // MessageHandler handles new messages from the twitch chat(s). It will be called on every new
 // message.
 func MessageHandler(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, message, msgID string, tags twitchgo.IRCMessageTags) {
-	log.Printf("<%s@%s> %s", user.Nickname, channel, message)
+	//log.Printf("<%s@%s> %s", user.Nickname, channel, message)
 }
 
 // HandleCmdJoin is the handler for a command in a twitch chat. This handler buys a giveaway ticket
