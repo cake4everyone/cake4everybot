@@ -1,6 +1,7 @@
 package twitch
 
 import (
+	"cake4everybot/logger"
 	"time"
 )
 
@@ -10,6 +11,8 @@ const (
 	// CALLBACKURL is the full URL to the CALLBACKPATH.
 	CALLBACKURL string = "https://webhook.cake4everyone.de" + CALLBACKPATH
 )
+
+var log = logger.New("Web/Twitch")
 
 // Subscription represents a single subscription to an event.
 type Subscription struct {

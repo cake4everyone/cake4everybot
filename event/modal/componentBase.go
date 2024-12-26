@@ -1,8 +1,8 @@
 package modal
 
 import (
+	"cake4everybot/logger"
 	"cake4everybot/modules/secretsanta"
-	"log"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -16,6 +16,8 @@ type Modal interface {
 	// Custom ID of the modal to identify the module
 	ID() string
 }
+
+var log = logger.New("Event/Modal")
 
 // ModalMap holds all active modals. It maps them from a unique string identifier to the
 // corresponding [Modal].

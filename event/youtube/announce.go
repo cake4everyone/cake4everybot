@@ -21,7 +21,6 @@ import (
 	"database/sql"
 
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"

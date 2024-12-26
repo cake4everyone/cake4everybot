@@ -15,8 +15,8 @@
 package adventcalendar
 
 import (
+	"cake4everybot/logger"
 	"cake4everybot/util"
-	logger "log"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -27,7 +27,7 @@ const (
 	tp = "discord.command.adventcalendar."
 )
 
-var log = logger.New(logger.Writer(), "[Advent] ", logger.LstdFlags|logger.Lmsgprefix)
+var log = logger.New("Advent")
 
 type adventcalendarBase struct {
 	util.InteractionUtil

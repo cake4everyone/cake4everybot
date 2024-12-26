@@ -1,0 +1,7 @@
+webserver:
+  # The host on which the webserver is bound to
+  #host: 
+  # The port on which the webserver listens
+  port: 8080
+  # The path to the favicon for the webserver
+  favicon: webserver/favicon.png

@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	logger "log"
 	"net/http"
 	"slices"
 	"time"
@@ -30,10 +29,7 @@ type rawEvent struct {
 	Event interface{} `json:"event"`
 }
 
-var (
-	log          = logger.New(logger.Writer(), "[WebTwitch] ", logger.LstdFlags|logger.Lmsgprefix)
-	lastMessages = make([]string, 10)
-)
+var lastMessages = make([]string, 10)
 
 // HandlePost is the HTTP/POST handler for the Twitch PubSub endpoint.
 //
@@ -64,7 +60,7 @@ func HandlePost(w http.ResponseWriter, r *http.Request) {
 	messageType := r.Header.Get("Twitch-Eventsub-Message-Type")
 	switch messageType {
 	case "webhook_callback_verification":
-		handleVerification(w, r, rEvent)
+		handleVerification(w, rEvent)
 		return
 	case "notification":
 		data, _ := json.Marshal(rEvent.Event)
@@ -122,7 +118,7 @@ func verifyTwitchMessage(header http.Header, body []byte) bool {
 	return true
 }
 
-func handleVerification(w http.ResponseWriter, _ *http.Request, rEvent rawEvent) {
+func handleVerification(w http.ResponseWriter, rEvent rawEvent) {
 	if rEvent.Challenge == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return

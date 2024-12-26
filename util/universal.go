@@ -15,10 +15,10 @@
 package util
 
 import (
-	logger "log"
+	"cake4everybot/logger"
 )
 
-var log = logger.New(logger.Writer(), "[Util] ", logger.LstdFlags|logger.Lmsgprefix)
+var log = logger.New("Util")
 
 // ContainsInt reports whether at least one of num is at least once anywhere in i.
 func ContainsInt(i []int, num ...int) bool {

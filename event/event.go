@@ -19,13 +19,13 @@ import (
 	"cake4everybot/event/component"
 	"cake4everybot/event/modal"
 	"cake4everybot/event/twitch"
-	logger "log"
+	"cake4everybot/logger"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/kesuaheli/twitchgo"
 )
 
-var log = *logger.New(logger.Writer(), "[Events] ", logger.LstdFlags|logger.Lmsgprefix)
+var log = logger.New("Event")
 
 // PostRegister registers all events, like commands after the bots are started.
 func PostRegister(dc *discordgo.Session, t *twitchgo.Session, guildID string) error {

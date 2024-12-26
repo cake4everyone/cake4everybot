@@ -18,7 +18,6 @@ import (
 	"cake4everybot/data/lang"
 	"cake4everybot/util"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 

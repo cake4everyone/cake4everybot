@@ -1,12 +1,14 @@
 package component
 
 import (
+	"cake4everybot/logger"
 	"cake4everybot/modules/adventcalendar"
 	"cake4everybot/modules/secretsanta"
-	"log"
 
 	"github.com/bwmarrin/discordgo"
 )
+
+var log = logger.New("Event/Component")
 
 // Component is an interface wrapper for all message components.
 type Component interface {

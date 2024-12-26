@@ -26,7 +26,7 @@ import (
 func Register(t *twitchgo.Session) {
 	channels := viper.GetStringSlice("twitch.channels")
 	for _, channel := range channels {
-		t.SendCommandf("JOIN #%s", channel)
+		t.JoinChannel(channel)
 	}
 	log.Printf("Channel list set to %v\n", channels)
 

@@ -19,7 +19,6 @@ import (
 	"cake4everybot/database"
 	"cake4everybot/util"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/bwmarrin/discordgo"

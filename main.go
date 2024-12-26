@@ -16,13 +16,14 @@ package main
 
 import (
 	"context"
-	logger "log"
 	"os/signal"
 	"syscall"
 
 	"cake4everybot/config"
+	"cake4everybot/data/lang"
 	"cake4everybot/database"
 	"cake4everybot/event"
+	"cake4everybot/logger"
 	"cake4everybot/webserver"
 
 	"github.com/bwmarrin/discordgo"
@@ -30,7 +31,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var log = logger.New(logger.Writer(), "[MAIN] ", logger.LstdFlags|logger.Lmsgprefix)
+var log = logger.New("MAIN")
 
 const banner string = "\n" +
 	"   ______      __        __ __  ______                                     \n" +
@@ -51,6 +52,7 @@ const banner string = "\n" +
 
 func init() {
 	config.Load("config.yaml")
+	lang.Load()
 }
 
 func main() {
@@ -101,8 +103,7 @@ func main() {
 	}
 
 	log.Println("Starting webserver...")
-	addr := ":8080"
-	webserver.Run(addr, webChan)
+	webserver.Run(webChan)
 
 	// Wait to end the bot
 	log.Println("Press Ctrl+C to exit")
