@@ -88,7 +88,7 @@ func GetAnnouncement(platform Platform, platformID string) ([]*Announcement, err
 	announcements := make([]*Announcement, 0)
 	for rows.Next() {
 		var guildID, channelID, messageID, roleID, notification string
-		if err := rows.Scan(&guildID, &channelID, &messageID, &roleID); err != nil {
+		if err := rows.Scan(&guildID, &channelID, &messageID, &roleID, &notification); err != nil {
 			return []*Announcement{}, err
 		}
 		announcements = append(announcements, &Announcement{guildID, channelID, messageID, roleID, platform, platformID, notification})
