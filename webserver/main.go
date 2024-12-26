@@ -15,9 +15,9 @@
 package webserver
 
 import (
+	"cake4everybot/logger"
 	"cake4everybot/webserver/twitch"
 	"cake4everybot/webserver/youtube"
-	logger "log"
 	"net"
 	"net/http"
 	"time"
@@ -26,7 +26,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var log = logger.New(logger.Writer(), "[WebServer] ", logger.LstdFlags|logger.Lmsgprefix)
+var log = logger.New("WebServer")
 
 func initHTTP() http.Handler {
 	r := mux.NewRouter()

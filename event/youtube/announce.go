@@ -21,7 +21,6 @@ import (
 	webYT "cake4everybot/webserver/youtube"
 
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"

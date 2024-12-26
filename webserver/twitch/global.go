@@ -1,8 +1,11 @@
 package twitch
 
 import (
+	"cake4everybot/logger"
 	"time"
 )
+
+var log = logger.New("Web/Twitch")
 
 // Subscription represents a single subscription to an event.
 type Subscription struct {

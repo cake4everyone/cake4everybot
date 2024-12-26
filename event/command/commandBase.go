@@ -15,17 +15,19 @@
 package command
 
 import (
+	"cake4everybot/logger"
 	"cake4everybot/modules/adventcalendar"
 	"cake4everybot/modules/birthday"
 	"cake4everybot/modules/info"
 	"cake4everybot/modules/secretsanta"
 	"cake4everybot/util"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
+
+var log = logger.New("Event/Command")
 
 // Command is an interface wrapper for all commands. Including chat-comamnds (slash-commands),
 // message-commands, and user-commands.

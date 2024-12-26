@@ -2,10 +2,10 @@ package secretsanta
 
 import (
 	"cake4everybot/data/lang"
+	"cake4everybot/logger"
 	"cake4everybot/util"
 	"encoding/json"
 	"fmt"
-	logger "log"
 	"os"
 
 	"github.com/bwmarrin/discordgo"
@@ -19,7 +19,7 @@ const (
 	tp = "discord.command.secretsanta."
 )
 
-var log = logger.New(logger.Writer(), "[SecretSanta] ", logger.LstdFlags|logger.Lmsgprefix)
+var log = logger.New("SecretSanta")
 
 type secretSantaBase struct {
 	util.InteractionUtil

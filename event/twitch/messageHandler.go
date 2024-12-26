@@ -17,10 +17,8 @@ package twitch
 import (
 	"cake4everybot/data/lang"
 	"cake4everybot/database"
-	"cake4everybot/tools/streamelements"
 	"encoding/json"
 	"fmt"
-	logger "log"
 	"math/rand"
 	"os"
 	"strings"
@@ -31,9 +29,6 @@ import (
 )
 
 const tp string = "twitch.command."
-
-var log logger.Logger = *logger.New(logger.Writer(), "[Twitch] ", logger.LstdFlags|logger.Lmsgprefix)
-var se *streamelements.Streamelements
 
 // MessageHandler handles new messages from the twitch chat(s). It will be called on every new
 // message.

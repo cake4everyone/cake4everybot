@@ -15,9 +15,9 @@
 package database
 
 import (
+	"cake4everybot/logger"
 	"database/sql"
 	"fmt"
-	logger "log"
 	"time"
 
 	// mysql driver used for database
@@ -25,7 +25,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var log = logger.New(logger.Writer(), "[Config] ", logger.LstdFlags|logger.Lmsgprefix)
+var log = logger.New("Database")
 var db *sql.DB
 
 type connectionConfig struct {

@@ -15,17 +15,17 @@
 package youtube
 
 import (
+	"cake4everybot/logger"
 	"encoding/json"
 	"fmt"
 	"io"
-	logger "log"
 	"net/http"
 	"time"
 
 	"github.com/spf13/viper"
 )
 
-var log logger.Logger = *logger.New(logger.Writer(), "[WebYouTube] ", logger.LstdFlags|logger.Lmsgprefix)
+var log logger.Logger = *logger.New("Web/YouTube")
 
 type listResponse struct {
 	Item []item `json:"items,omitempty"`

@@ -17,6 +17,7 @@ package birthday
 import (
 	"cake4everybot/data/lang"
 	"cake4everybot/database"
+	"cake4everybot/logger"
 	"cake4everybot/util"
 	"fmt"
 	"reflect"
@@ -32,6 +33,8 @@ const (
 	//   key := tp+"base" // => birthday
 	tp = "discord.command.birthday."
 )
+
+var log = logger.New("Birthday")
 
 type birthdayBase struct {
 	util.InteractionUtil

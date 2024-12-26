@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	logger "log"
 	"net/http"
 	"slices"
 	"time"
@@ -30,10 +29,7 @@ type rawEvent struct {
 	Event interface{} `json:"event"`
 }
 
-var (
-	log          = logger.New(logger.Writer(), "[WebTwitch] ", logger.LstdFlags|logger.Lmsgprefix)
-	lastMessages = make([]string, 10)
-)
+var lastMessages = make([]string, 10)
 
 // HandlePost is the HTTP/POST handler for the Twitch PubSub endpoint.
 //

@@ -15,7 +15,6 @@
 package birthday
 
 import (
-	"log"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
