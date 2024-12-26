@@ -15,7 +15,6 @@
 package youtube
 
 import (
-	"cake4everybot/data/lang"
 	"cake4everybot/database"
 	"cake4everybot/util"
 	webYT "cake4everybot/webserver/youtube"
@@ -46,7 +45,6 @@ func Announce(s *discordgo.Session, event *webYT.Video) {
 	var (
 		videoURL   = fmt.Sprintf(videoBaseURL, event.ID)
 		channelURL = fmt.Sprintf(channelBaseURL, event.ChannelID)
-		title      = fmt.Sprintf(lang.GetDefault("youtube.msg.new_vid"), event.Channel)
 		thumb      = event.Thumbnails["high"]
 	)
 
@@ -55,7 +53,7 @@ func Announce(s *discordgo.Session, event *webYT.Video) {
 		Description: saveTrimText(event.Description, 100),
 		URL:         videoURL,
 		Color:       0xFF0000,
-		Author:      &discordgo.MessageEmbedAuthor{URL: channelURL, Name: title},
+		Author:      &discordgo.MessageEmbedAuthor{URL: channelURL, Name: event.Channel},
 		Image:       &discordgo.MessageEmbedImage{URL: thumb.URL, Width: thumb.Width, Height: thumb.Height},
 	}
 	util.SetEmbedFooter(s, "youtube.embed_footer", embed)
@@ -63,6 +61,12 @@ func Announce(s *discordgo.Session, event *webYT.Video) {
 
 	// send the embed to the channels
 	for _, announcement := range announcements {
+		if announcement.Notification != "" && strings.Contains(announcement.Notification, "%s") {
+			embed.Author.Name = fmt.Sprintf(announcement.Notification, event.Channel)
+		} else if announcement.Notification != "" {
+			embed.Author.Name = announcement.Notification
+		}
+
 		var err error
 		if announcement.RoleID == "" {
 			// send without a ping
