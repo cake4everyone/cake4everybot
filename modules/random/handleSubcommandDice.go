@@ -86,3 +86,6 @@ func (cmd subcommandDice) handle() {
 
 	cmd.ReplyComponentsSimpleEmbedf(components, 0xFF7D00, lang.GetDefault(tp+"msg.dice.roll"), diceResult)
 }
+
+func (cmd subcommandDice) handleComponent(ids []string) {
+}

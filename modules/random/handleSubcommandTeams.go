@@ -43,3 +43,6 @@ func (cmd subcommandTeams) appCmd() *discordgo.ApplicationCommandOption {
 
 func (cmd subcommandTeams) handle() {
 }
+
+func (cmd subcommandTeams) handleComponent(ids []string) {
+}

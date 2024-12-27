@@ -49,11 +49,14 @@ func (cmd subcommandCoin) handle() {
 	}
 
 	reflipButton := util.CreateButtonComponent(
-		"coin.reflip",
+		"random.coin.reflip",
 		"",
 		discordgo.PrimaryButton,
 		util.GetConfigComponentEmoji("random.coin.reflip"))
 	components := []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{reflipButton}}}
 
 	cmd.ReplyComponents(components, util.GetConfigEmoji("random.coin."+side).MessageFormat())
+}
+
+func (cmd subcommandCoin) handleComponent(ids []string) {
 }
