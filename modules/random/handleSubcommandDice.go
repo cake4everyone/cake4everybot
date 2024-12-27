@@ -11,21 +11,27 @@ import (
 
 // The set subcommand. Used when executing the slash-command "/random dice".
 type subcommandDice struct {
-	Chat
-	*discordgo.ApplicationCommandInteractionDataOption
+	randomBase
+	*Chat
+	data *discordgo.ApplicationCommandInteractionDataOption
 
 	diceRange *discordgo.ApplicationCommandInteractionDataOption // optional
 }
 
+func (rb randomBase) subcommandDice() subcommandDice {
+	return subcommandDice{randomBase: rb}
+}
+
 // Constructor for subcommandDice, the struct for the slash-command "/random dice".
-func (cmd Chat) subcommandDice() subcommandDice {
+func (cmd *Chat) subcommandDice() subcommandDice {
 	var subcommand *discordgo.ApplicationCommandInteractionDataOption
 	if cmd.Interaction != nil {
 		subcommand = cmd.Interaction.ApplicationCommandData().Options[0]
 	}
 	return subcommandDice{
-		Chat:                                    cmd,
-		ApplicationCommandInteractionDataOption: subcommand,
+		randomBase: cmd.randomBase,
+		Chat:       cmd,
+		data:       subcommand,
 	}
 }
 
@@ -58,7 +64,7 @@ func (cmd subcommandDice) optionRange() *discordgo.ApplicationCommandOption {
 }
 
 func (cmd subcommandDice) handle() {
-	for _, opt := range cmd.Options {
+	for _, opt := range cmd.data.Options {
 		switch opt.Name {
 		case lang.GetDefault(tp + "option.dice.option.range"):
 			cmd.diceRange = opt

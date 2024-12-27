@@ -9,19 +9,25 @@ import (
 
 // The set subcommand. Used when executing the slash-command "/random teams".
 type subcommandTeams struct {
-	Chat
-	*discordgo.ApplicationCommandInteractionDataOption
+	randomBase
+	*Chat
+	data *discordgo.ApplicationCommandInteractionDataOption
+}
+
+func (rb randomBase) subcommandTeams() subcommandTeams {
+	return subcommandTeams{randomBase: rb}
 }
 
 // Constructor for subcommandTeams, the struct for the slash-command "/random teams".
-func (cmd Chat) subcommandTeams() subcommandTeams {
+func (cmd *Chat) subcommandTeams() subcommandTeams {
 	var subcommand *discordgo.ApplicationCommandInteractionDataOption
 	if cmd.Interaction != nil {
 		subcommand = cmd.Interaction.ApplicationCommandData().Options[0]
 	}
 	return subcommandTeams{
-		Chat:                                    cmd,
-		ApplicationCommandInteractionDataOption: subcommand,
+		randomBase: cmd.randomBase,
+		Chat:       cmd,
+		data:       subcommand,
 	}
 }
 

@@ -10,19 +10,25 @@ import (
 
 // The set subcommand. Used when executing the slash-command "/random coin".
 type subcommandCoin struct {
-	Chat
-	*discordgo.ApplicationCommandInteractionDataOption
+	randomBase
+	*Chat
+	data *discordgo.ApplicationCommandInteractionDataOption
+}
+
+func (rb randomBase) subcommandCoin() subcommandCoin {
+	return subcommandCoin{randomBase: rb}
 }
 
 // Constructor for subcommandCoin, the struct for the slash-command "/random coin".
-func (cmd Chat) subcommandCoin() subcommandCoin {
+func (cmd *Chat) subcommandCoin() subcommandCoin {
 	var subcommand *discordgo.ApplicationCommandInteractionDataOption
 	if cmd.Interaction != nil {
 		subcommand = cmd.Interaction.ApplicationCommandData().Options[0]
 	}
 	return subcommandCoin{
-		Chat:                                    cmd,
-		ApplicationCommandInteractionDataOption: subcommand,
+		randomBase: cmd.randomBase,
+		Chat:       cmd,
+		data:       subcommand,
 	}
 }
 
