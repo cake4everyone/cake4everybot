@@ -123,6 +123,17 @@ discord.command:
     msg.winner.details: "__Gewinner: %s__\nTickets: %d/24\nGewinnchance: %.2f%%"
     msg.winner.congratulation: "Herzlichen Glückwunsch, %s! :heart:\nFrohe Weihnachten an alle!"
 
+  random:
+    base: zufall
+    base.description: Einige nützliche Zufallsgenerator Befehle
+
+    option.coin: münze
+    option.coin.description: Wirf eine Münze
+    option.dice: würfel
+    option.dice.description: Würfle ein Würfel
+    option.teams: gruppen
+    option.teams.description: Teile Gruppen zu
+
   secretsanta:
     base: Wichteln
     display: Wichteln

@@ -123,6 +123,17 @@ discord.command:
     msg.winner.details: "__Winner: %s__\nTickets: %d/24\nProbability of winning: %.2f%%"
     msg.winner.congratulation: "Congratulations, %s! :heart:\nMerry XMas everyone!"
 
+  random:
+    base: random
+    base.description: Some useful Random Number Generator commands
+
+    option.coin: coin
+    option.coin.description: Flip a coin
+    option.dice: dice
+    option.dice.description: Roll a dice
+    option.teams: teams
+    option.teams.description: Generate teams
+
   secretsanta:
     base: Secret Santa
     display: Secret Santa
