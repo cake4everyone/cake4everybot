@@ -3,6 +3,7 @@ package random
 import (
 	"cake4everybot/data/lang"
 	"cake4everybot/util"
+	"math/rand/v2"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -36,4 +37,17 @@ func (cmd subcommandCoin) appCmd() *discordgo.ApplicationCommandOption {
 }
 
 func (cmd subcommandCoin) handle() {
+	side := "heads"
+	if rand.IntN(2) == 1 {
+		side = "tails"
+	}
+
+	reflipButton := util.CreateButtonComponent(
+		"coin.reflip",
+		"",
+		discordgo.PrimaryButton,
+		util.GetConfigComponentEmoji("random.coin.reflip"))
+	components := []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{reflipButton}}}
+
+	cmd.ReplyComponents(components, util.GetConfigEmoji("random.coin."+side).MessageFormat())
 }

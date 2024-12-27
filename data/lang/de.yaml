@@ -131,6 +131,8 @@ discord.command:
     option.coin.description: Wirf eine Münze
     option.dice: würfel
     option.dice.description: Würfle ein Würfel
+    option.dice.option.range: bereich
+    option.dice.option.range.description: "Wie viele Zahlen soll der Würfel haben? (Standard: 6)"
     option.teams: gruppen
     option.teams.description: Teile Gruppen zu
 

@@ -131,6 +131,8 @@ discord.command:
     option.coin.description: Flip a coin
     option.dice: dice
     option.dice.description: Roll a dice
+    option.dice.option.range: range
+    option.dice.option.range.description: "How many sides does the dice have? (Default: 6)"
     option.teams: teams
     option.teams.description: Generate teams
 

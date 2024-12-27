@@ -67,6 +67,18 @@ event:
       #animated: true
     # Emoji for entering the advent calendar giveaway
     adventcalendar: vote.check
+    random.coin.heads:
+      name: 👤
+      #id:
+      #animated: true
+    random.coin.tails:
+      name: 🪙
+      #id:
+      #animated: true
+    random.coin.reflip:
+      name: 🔄
+      #id:
+      #animated: true
     secretsanta: vote.yes
     secretsanta.invite.show_match:
       name: 🎁
