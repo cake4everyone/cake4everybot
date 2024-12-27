@@ -136,6 +136,8 @@ discord.command:
     option.teams: teams
     option.teams.description: Generate teams
 
+    msg.dice.roll: You rolled a %d
+
   secretsanta:
     base: Secret Santa
     display: Secret Santa

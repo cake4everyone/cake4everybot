@@ -136,6 +136,8 @@ discord.command:
     option.teams: gruppen
     option.teams.description: Teile Gruppen zu
 
+    msg.dice.roll: You rolled a %d
+
   secretsanta:
     base: Wichteln
     display: Wichteln

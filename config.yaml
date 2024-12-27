@@ -79,6 +79,10 @@ event:
       name: 🔄
       #id:
       #animated: true
+    random.dice.reroll:
+      name: 🔄
+      #id:
+      #animated: true
     secretsanta: vote.yes
     secretsanta.invite.show_match:
       name: 🎁

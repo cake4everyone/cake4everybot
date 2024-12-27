@@ -3,6 +3,8 @@ package random
 import (
 	"cake4everybot/data/lang"
 	"cake4everybot/util"
+	"fmt"
+	"math/rand/v2"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -11,6 +13,8 @@ import (
 type subcommandDice struct {
 	Chat
 	*discordgo.ApplicationCommandInteractionDataOption
+
+	diceRange *discordgo.ApplicationCommandInteractionDataOption // optional
 }
 
 // Constructor for subcommandDice, the struct for the slash-command "/random dice".
@@ -54,4 +58,25 @@ func (cmd subcommandDice) optionRange() *discordgo.ApplicationCommandOption {
 }
 
 func (cmd subcommandDice) handle() {
+	for _, opt := range cmd.Options {
+		switch opt.Name {
+		case lang.GetDefault(tp + "option.dice.option.range"):
+			cmd.diceRange = opt
+		}
+	}
+	diceRange := 6
+	if cmd.diceRange != nil {
+		diceRange = int(cmd.diceRange.IntValue())
+	}
+	diceResult := rand.IntN(diceRange) + 1
+
+	rerollButton := util.CreateButtonComponent(
+		fmt.Sprintf("random.dice.reroll.%d", diceRange),
+		"",
+		discordgo.PrimaryButton,
+		util.GetConfigComponentEmoji("random.dice.reroll"),
+	)
+	components := []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{rerollButton}}}
+
+	cmd.ReplyComponentsSimpleEmbedf(components, 0xFF7D00, lang.GetDefault(tp+"msg.dice.roll"), diceResult)
 }
