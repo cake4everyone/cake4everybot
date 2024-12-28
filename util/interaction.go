@@ -209,67 +209,39 @@ func (i *InteractionUtil) ReplyHiddenEmbedUpdate(embeds ...*discordgo.MessageEmb
 // ReplySimpleEmbed is a shortcut for replying with a simple embed that only contains a single text
 // and has a color.
 func (i *InteractionUtil) ReplySimpleEmbed(color int, content string) {
-	e := &discordgo.MessageEmbed{
-		Description: content,
-		Color:       color,
-	}
-	i.ReplyEmbed(e)
+	i.ReplyEmbed(SimpleEmbed(color, content)...)
 }
 
 // ReplySimpleEmbedf formats according to a format specifier and is a shortcut for replying with a
 // simple embed that only contains a single text and has a color.
 func (i *InteractionUtil) ReplySimpleEmbedf(color int, format string, a ...any) {
-	e := &discordgo.MessageEmbed{
-		Description: fmt.Sprintf(format, a...),
-		Color:       color,
-	}
-	i.ReplyEmbed(e)
+	i.ReplyEmbed(SimpleEmbedf(color, format, a...)...)
 }
 
 // ReplySimpleEmbedUpdate is like ReplySimpleEmbed but make for an update for components.
 func (i *InteractionUtil) ReplySimpleEmbedUpdate(color int, content string) {
-	e := &discordgo.MessageEmbed{
-		Description: content,
-		Color:       color,
-	}
-	i.ReplyEmbedUpdate(e)
+	i.ReplyEmbedUpdate(SimpleEmbed(color, content)...)
 }
 
 // ReplySimpleEmbedUpdatef is like ReplySimpleEmbedf but make for an update for components.
 func (i *InteractionUtil) ReplySimpleEmbedUpdatef(color int, format string, a ...any) {
-	e := &discordgo.MessageEmbed{
-		Description: fmt.Sprintf(format, a...),
-		Color:       color,
-	}
-	i.ReplyEmbedUpdate(e)
+	i.ReplyEmbedUpdate(SimpleEmbedf(color, format, a...)...)
 }
 
 // ReplyHiddenSimpleEmbed is like ReplySimpleEmbed but also ephemeral.
 func (i *InteractionUtil) ReplyHiddenSimpleEmbed(color int, content string) {
-	e := &discordgo.MessageEmbed{
-		Description: content,
-		Color:       color,
-	}
-	i.ReplyHiddenEmbed(e)
+	i.ReplyHiddenEmbed(SimpleEmbed(color, content)...)
 }
 
 // ReplyHiddenSimpleEmbedf is like ReplySimpleEmbedf but also ephemeral.
 func (i *InteractionUtil) ReplyHiddenSimpleEmbedf(color int, format string, a ...any) {
-	e := &discordgo.MessageEmbed{
-		Description: fmt.Sprintf(format, a...),
-		Color:       color,
-	}
-	i.ReplyHiddenEmbed(e)
+	i.ReplyHiddenEmbed(SimpleEmbedf(color, format, a...)...)
 }
 
 // ReplyHiddenSimpleEmbedUpdate is like [InteractionUtil.ReplyHiddenSimpleEmbed] but made for an
 // update for components.
 func (i *InteractionUtil) ReplyHiddenSimpleEmbedUpdate(color int, content string) {
-	e := &discordgo.MessageEmbed{
-		Description: content,
-		Color:       color,
-	}
-	i.ReplyHiddenEmbedUpdate(e)
+	i.ReplyHiddenEmbedUpdate(SimpleEmbed(color, content)...)
 }
 
 // ReplyHiddenSimpleEmbedUpdatef is like [InteractionUtil.ReplyHiddenSimpleEmbedf] but made for an
@@ -362,11 +334,7 @@ func (i *InteractionUtil) ReplyComponentsHiddenEmbedUpdate(components []discordg
 
 // ReplyComponentsSimpleEmbed sends an embed message along with the provied message components.
 func (i *InteractionUtil) ReplyComponentsSimpleEmbed(components []discordgo.MessageComponent, color int, content string) {
-	e := &discordgo.MessageEmbed{
-		Description: content,
-		Color:       color,
-	}
-	i.ReplyComponentsEmbed(components, e)
+	i.ReplyComponentsEmbed(components, SimpleEmbed(color, content)...)
 }
 
 // ReplyComponentsSimpleEmbedf is like [InteractionUtil.ReplyComponentsSimpleEmbed] but formats the
@@ -377,11 +345,7 @@ func (i *InteractionUtil) ReplyComponentsSimpleEmbedf(components []discordgo.Mes
 
 // ReplyComponentsSimpleEmbedUpdate is like [InteractionUtil.ReplyComponentsSimpleEmbed] but made for an update for components.
 func (i *InteractionUtil) ReplyComponentsSimpleEmbedUpdate(components []discordgo.MessageComponent, color int, content string) {
-	e := &discordgo.MessageEmbed{
-		Description: content,
-		Color:       color,
-	}
-	i.ReplyComponentsEmbedUpdate(components, e)
+	i.ReplyComponentsEmbedUpdate(components, SimpleEmbed(color, content)...)
 }
 
 // ReplyComponentsSimpleEmbedUpdatef is like [InteractionUtil.ReplyComponentsSimpleEmbedf] but made for an update for components.
@@ -392,11 +356,7 @@ func (i *InteractionUtil) ReplyComponentsSimpleEmbedUpdatef(components []discord
 // ReplyComponentsHiddenSimpleEmbed is like [InteractionUtil.ReplyHiddenSimpleEmbed] but sends the
 // embed message along with the provied message components.
 func (i *InteractionUtil) ReplyComponentsHiddenSimpleEmbed(components []discordgo.MessageComponent, color int, content string) {
-	e := &discordgo.MessageEmbed{
-		Description: content,
-		Color:       color,
-	}
-	i.ReplyComponentsHiddenEmbed(components, e)
+	i.ReplyComponentsHiddenEmbed(components, SimpleEmbed(color, content)...)
 }
 
 // ReplyComponentsHiddenSimpleEmbedf is like [InteractionUtil.ReplyHiddenSimpleEmbedf] but sends the
@@ -407,11 +367,7 @@ func (i *InteractionUtil) ReplyComponentsHiddenSimpleEmbedf(components []discord
 
 // ReplyComponentsHiddenSimpleEmbedUpdate is like [InteractionUtil.ReplyComponentsHiddenSimpleEmbed] but made for an update for components.
 func (i *InteractionUtil) ReplyComponentsHiddenSimpleEmbedUpdate(components []discordgo.MessageComponent, color int, content string) {
-	e := &discordgo.MessageEmbed{
-		Description: content,
-		Color:       color,
-	}
-	i.ReplyComponentsHiddenEmbedUpdate(components, e)
+	i.ReplyComponentsHiddenEmbedUpdate(components, SimpleEmbed(color, content)...)
 }
 
 // ReplyComponentsHiddenSimpleEmbedUpdatef is like [InteractionUtil.ReplyComponentsHiddenSimpleEmbedf] but made for an update for components.

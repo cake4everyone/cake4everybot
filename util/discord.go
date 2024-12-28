@@ -67,6 +67,21 @@ func AuthoredEmbed[T *discordgo.User | *discordgo.Member](s *discordgo.Session, 
 	return embed
 }
 
+// SimpleEmbed returns a new embed with the given description and color
+//
+// For convenience it returns a slice of one and always one embed.
+func SimpleEmbed(color int, content string) []*discordgo.MessageEmbed {
+	return []*discordgo.MessageEmbed{{
+		Description: content,
+		Color:       color,
+	}}
+}
+
+// SimpleEmbedf is like [SimpleEmbed] but formats according to a format specifier
+func SimpleEmbedf(color int, format string, a ...any) []*discordgo.MessageEmbed {
+	return SimpleEmbed(color, fmt.Sprintf(format, a...))
+}
+
 // SetEmbedFooter takes a pointer to an embeds and sets the standard footer with the given name.
 //
 //	sectionName:
