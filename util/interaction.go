@@ -419,6 +419,22 @@ func (i *InteractionUtil) ReplyComponentsHiddenSimpleEmbedUpdatef(components []d
 	i.ReplyComponentsHiddenSimpleEmbedUpdate(components, color, fmt.Sprintf(format, a...))
 }
 
+// ReplyComplex sends the given interaction response data to the user.
+func (i *InteractionUtil) ReplyComplex(data *discordgo.InteractionResponseData) {
+	i.respondMessage(false, false)
+	i.response.Data = data
+	i.respond()
+}
+
+// ReplyComplexUpdate is like [InteractionUtil.ReplyComplex] but made for an update for components.
+func (i *InteractionUtil) ReplyComplexUpdate(data *discordgo.InteractionResponseData) {
+	if !i.respondMessage(true, false) {
+		return
+	}
+	i.response.Data = data
+	i.respond()
+}
+
 // ReplyAutocomplete returns the given choices to the user. When this is called on an interaction
 // type outside form an applicationCommandAutocomplete nothing will happen.
 func (i *InteractionUtil) ReplyAutocomplete(choices []*discordgo.ApplicationCommandOptionChoice) {

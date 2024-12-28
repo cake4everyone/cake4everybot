@@ -43,20 +43,33 @@ func (cmd subcommandCoin) appCmd() *discordgo.ApplicationCommandOption {
 }
 
 func (cmd subcommandCoin) handle() {
+	cmd.ReplyComplex(cmd.flip())
+}
+
+func (cmd subcommandCoin) handleComponent(ids []string) {
+	switch id := util.ShiftL(ids); id {
+	case "reflip":
+		cmd.ReplyComplexUpdate(cmd.flip())
+		return
+	default:
+		log.Printf("Unknown component interaction ID in subcommand coin: %s %s", id, ids)
+	}
+}
+
+func (cmd subcommandCoin) flip() (m *discordgo.InteractionResponseData) {
+	m = &discordgo.InteractionResponseData{}
 	side := "heads"
 	if rand.IntN(2) == 1 {
 		side = "tails"
 	}
+	m.Content = util.GetConfigEmoji("random.coin." + side).MessageFormat()
 
 	reflipButton := util.CreateButtonComponent(
 		"random.coin.reflip",
 		"",
 		discordgo.PrimaryButton,
 		util.GetConfigComponentEmoji("random.coin.reflip"))
-	components := []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{reflipButton}}}
+	m.Components = []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{reflipButton}}}
 
-	cmd.ReplyComponents(components, util.GetConfigEmoji("random.coin."+side).MessageFormat())
-}
-
-func (cmd subcommandCoin) handleComponent(ids []string) {
+	return m
 }
