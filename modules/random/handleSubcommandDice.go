@@ -5,6 +5,7 @@ import (
 	"cake4everybot/util"
 	"fmt"
 	"math/rand/v2"
+	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -74,7 +75,25 @@ func (cmd subcommandDice) handle() {
 	if cmd.diceRange != nil {
 		diceRange = int(cmd.diceRange.IntValue())
 	}
+	cmd.ReplyComplex(cmd.roll(diceRange))
+}
+
+func (cmd subcommandDice) handleComponent(ids []string) {
+	switch id := util.ShiftL(ids); id {
+	case "reroll":
+		diceRange, _ := strconv.Atoi(util.ShiftL(ids))
+		cmd.ReplyComplexUpdate(cmd.roll(diceRange))
+		return
+	default:
+		log.Printf("Unknown component interaction ID in subcommand dice: %s %s", id, ids)
+	}
+}
+
+func (cmd subcommandDice) roll(diceRange int) (data *discordgo.InteractionResponseData) {
+	data = &discordgo.InteractionResponseData{}
+
 	diceResult := rand.IntN(diceRange) + 1
+	data.Embeds = util.SimpleEmbedf(0xFF7D00, lang.GetDefault(tp+"msg.dice.roll"), diceResult)
 
 	rerollButton := util.CreateButtonComponent(
 		fmt.Sprintf("random.dice.reroll.%d", diceRange),
@@ -82,10 +101,7 @@ func (cmd subcommandDice) handle() {
 		discordgo.PrimaryButton,
 		util.GetConfigComponentEmoji("random.dice.reroll"),
 	)
-	components := []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{rerollButton}}}
+	data.Components = []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{rerollButton}}}
 
-	cmd.ReplyComponentsSimpleEmbedf(components, 0xFF7D00, lang.GetDefault(tp+"msg.dice.roll"), diceResult)
-}
-
-func (cmd subcommandDice) handleComponent(ids []string) {
+	return data
 }
