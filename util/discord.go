@@ -276,30 +276,115 @@ func componentEmoji[E *discordgo.Emoji | *discordgo.ComponentEmoji](e E) *discor
 	panic("Given generic type is not an emoji or component emoji")
 }
 
-// MessageComplexEdit converts a [discordgo.MessageSend] to a [discordgo.MessageEdit]
-func MessageComplexEdit(src *discordgo.MessageSend, channel, id string) *discordgo.MessageEdit {
-	return &discordgo.MessageEdit{
-		Content:         &src.Content,
-		Components:      &src.Components,
-		Embeds:          &src.Embeds,
-		AllowedMentions: src.AllowedMentions,
-		Flags:           src.Flags,
-		Files:           src.Files,
+// MessageComplexEdit converts a similar type to a [discordgo.MessageEdit].
+func MessageComplexEdit(src any, channel, id string) *discordgo.MessageEdit {
+	switch t := src.(type) {
+	case *discordgo.MessageSend:
+		return &discordgo.MessageEdit{
+			Content:         &t.Content,
+			Components:      &t.Components,
+			Embeds:          &t.Embeds,
+			AllowedMentions: t.AllowedMentions,
+			Flags:           t.Flags,
+			Files:           t.Files,
 
-		Channel: channel,
-		ID:      id,
+			Channel: channel,
+			ID:      id,
+		}
+	case *discordgo.WebhookEdit:
+		return &discordgo.MessageEdit{
+			Content:         t.Content,
+			Components:      t.Components,
+			Embeds:          t.Embeds,
+			AllowedMentions: t.AllowedMentions,
+			Files:           t.Files,
+			Attachments:     t.Attachments,
+
+			Channel: channel,
+			ID:      id,
+		}
+	case *discordgo.InteractionResponseData:
+		return &discordgo.MessageEdit{
+			Content:         &t.Content,
+			Components:      &t.Components,
+			Embeds:          &t.Embeds,
+			AllowedMentions: t.AllowedMentions,
+			Files:           t.Files,
+			Attachments:     t.Attachments,
+
+			Channel: channel,
+			ID:      id,
+		}
+	default:
+		panic("Given source type is not supported: " + fmt.Sprintf("%T", src))
 	}
 }
 
-// MessageComplexSend converts a [discordgo.MessageEdit] to a [discordgo.MessageSend]
-func MessageComplexSend(src *discordgo.MessageEdit) *discordgo.MessageSend {
-	return &discordgo.MessageSend{
-		Content:         *src.Content,
-		Components:      *src.Components,
-		Embeds:          *src.Embeds,
-		AllowedMentions: src.AllowedMentions,
-		Flags:           src.Flags,
-		Files:           src.Files,
+// MessageComplexSend converts a similar type to a [discordgo.MessageSend].
+func MessageComplexSend(src any) *discordgo.MessageSend {
+	switch t := src.(type) {
+	case *discordgo.MessageEdit:
+		return &discordgo.MessageSend{
+			Content:         *t.Content,
+			Embeds:          *t.Embeds,
+			Components:      *t.Components,
+			Files:           t.Files,
+			AllowedMentions: t.AllowedMentions,
+			Flags:           t.Flags,
+		}
+	case *discordgo.WebhookEdit:
+		return &discordgo.MessageSend{
+			Content:         *t.Content,
+			Embeds:          *t.Embeds,
+			Components:      *t.Components,
+			Files:           t.Files,
+			AllowedMentions: t.AllowedMentions,
+		}
+	case *discordgo.InteractionResponseData:
+		return &discordgo.MessageSend{
+			Content:         t.Content,
+			Embeds:          t.Embeds,
+			TTS:             t.TTS,
+			Components:      t.Components,
+			Files:           t.Files,
+			AllowedMentions: t.AllowedMentions,
+			Flags:           t.Flags,
+		}
+	default:
+		panic("Given source type is not supported: " + fmt.Sprintf("%T", src))
 	}
+}
 
+// MessageComplexWebhookEdit converts a similar type to a [discordgo.WebhookEdit].
+func MessageComplexWebhookEdit(src any) *discordgo.WebhookEdit {
+	switch t := src.(type) {
+	case *discordgo.MessageSend:
+		return &discordgo.WebhookEdit{
+			Content:         &t.Content,
+			Components:      &t.Components,
+			Embeds:          &t.Embeds,
+			Files:           t.Files,
+			AllowedMentions: t.AllowedMentions,
+		}
+	case *discordgo.MessageEdit:
+		return &discordgo.WebhookEdit{
+			Content:         t.Content,
+			Components:      t.Components,
+			Embeds:          t.Embeds,
+			Files:           t.Files,
+			Attachments:     t.Attachments,
+			AllowedMentions: t.AllowedMentions,
+		}
+	case *discordgo.InteractionResponseData:
+		return &discordgo.WebhookEdit{
+			Content:         &t.Content,
+			Components:      &t.Components,
+			Embeds:          &t.Embeds,
+			Files:           t.Files,
+			Attachments:     t.Attachments,
+			AllowedMentions: t.AllowedMentions,
+		}
+	default:
+		panic("Given source type is not supported: " + fmt.Sprintf("%T", src))
+	}
 }
