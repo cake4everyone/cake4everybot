@@ -104,20 +104,7 @@ func splitEntriesToEmbeds(s *discordgo.Session, entries []database.GiveawayEntry
 	for _, e := range entries {
 		totalTickets += e.Weight
 	}
-	numEmbeds := len(entries)/25 + 1
-	embeds := make([]*discordgo.MessageEmbed, 0, numEmbeds)
-	for i, e := range entries {
-		if i%25 == 0 {
-			new := &discordgo.MessageEmbed{}
-			if numEmbeds > 1 {
-				new.Description = fmt.Sprintf("Page %d/%d", i/25+1, numEmbeds)
-			}
-			util.SetEmbedFooter(s, "module.adventcalendar.embed_footer", new)
-			embeds = append(embeds, new)
-		}
-
-		embeds[len(embeds)-1].Fields = append(embeds[len(embeds)-1].Fields, e.ToEmbedField(s, totalTickets))
-	}
-
-	return embeds
+	return util.SplitToEmbedFields(s, entries, 0, "module.adventcalendar.embed_footer", func(e database.GiveawayEntry, _ int) *discordgo.MessageEmbedField {
+		return e.ToEmbedField(s, totalTickets)
+	})
 }

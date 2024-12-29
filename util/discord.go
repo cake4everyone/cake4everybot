@@ -82,6 +82,54 @@ func SimpleEmbedf(color int, format string, a ...any) []*discordgo.MessageEmbed 
 	return SimpleEmbed(color, fmt.Sprintf(format, a...))
 }
 
+// SplitToEmbedFields splits a slice of elements into one or more embeds. Each
+// embed contains a maximum of 25 elements.
+//
+//	elements:
+//		The slice to split into embeds
+//	color:
+//		The color of the embeds (can be 0 for no color)
+//	footer:
+//		The translation key for the footer. See [SetEmbedFooter]. (can be "" for no footer)
+//	field:
+//		A function that takes an element and an index and returns a field. If the
+//		field is nil or has no Name, it will be skipped. Resulting in not adding
+//		the field to the embed and not incrementing the index for the next element.
+func SplitToEmbedFields[S []E, E any](s *discordgo.Session, elements S, color int, footer string, field func(E, int) *discordgo.MessageEmbedField) (embeds []*discordgo.MessageEmbed) {
+	numEmbeds := (len(elements)-1)/25 + 1
+	embeds = make([]*discordgo.MessageEmbed, 0, numEmbeds)
+
+	skipped := 0
+	for i, element := range elements {
+		i -= skipped
+		field := field(element, i)
+
+		if field == nil || field.Name == "" {
+			skipped++
+			continue
+		}
+
+		if i%25 == 0 {
+			new := &discordgo.MessageEmbed{
+				Color: color,
+			}
+			if footer != "" {
+				SetEmbedFooter(s, footer, new)
+			}
+			embeds = append(embeds, new)
+		}
+		embeds[len(embeds)-1].Fields = append(embeds[len(embeds)-1].Fields, field)
+	}
+
+	if len(embeds) > 1 {
+		for page, embed := range embeds {
+			embed.Description = fmt.Sprintf(lang.GetDefault("discord.command.generic.msg.page"), page+1, len(embeds))
+		}
+	}
+
+	return embeds
+}
+
 // SetEmbedFooter takes a pointer to an embeds and sets the standard footer with the given name.
 //
 //	sectionName:
