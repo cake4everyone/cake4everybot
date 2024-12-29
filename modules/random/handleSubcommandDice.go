@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/rand/v2"
 	"strconv"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -93,7 +94,7 @@ func (cmd subcommandDice) roll(diceRange int) (data *discordgo.InteractionRespon
 	data = &discordgo.InteractionResponseData{}
 
 	diceResult := rand.IntN(diceRange) + 1
-	data.Embeds = util.SimpleEmbedf(0xFF7D00, lang.GetDefault(tp+"msg.dice.roll"), diceResult)
+	data.Embeds = util.SimpleEmbed(0xFF7D00, "...")
 
 	rerollButton := util.CreateButtonComponent(
 		fmt.Sprintf("random.dice.reroll.%d", diceRange),
@@ -101,7 +102,15 @@ func (cmd subcommandDice) roll(diceRange int) (data *discordgo.InteractionRespon
 		discordgo.PrimaryButton,
 		util.GetConfigComponentEmoji("random.dice.reroll"),
 	)
+	rerollButton.Disabled = true
 	data.Components = []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{rerollButton}}}
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		data.Embeds = util.SimpleEmbedf(0xFF7D00, lang.GetDefault(tp+"msg.dice.roll"), diceResult)
+		rerollButton.Disabled = false
+		cmd.Session.InteractionResponseEdit(cmd.Interaction.Interaction, util.MessageComplexWebhookEdit(data))
+	}()
 
 	return data
 }
