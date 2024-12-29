@@ -65,6 +65,11 @@ event:
       name: ✅
       #id:
       #animated: true
+    repeat:
+      name: 🔁
+      #id:
+      #animated: true
+
     # Emoji for entering the advent calendar giveaway
     adventcalendar: vote.check
     random.coin.heads:
@@ -75,14 +80,10 @@ event:
       name: 🪙
       #id:
       #animated: true
-    random.coin.reflip:
-      name: 🔄
-      #id:
-      #animated: true
-    random.dice.reroll:
-      name: 🔄
-      #id:
-      #animated: true
+    random.coin.reflip: repeat
+    random.dice.reroll: repeat
+    random.teams.resplit_size: repeat
+    random.teams.resplit_amount: repeat
     secretsanta: vote.yes
     secretsanta.invite.show_match:
       name: 🎁

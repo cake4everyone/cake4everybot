@@ -6,6 +6,7 @@ discord.command:
     no: No
     msg.self_hidden: Why is this invisible?
     msg.self_hidden.desc: Since you've set your birthday to not be visible, this message is also only visible to you. You can close this message now.
+    msg.page: Page %d/%d
 
   birthday:
     base: birthday
@@ -126,6 +127,7 @@ discord.command:
   random:
     base: random
     base.description: Some useful Random Number Generator commands
+    display: Random Generator
 
     option.coin: coin
     option.coin.description: Flip a coin
@@ -135,8 +137,18 @@ discord.command:
     option.dice.option.range.description: "How many sides does the dice have? (Default: 6)"
     option.teams: teams
     option.teams.description: Generate teams
+    option.teams.option.members: members
+    option.teams.option.members.description: Which members should be splitted into teams?
+    option.teams.option.team_size: size
+    option.teams.option.team_size.description: How many members should be in each team?
+    option.teams.option.team_amount: amount
+    option.teams.option.team_amount.description: How many teams should be created?
 
     msg.dice.roll: You rolled a %d
+    msg.teams.missing_option: "Error: You need to specify either the team size or the team amount!"
+    msg.teams.multiple_options: "Error: You can't specify both the team size and the team amount at the same time!"
+    msg.teams.title: Teams
+    msg.teams.team: Team %d
 
   secretsanta:
     base: Secret Santa
