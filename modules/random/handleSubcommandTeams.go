@@ -3,8 +3,11 @@ package random
 import (
 	"cake4everybot/data/lang"
 	"cake4everybot/util"
+	"errors"
 	"fmt"
 	"math/rand/v2"
+	"strconv"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -139,6 +142,31 @@ func (cmd subcommandTeams) handle() {
 }
 
 func (cmd subcommandTeams) handleComponent(ids []string) {
+	switch id := util.ShiftL(ids); id {
+	case "resplit_size":
+		teamSize, _ := strconv.Atoi(util.ShiftL(ids))
+		members, _, err := cmd.parseTeamEmbeds(cmd.Interaction.Message.Embeds)
+		if err != nil {
+			log.Printf("ERROR: could not parse team embeds: %+v", err)
+			cmd.ReplyError()
+			return
+		}
+
+		cmd.ReplyComplexUpdate(cmd.splitTeamsSize(members, teamSize))
+		return
+	case "resplit_amount":
+		members, n, err := cmd.parseTeamEmbeds(cmd.Interaction.Message.Embeds)
+		if err != nil {
+			log.Printf("ERROR: could not parse team embeds: %+v", err)
+			cmd.ReplyError()
+			return
+		}
+
+		cmd.ReplyComplexUpdate(cmd.splitTeamsN(members, n))
+		return
+	default:
+		log.Printf("Unknown component interaction ID in subcommand teams: %s %s", id, ids)
+	}
 }
 
 // splitTeamsSize splits the members into teams of a maximum size teamSize.
@@ -250,4 +278,49 @@ func teamEmbed(team []*discordgo.Member, i int) *discordgo.MessageEmbedField {
 		Value:  value,
 		Inline: true,
 	}
+}
+
+// parseTeamEmbeds parses the members from the given embeds.
+// Returns the members and the number of teams.
+func (cmd subcommandTeams) parseTeamEmbeds(embeds []*discordgo.MessageEmbed) (members []*discordgo.Member, n int, err error) {
+	parseMembers := func(text string) error {
+		for _, line := range strings.Split(text, "\n") {
+			if line == "" {
+				continue
+			}
+
+			memberID := line[5 : len(line)-1] // assuming a format like "1. <@USERID>" or "1. <@!USERID>"
+			memberID = strings.TrimPrefix(memberID, "!")
+
+			var member *discordgo.Member
+			member, err = cmd.Session.State.Member(cmd.Interaction.GuildID, memberID)
+			if errors.Is(err, discordgo.ErrStateNotFound) {
+				member, err = cmd.Session.GuildMember(cmd.Interaction.GuildID, memberID)
+			}
+			if err != nil {
+				return fmt.Errorf("could not get member %s: %w", memberID, err)
+			}
+			members = append(members, member)
+		}
+		return nil
+	}
+
+	// special case for single team
+	// parse from description instead
+	if len(embeds) == 1 && len(embeds[0].Fields) == 0 {
+		err = parseMembers(embeds[0].Description)
+		return members, 1, err
+	}
+
+	for _, embed := range embeds {
+		for _, field := range embed.Fields {
+			err = parseMembers(field.Value)
+			if err != nil {
+				return nil, 0, err
+			}
+			n++
+		}
+	}
+
+	return members, n, nil
 }
