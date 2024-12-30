@@ -80,6 +80,7 @@ event:
       name: 🪙
       #id:
       #animated: true
+    random.coin.flip: repeat
     random.coin.reflip: repeat
     random.dice.1:
       #name: 1️⃣

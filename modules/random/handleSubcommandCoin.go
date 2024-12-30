@@ -4,6 +4,7 @@ import (
 	"cake4everybot/data/lang"
 	"cake4everybot/util"
 	"math/rand/v2"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -56,27 +57,43 @@ func (cmd subcommandCoin) handleComponent(ids []string) {
 	}
 }
 
-func (cmd subcommandCoin) flip() (m *discordgo.InteractionResponseData) {
-	m = &discordgo.InteractionResponseData{}
-	side := "heads"
-	if rand.IntN(2) == 1 {
-		side = "tails"
-	}
+func (cmd subcommandCoin) flip() (data *discordgo.InteractionResponseData) {
+	data = &discordgo.InteractionResponseData{}
 
-	emoji, err := util.GetConfigEmoji(cmd.Session, "random.coin."+side)
+	emoji, err := util.GetConfigEmoji(cmd.Session, "random.coin.flip")
 	if err != nil {
 		log.Printf("ERROR: could not get emoji: %+v", err)
 		cmd.ReplyError()
 		return
 	}
-	m.Content = emoji.MessageFormat()
+	data.Content = emoji.MessageFormat()
 
 	reflipButton := util.CreateButtonComponent(
 		"random.coin.reflip",
 		"",
 		discordgo.PrimaryButton,
 		util.GetConfigComponentEmoji("random.coin.reflip"))
-	m.Components = []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{reflipButton}}}
+	reflipButton.Disabled = true
+	data.Components = []discordgo.MessageComponent{discordgo.ActionsRow{Components: []discordgo.MessageComponent{reflipButton}}}
 
-	return m
+	go func() {
+		time.Sleep(2 * time.Second)
+		reflipButton.Disabled = false
+		defer cmd.Session.InteractionResponseEdit(cmd.Interaction.Interaction, util.MessageComplexWebhookEdit(data))
+
+		side := "heads"
+		if rand.IntN(2) == 1 {
+			side = "tails"
+		}
+		var emoji *discordgo.Emoji
+		emoji, err = util.GetConfigEmoji(cmd.Session, "random.coin."+side)
+		if err != nil {
+			log.Printf("Warning: could not get emoji: %+v", err)
+			data.Content = side
+			return
+		}
+		data.Content = emoji.MessageFormat()
+	}()
+
+	return data
 }
