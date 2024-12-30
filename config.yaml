@@ -81,6 +81,34 @@ event:
       #id:
       #animated: true
     random.coin.reflip: repeat
+    random.dice.1:
+      #name: 1️⃣
+      id: 1322967431106527322
+      #animated: true
+    random.dice.2:
+      #name: 2️⃣
+      id: 1322967432024817748
+      #animated: true
+    random.dice.3:
+      #name: 3️⃣
+      id: 1322967433786691724
+      #animated: true
+    random.dice.4:
+      #name: 4️⃣
+      id: 1322967435170807968
+      #animated: true
+    random.dice.5:
+      #name: 5️⃣
+      id: 1322967436307206145
+      #animated: true
+    random.dice.6:
+      #name: 6️⃣
+      id: 1322967437800378411
+      #animated: true
+    random.dice.rolling:
+      #name: 🎲
+      id: 1322968516311126057
+      animated: true
     random.dice.reroll: repeat
     random.teams.resplit_size: repeat
     random.teams.resplit_amount: repeat

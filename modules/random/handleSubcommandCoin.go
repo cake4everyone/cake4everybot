@@ -62,7 +62,14 @@ func (cmd subcommandCoin) flip() (m *discordgo.InteractionResponseData) {
 	if rand.IntN(2) == 1 {
 		side = "tails"
 	}
-	m.Content = util.GetConfigEmoji("random.coin." + side).MessageFormat()
+
+	emoji, err := util.GetConfigEmoji(cmd.Session, "random.coin."+side)
+	if err != nil {
+		log.Printf("ERROR: could not get emoji: %+v", err)
+		cmd.ReplyError()
+		return
+	}
+	m.Content = emoji.MessageFormat()
 
 	reflipButton := util.CreateButtonComponent(
 		"random.coin.reflip",

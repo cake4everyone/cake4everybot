@@ -92,9 +92,20 @@ func (cmd subcommandDice) handleComponent(ids []string) {
 
 func (cmd subcommandDice) roll(diceRange int) (data *discordgo.InteractionResponseData) {
 	data = &discordgo.InteractionResponseData{}
+	var err error
 
-	diceResult := rand.IntN(diceRange) + 1
-	data.Embeds = util.SimpleEmbed(0xFF7D00, "...")
+	if diceRange <= 6 {
+		var emoji *discordgo.Emoji
+		emoji, err = util.GetConfigEmoji(cmd.Session, "random.dice.rolling")
+		if err != nil {
+			log.Printf("ERROR: could not get emoji: %+v", err)
+			cmd.ReplyError()
+			return nil
+		}
+		data.Content = emoji.MessageFormat()
+	} else {
+		data.Embeds = util.SimpleEmbed(0xFF7D00, "...")
+	}
 
 	rerollButton := util.CreateButtonComponent(
 		fmt.Sprintf("random.dice.reroll.%d", diceRange),
@@ -107,9 +118,23 @@ func (cmd subcommandDice) roll(diceRange int) (data *discordgo.InteractionRespon
 
 	go func() {
 		time.Sleep(2 * time.Second)
-		data.Embeds = util.SimpleEmbedf(0xFF7D00, lang.GetDefault(tp+"msg.dice.roll"), diceResult)
 		rerollButton.Disabled = false
-		cmd.Session.InteractionResponseEdit(cmd.Interaction.Interaction, util.MessageComplexWebhookEdit(data))
+		defer cmd.Session.InteractionResponseEdit(cmd.Interaction.Interaction, util.MessageComplexWebhookEdit(data))
+
+		diceResult := rand.IntN(diceRange) + 1
+		if diceRange > 6 {
+			data.Embeds = util.SimpleEmbedf(0xFF7D00, lang.GetDefault(tp+"msg.dice.roll"), diceResult)
+			return
+		}
+
+		var emoji *discordgo.Emoji
+		emoji, err = util.GetConfigEmoji(cmd.Session, fmt.Sprintf("random.dice.%d", diceResult))
+		if err != nil {
+			log.Printf("Warning: could not get emoji: %+v", err)
+			data.Content = fmt.Sprintf(lang.GetDefault(tp+"msg.dice.roll"), diceResult)
+			return
+		}
+		data.Content = emoji.MessageFormat()
 	}()
 
 	return data

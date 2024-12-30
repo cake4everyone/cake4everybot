@@ -16,7 +16,9 @@ package util
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"cake4everybot/data/lang"
@@ -230,22 +232,12 @@ func GetChannelsFromDatabase(s *discordgo.Session, channelName string, guildIDs 
 }
 
 // GetConfigComponentEmoji returns a configured [discordgo.ComponentEmoji] for the given name.
-func GetConfigComponentEmoji(name string) *discordgo.ComponentEmoji {
-	e := GetConfigEmoji(name)
-	return &discordgo.ComponentEmoji{
-		Name:     e.Name,
-		ID:       e.ID,
-		Animated: e.Animated,
-	}
-}
-
-// GetConfigEmoji returns a configured [discordgo.Emoji] for the given name.
-func GetConfigEmoji(name string) (e *discordgo.Emoji) {
+func GetConfigComponentEmoji(name string) (e *discordgo.ComponentEmoji) {
 	override := viper.GetString("event.emoji." + name)
 	if override != "" && override != name {
-		return GetConfigEmoji(override)
+		return GetConfigComponentEmoji(override)
 	}
-	e = &discordgo.Emoji{
+	e = &discordgo.ComponentEmoji{
 		Name:     viper.GetString("event.emoji." + name + ".name"),
 		ID:       viper.GetString("event.emoji." + name + ".id"),
 		Animated: viper.GetBool("event.emoji." + name + ".animated"),
@@ -254,6 +246,64 @@ func GetConfigEmoji(name string) (e *discordgo.Emoji) {
 		log.Printf("Warning: tried to get emoji '%s', but its not configured or empty\n", name)
 	}
 	return e
+}
+
+// GetConfigEmoji returns a configured [discordgo.Emoji] for the given name.
+func GetConfigEmoji(s *discordgo.Session, name string) (e *discordgo.Emoji, err error) {
+	ce := GetConfigComponentEmoji(name)
+	if ce.ID == "" {
+		return &discordgo.Emoji{Name: ce.Name}, nil
+	}
+
+	// try to get cached emoji from cached guilds
+	for _, guild := range s.State.Guilds {
+		e, err = s.State.Emoji(guild.ID, ce.ID)
+		if err == nil {
+			return e, nil
+		} else if errors.Is(err, discordgo.ErrStateNotFound) {
+			continue
+		}
+		return nil, fmt.Errorf("emoji '%s' (id: %s) not found in guild '%s': %v", name, ce.ID, guild.ID, err)
+	}
+
+	// try to get cached emoji from all guilds
+	after := ""
+	var allGuilds, guilds []*discordgo.UserGuild
+	for {
+		guilds, err = s.UserGuilds(200, "", after, false)
+		if err != nil {
+			return nil, fmt.Errorf("get user guilds: %v", err)
+		} else if len(guilds) == 0 {
+			//return nil, fmt.Errorf("unknown emoji '%s' (id: %s)", name, ce.ID)
+			break
+		}
+
+		for _, guild := range guilds {
+			e, err = s.State.Emoji(guild.ID, ce.ID)
+			if err == nil {
+				return e, nil
+			} else if errors.Is(err, discordgo.ErrStateNotFound) {
+				continue
+			}
+			return nil, fmt.Errorf("emoji '%s' (id: %s) not found in guild '%s': %v", name, ce.ID, guild.ID, err)
+		}
+		after = guilds[len(guilds)-1].ID
+		allGuilds = append(allGuilds, guilds...)
+	}
+
+	// try to get emoji from all guilds
+	for _, guild := range allGuilds {
+		var restErr *discordgo.RESTError
+		e, err = s.GuildEmoji(guild.ID, ce.ID)
+		if err == nil {
+			return e, nil
+		} else if errors.As(err, &restErr) && restErr.Response.StatusCode == http.StatusNotFound {
+			continue
+		}
+		return nil, fmt.Errorf("get emoji '%s' (id: %s) from guild '%s': %v", name, ce.ID, guild.ID, err)
+	}
+
+	return nil, fmt.Errorf("emoji '%s' (id: %s) not found in any guild", name, ce.ID)
 }
 
 // CompareEmoji returns true if the two emoji are the same
