@@ -70,7 +70,7 @@ event:
       #id:
       #animated: true
 
-    adventcalendar: 
+    adventcalendar:
       # Emoji for entering the advent calendar giveaway
       enter: vote.check
     random.coin:
@@ -84,6 +84,7 @@ event:
         #animated: true
       flip: repeat
       reflip: repeat
+
     random.dice:
       1:
         #name: 1️⃣

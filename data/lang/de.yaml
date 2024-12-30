@@ -144,7 +144,7 @@ discord.command:
     option.teams.option.team_amount: gruppenanzahl
     option.teams.option.team_amount.description: Wie viele Gruppen sollen erstellt werden?
 
-    msg.dice.roll: You rolled a %d
+    msg.dice.roll: Du hast eine %d gewürfelt.
     msg.teams.missing_option: "Fehler: Du musst entweder die Gruppengröße oder die Gruppenanzahl angeben!"
     msg.teams.multiple_options: "Fehler: Du kannst nicht gleichzeitig die Gruppengröße und die Gruppenanzahl angeben!"
     msg.teams.title: Gruppen
