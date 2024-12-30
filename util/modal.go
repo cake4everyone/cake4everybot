@@ -24,8 +24,8 @@ import "github.com/bwmarrin/discordgo"
 //	id                 // Custom id to identify the button when pressed (automatically prefixed)
 //	style              // Style of the button (see https://discord.com/developers/docs/interactions/message-components#button-object-button-styles)
 //	Optional: emoji    // An emoji to put in the label, can be empty
-func CreateButtonComponent(id, label string, style discordgo.ButtonStyle, emoji *discordgo.ComponentEmoji) discordgo.Button {
-	return discordgo.Button{
+func CreateButtonComponent(id, label string, style discordgo.ButtonStyle, emoji *discordgo.ComponentEmoji) *discordgo.Button {
+	return &discordgo.Button{
 		CustomID: id,
 		Label:    label,
 		Style:    style,

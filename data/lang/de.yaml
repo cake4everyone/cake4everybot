@@ -6,6 +6,7 @@ discord.command:
     no: Nein
     msg.self_hidden: Warum ist das unsichtbar?
     msg.self_hidden.desc: Da du deinen Geburtstag als nicht sichtbar eingetragen hast, kannst diese Nachricht nur du sehen. Du kannst diese Nachricht nun schließen.
+    msg.page: Seite %d/%d
 
   birthday:
     base: geburtstag
@@ -122,6 +123,32 @@ discord.command:
     msg.winner.title: Adventskalender Gewinnauslosung
     msg.winner.details: "__Gewinner: %s__\nTickets: %d/24\nGewinnchance: %.2f%%"
     msg.winner.congratulation: "Herzlichen Glückwunsch, %s! :heart:\nFrohe Weihnachten an alle!"
+
+  random:
+    base: zufall
+    base.description: Einige nützliche Zufallsgenerator Befehle
+    display: Zufallsgenerator
+
+    option.coin: münze
+    option.coin.description: Wirf eine Münze
+    option.dice: würfel
+    option.dice.description: Würfle ein Würfel
+    option.dice.option.range: bereich
+    option.dice.option.range.description: "Wie viele Zahlen soll der Würfel haben? (Standard: 6)"
+    option.teams: gruppen
+    option.teams.description: Teile Gruppen zu
+    option.teams.option.members: mitglieder
+    option.teams.option.members.description: Welche Mitglieder sollen in Gruppen geteilt werden?
+    option.teams.option.team_size: gruppengröße
+    option.teams.option.team_size.description: Wie viele Mitglieder sollen in einer Gruppe sein?
+    option.teams.option.team_amount: gruppenanzahl
+    option.teams.option.team_amount.description: Wie viele Gruppen sollen erstellt werden?
+
+    msg.dice.roll: You rolled a %d
+    msg.teams.missing_option: "Fehler: Du musst entweder die Gruppengröße oder die Gruppenanzahl angeben!"
+    msg.teams.multiple_options: "Fehler: Du kannst nicht gleichzeitig die Gruppengröße und die Gruppenanzahl angeben!"
+    msg.teams.title: Gruppen
+    msg.teams.team: Gruppe %d
 
   secretsanta:
     base: Wichteln
