@@ -70,82 +70,88 @@ event:
       #id:
       #animated: true
 
-    # Emoji for entering the advent calendar giveaway
-    adventcalendar: vote.check
-    random.coin.heads:
-      name: 👤
-      #id:
-      #animated: true
-    random.coin.tails:
-      name: 🪙
-      #id:
-      #animated: true
-    random.coin.flip: repeat
-    random.coin.reflip: repeat
-    random.dice.1:
-      #name: 1️⃣
-      id: 1322967431106527322
-      #animated: true
-    random.dice.2:
-      #name: 2️⃣
-      id: 1322967432024817748
-      #animated: true
-    random.dice.3:
-      #name: 3️⃣
-      id: 1322967433786691724
-      #animated: true
-    random.dice.4:
-      #name: 4️⃣
-      id: 1322967435170807968
-      #animated: true
-    random.dice.5:
-      #name: 5️⃣
-      id: 1322967436307206145
-      #animated: true
-    random.dice.6:
-      #name: 6️⃣
-      id: 1322967437800378411
-      #animated: true
-    random.dice.rolling:
-      #name: 🎲
-      id: 1322968516311126057
-      animated: true
-    random.dice.reroll: repeat
-    random.teams.resplit_size: repeat
-    random.teams.resplit_amount: repeat
-    secretsanta: vote.yes
-    secretsanta.invite.show_match:
-      name: 🎁
-      #id:
-      #animated: true
-    secretsanta.invite.set_address:
-      name: 🏠
-      #id:
-      #animated: true
-    secretsanta.invite.delete:
-      name: 🗑️
-      #id:
-      #animated: true
-    secretsanta.invite.nudge_match:
-      name: 👉
-      #id:
-      #animated: true
-    secretsanta.invite.send_package:
-      name: 📦
-      #id:
-      #animated: true
-    secretsanta.invite.received_package:
-      name: 📬
-      #id:
-      #animated: true
-    secretsanta.invite.add_package_tracking:
-      name: 📯
-      #id:
-      #animated: true
-    secretsanta.invite.show_package_tracking:
-      name: 📪
-      #id:
-      #animated: true
+    adventcalendar: 
+      # Emoji for entering the advent calendar giveaway
+      enter: vote.check
+    random.coin:
+      heads:
+        name: 👤
+        #id:
+        #animated: true
+      tails:
+        name: 🪙
+        #id:
+        #animated: true
+      flip: repeat
+      reflip: repeat
+    random.dice:
+      1:
+        #name: 1️⃣
+        id: 1322967431106527322
+        #animated: true
+      2:
+        #name: 2️⃣
+        id: 1322967432024817748
+        #animated: true
+      3:
+        #name: 3️⃣
+        id: 1322967433786691724
+        #animated: true
+      4:
+        #name: 4️⃣
+        id: 1322967435170807968
+        #animated: true
+      5:
+        #name: 5️⃣
+        id: 1322967436307206145
+        #animated: true
+      6:
+        #name: 6️⃣
+        id: 1322967437800378411
+        #animated: true
+      rolling:
+        #name: 🎲
+        id: 1322968516311126057
+        animated: true
+      reroll: repeat
+    random.teams:
+      resplit_size: repeat
+      resplit_amount: repeat
+
+    secretsanta:
+      enter: vote.yes
+      invite.show_match:
+        name: 🎁
+        #id:
+        #animated: true
+      invite.set_address:
+        name: 🏠
+        #id:
+        #animated: true
+      invite.delete:
+        name: 🗑️
+        #id:
+        #animated: true
+      invite.nudge_match:
+        name: 👉
+        #id:
+        #animated: true
+      invite.send_package:
+        name: 📦
+        #id:
+        #animated: true
+      invite.received_package:
+        name: 📬
+        #id:
+        #animated: true
+      invite.add_package_tracking:
+        name: 📯
+        #id:
+        #animated: true
+      invite.show_package_tracking:
+        name: 📪
+        #id:
+        #animated: true
 
 twitch:
   channels:

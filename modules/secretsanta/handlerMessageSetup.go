@@ -9,7 +9,7 @@ import (
 )
 
 func (cmd MsgCmd) handler() {
-	joinEmoji, err := util.GetConfigEmoji(cmd.Session, "secretsanta")
+	joinEmoji, err := util.GetConfigEmoji(cmd.Session, "secretsanta.enter")
 	if err != nil {
 		log.Printf("ERROR: could not get emoji: %+v", err)
 		cmd.ReplyError()
