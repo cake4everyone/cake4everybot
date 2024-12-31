@@ -33,6 +33,7 @@ type InteractionUtil struct {
 func (i *InteractionUtil) respond() {
 	if i.response.Type != discordgo.InteractionResponseDeferredChannelMessageWithSource && // deferred responses dont need contents
 		i.response.Type != discordgo.InteractionResponseDeferredMessageUpdate &&
+		i.response.Type != discordgo.InteractionApplicationCommandAutocompleteResult && // autocomplete responses dont need contents
 		i.response.Data.Content == "" &&
 		len(i.response.Data.Embeds) == 0 &&
 		len(i.response.Data.Components) == 0 {
