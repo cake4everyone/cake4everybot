@@ -49,9 +49,9 @@ func (cmd subcommandList) handler() {
 	}
 	month := int(cmd.month.IntValue())
 
-	birthdays, err := cmd.getBirthdaysMonth(month)
+	birthdays, err := cmd.getBirthdaysMonth(cmd.Interaction.GuildID, month)
 	if err != nil {
-		log.Printf("Error on get birthdays by month: %v\n", err)
+		log.Printf("Error on get birthdays by month from guild %s: %v\n", cmd.Interaction.GuildID, err)
 		cmd.ReplyError()
 		return
 	}

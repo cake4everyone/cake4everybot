@@ -43,12 +43,14 @@ type birthdayBase struct {
 }
 
 type birthdayEntry struct {
-	ID      uint64 `database:"id"`
-	Day     int    `database:"day"`
-	Month   int    `database:"month"`
-	Year    int    `database:"year"`
-	Visible bool   `database:"visible"`
-	time    time.Time
+	ID          uint64 `database:"id"`
+	Day         int    `database:"day"`
+	Month       int    `database:"month"`
+	Year        int    `database:"year"`
+	Visible     bool   `database:"visible"`
+	time        time.Time
+	GuildIDsRaw string `database:"guilds"`
+	GuildIDs    []string
 }
 
 // Returns a readable Form of the date
@@ -108,15 +110,74 @@ func (b birthdayEntry) Age() int {
 	return b.Next().Year() - b.Year - 1
 }
 
+// ParseGuildIDs splits the guild IDs into a slice and stores them in b.GuildIDs.
+func (b *birthdayEntry) ParseGuildIDs() {
+	b.GuildIDs = strings.Split(b.GuildIDsRaw, ",")
+}
+
+// IsInGuild returns true if the guildID is in b.GuildIDs.
+// If guildID is empty, IsInGuild returns true.
+func (b birthdayEntry) IsInGuild(guildID string) bool {
+	if guildID == "" {
+		return true
+	}
+	return util.ContainsString(b.GuildIDs, guildID)
+}
+
+// SetGuild sets the guildID in the birthday entry.
+func (b *birthdayEntry) SetGuild(guildID string) {
+	b.GuildIDsRaw += guildID
+	b.ParseGuildIDs()
+}
+
+// AddGuild adds the guildID to the birthday entry.
+func (b *birthdayEntry) AddGuild(guildID string) error {
+	if util.ContainsString(b.GuildIDs, guildID) {
+		return nil
+	} else if len(b.GuildIDs) >= 3 {
+		return fmt.Errorf("this entry already has %d guilds", len(b.GuildIDs))
+	}
+	b.GuildIDsRaw += "," + guildID
+	b.ParseGuildIDs()
+	return nil
+}
+
+// IsEqual returns true if b and b2 are equal.
+//
+// That is, if all of the following are true
+//  1. They have the same user ID.
+//  2. They are on the same date.
+//  3. They have the same visibility.
+//  4. They have the same guilds in (any order).
+func (b birthdayEntry) IsEqual(b2 birthdayEntry) bool {
+	if b.ID != b2.ID || b.Day != b2.Day || b.Month != b2.Month || b.Year != b2.Year || b.Visible != b2.Visible {
+		return false
+	}
+
+	// check for same guilds in any order
+	for _, guildID := range b.GuildIDs {
+		if !util.ContainsString(b2.GuildIDs, guildID) {
+			return false
+		}
+	}
+	for _, guildID := range b2.GuildIDs {
+		if !util.ContainsString(b.GuildIDs, guildID) {
+			return false
+		}
+	}
+	return true
+}
+
 // getBirthday copies all birthday fields into the struct pointed at by b.
 //
 // If the user from b.ID is not found it returns sql.ErrNoRows.
 func (cmd birthdayBase) getBirthday(b *birthdayEntry) (err error) {
-	row := database.QueryRow("SELECT day,month,year,visible FROM birthdays WHERE id=?", b.ID)
-	err = row.Scan(&b.Day, &b.Month, &b.Year, &b.Visible)
+	row := database.QueryRow("SELECT day,month,year,visible,guilds FROM birthdays WHERE id=?", b.ID)
+	err = row.Scan(&b.Day, &b.Month, &b.Year, &b.Visible, &b.GuildIDsRaw)
 	if err != nil {
 		return err
 	}
+	b.ParseGuildIDs()
 	return b.ParseTime()
 }
 
@@ -127,20 +188,22 @@ func (cmd birthdayBase) hasBirthday(id uint64) (hasBirthday bool, err error) {
 }
 
 // setBirthday inserts a new database entry with the values from b.
-func (cmd birthdayBase) setBirthday(b birthdayEntry) error {
-	_, err := database.Exec("INSERT INTO birthdays(id,day,month,year,visible) VALUES(?,?,?,?,?);", b.ID, b.Day, b.Month, b.Year, b.Visible)
+func (cmd birthdayBase) setBirthday(b *birthdayEntry) (err error) {
+	b.SetGuild(cmd.Interaction.GuildID)
+	_, err = database.Exec("INSERT INTO birthdays(id,day,month,year,visible,guilds) VALUES(?,?,?,?,?);", b.ID, b.Day, b.Month, b.Year, b.Visible, b.GuildIDsRaw)
 	return err
 }
 
 // updateBirthday updates an existing database entry with the values from b.
 func (cmd birthdayBase) updateBirthday(b birthdayEntry) (before birthdayEntry, err error) {
-	err = b.ParseTime()
-	if err != nil {
-		return birthdayEntry{}, err
-	}
 	before.ID = b.ID
 	if err = cmd.getBirthday(&before); err != nil {
 		return birthdayEntry{}, fmt.Errorf("trying to get old birthday: %v", err)
+	}
+
+	// early return if nothing changed
+	if b.IsEqual(before) {
+		return before, nil
 	}
 
 	var (
@@ -160,11 +223,11 @@ func (cmd birthdayBase) updateBirthday(b birthdayEntry) (before birthdayEntry, e
 			continue
 		}
 
+		tag := v.Type().Field(i).Tag.Get("database")
+		if tag == "" {
+			continue
+		}
 		if f.Interface() != oldF.Interface() {
-			tag := v.Type().Field(i).Tag.Get("database")
-			if tag == "" {
-				continue
-			}
 			updateNames = append(updateNames, tag)
 			updateVars = append(updateVars, f.Interface())
 		}
@@ -193,8 +256,8 @@ func (cmd birthdayBase) removeBirthday(id uint64) (birthdayEntry, error) {
 	return b, err
 }
 
-// getBirthdaysMonth return a sorted slice of birthday entries that matches the given month.
-func (cmd birthdayBase) getBirthdaysMonth(month int) (birthdays []birthdayEntry, err error) {
+// getBirthdaysMonth return a sorted slice of birthday entries that matches the given guildID and month.
+func (cmd birthdayBase) getBirthdaysMonth(guildID string, month int) (birthdays []birthdayEntry, err error) {
 	var numOfEntries int64
 	err = database.QueryRow("SELECT COUNT(*) FROM birthdays WHERE month=?", month).Scan(&numOfEntries)
 	if err != nil {
@@ -206,7 +269,7 @@ func (cmd birthdayBase) getBirthdaysMonth(month int) (birthdays []birthdayEntry,
 		return birthdays, nil
 	}
 
-	rows, err := database.Query("SELECT id,day,year,visible FROM birthdays WHERE month=?", month)
+	rows, err := database.Query("SELECT id,day,year,visible,guilds FROM birthdays WHERE month=?", month)
 	if err != nil {
 		return birthdays, err
 	}
@@ -214,12 +277,13 @@ func (cmd birthdayBase) getBirthdaysMonth(month int) (birthdays []birthdayEntry,
 
 	for rows.Next() {
 		b := birthdayEntry{Month: month}
-		err = rows.Scan(&b.ID, &b.Day, &b.Year, &b.Visible)
+		err = rows.Scan(&b.ID, &b.Day, &b.Year, &b.Visible, &b.GuildIDsRaw)
 		if err != nil {
 			return birthdays, err
 		}
+		b.ParseGuildIDs()
 
-		if !b.Visible {
+		if !b.Visible || !b.IsInGuild(guildID) {
 			continue
 		}
 
@@ -238,8 +302,8 @@ func (cmd birthdayBase) getBirthdaysMonth(month int) (birthdays []birthdayEntry,
 	return birthdays, nil
 }
 
-// getBirthdaysDate return a slice of birthday entries that matches the given date.
-func getBirthdaysDate(day int, month int) (birthdays []birthdayEntry, err error) {
+// getBirthdaysDate return a slice of birthday entries that matches the given guildID and date.
+func getBirthdaysDate(guildID string, day int, month int) (birthdays []birthdayEntry, err error) {
 	var numOfEntries int64
 	err = database.QueryRow("SELECT COUNT(*) FROM birthdays WHERE day=? AND month=?", day, month).Scan(&numOfEntries)
 	if err != nil {
@@ -251,7 +315,7 @@ func getBirthdaysDate(day int, month int) (birthdays []birthdayEntry, err error)
 		return birthdays, nil
 	}
 
-	rows, err := database.Query("SELECT id,year,visible FROM birthdays WHERE day=? AND month=?", day, month)
+	rows, err := database.Query("SELECT id,year,visible,guilds FROM birthdays WHERE day=? AND month=?", day, month)
 	if err != nil {
 		return birthdays, err
 	}
@@ -259,12 +323,13 @@ func getBirthdaysDate(day int, month int) (birthdays []birthdayEntry, err error)
 
 	for rows.Next() {
 		b := birthdayEntry{Day: day, Month: month}
-		err = rows.Scan(&b.ID, &b.Year, &b.Visible)
+		err = rows.Scan(&b.ID, &b.Year, &b.Visible, &b.GuildIDsRaw)
 		if err != nil {
 			return birthdays, err
 		}
+		b.ParseGuildIDs()
 
-		if !b.Visible {
+		if !b.Visible || !b.IsInGuild(guildID) {
 			continue
 		}
 

@@ -35,14 +35,6 @@ func Check(s *discordgo.Session) {
 	defer rows.Close()
 
 	now := time.Now()
-	birthdays, err := getBirthdaysDate(now.Day(), int(now.Month()))
-	if err != nil {
-		log.Printf("Error on getting todays birthdays from database: %v\n", err)
-	}
-	e, n := birthdayAnnounceEmbed(s, birthdays)
-	if n <= 0 {
-		return
-	}
 
 	for rows.Next() {
 		err = rows.Scan(&guildID, &channelID)
@@ -61,6 +53,15 @@ func Check(s *discordgo.Session) {
 			return
 		}
 
+		birthdays, err := getBirthdaysDate(fmt.Sprint(guildID), now.Day(), int(now.Month()))
+		if err != nil {
+			log.Printf("Error on getting todays birthdays from guild %s from database: %v\n", fmt.Sprint(guildID), err)
+		}
+		e, n := birthdayAnnounceEmbed(s, fmt.Sprint(guildID), birthdays)
+		if n <= 0 {
+			return
+		}
+
 		// announce
 		_, err = s.ChannelMessageSendEmbed(channel.ID, e)
 		if err != nil {
@@ -71,7 +72,7 @@ func Check(s *discordgo.Session) {
 
 // birthdayAnnounceEmbed returns the embed, that contains all birthdays and 'n' as the number of
 // birthdays, which is always len(b)
-func birthdayAnnounceEmbed(s *discordgo.Session, b []birthdayEntry) (e *discordgo.MessageEmbed, n int) {
+func birthdayAnnounceEmbed(s *discordgo.Session, guildID string, b []birthdayEntry) (e *discordgo.MessageEmbed, n int) {
 	var title, fValue string
 
 	switch len(b) {
@@ -85,14 +86,18 @@ func birthdayAnnounceEmbed(s *discordgo.Session, b []birthdayEntry) (e *discordg
 	}
 
 	for _, b := range b {
-		mention := fmt.Sprintf("<@%d>", b.ID)
+		var member *discordgo.Member
+		member = util.IsGuildMember(s, guildID, fmt.Sprint(b.ID))
+		if member == nil {
+			continue
+		}
 
 		if b.Year == 0 {
-			fValue += fmt.Sprintf("%s\n", mention)
+			fValue += fmt.Sprintf("%s\n", member.Mention())
 		} else {
 			format := lang.Get(tp+"msg.announce.with_age", lang.FallbackLang())
 			format += "\n"
-			fValue += fmt.Sprintf(format, mention, fmt.Sprint(b.Age()))
+			fValue += fmt.Sprintf(format, member.Mention(), fmt.Sprint(b.Age()))
 		}
 	}
 

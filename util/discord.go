@@ -437,3 +437,24 @@ func MessageComplexWebhookEdit(src any) *discordgo.WebhookEdit {
 		panic("Given source type is not supported: " + fmt.Sprintf("%T", src))
 	}
 }
+
+// IsGuildMember returns the given user as a member of the given guild. If the
+// user is not a member of the guild IsGuildMember returns nil.
+func IsGuildMember(s *discordgo.Session, guildID, userID string) (member *discordgo.Member) {
+	member, err := s.State.Member(guildID, userID)
+	if err == nil {
+		return member
+	} else if err != discordgo.ErrStateNotFound {
+		log.Printf("ERROR: Failed to get guild member from cache (G: %s, U: %s): %v\n", guildID, userID, err)
+	}
+	member, err = s.GuildMember(guildID, userID)
+	if err == nil {
+		return member
+	}
+
+	var restErr *discordgo.RESTError
+	if !errors.As(err, &restErr) || restErr.Response.StatusCode != http.StatusNotFound {
+		log.Printf("ERROR: Failed to get guild member from API (G: %s, U: %s): %v\n", guildID, userID, err)
+	}
+	return nil
+}
