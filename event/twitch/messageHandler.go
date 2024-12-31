@@ -15,8 +15,6 @@
 package twitch
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/database"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -24,6 +22,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/database"
 	"github.com/kesuaheli/twitchgo"
 	"github.com/spf13/viper"
 )

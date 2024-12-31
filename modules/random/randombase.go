@@ -1,10 +1,9 @@
 package random
 
 import (
-	"cake4everybot/logger"
-	"cake4everybot/util"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 var log = logger.New("Random")

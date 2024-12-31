@@ -1,10 +1,6 @@
 package twitch
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/database"
-	"cake4everybot/util"
-	webTwitch "cake4everybot/webserver/twitch"
 	"database/sql"
 	"fmt"
 	"math"
@@ -12,6 +8,10 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/database"
+	"github.com/cake4everyone/cake4everybot/util"
+	webTwitch "github.com/cake4everyone/cake4everybot/webserver/twitch"
 	"github.com/kesuaheli/twitchgo"
 )
 

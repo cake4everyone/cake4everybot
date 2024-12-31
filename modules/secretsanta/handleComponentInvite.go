@@ -1,12 +1,12 @@
 package secretsanta
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/util"
 	"fmt"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 func (c Component) handleInvite(ids []string) {

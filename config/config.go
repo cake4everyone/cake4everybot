@@ -15,8 +15,7 @@
 package config
 
 import (
-	"cake4everybot/logger"
-
+	"github.com/cake4everyone/cake4everybot/logger"
 	"github.com/spf13/viper"
 )
 

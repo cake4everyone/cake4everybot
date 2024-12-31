@@ -15,13 +15,13 @@
 package webserver
 
 import (
-	"cake4everybot/logger"
-	"cake4everybot/webserver/twitch"
-	"cake4everybot/webserver/youtube"
 	"net"
 	"net/http"
 	"time"
 
+	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/webserver/twitch"
+	"github.com/cake4everyone/cake4everybot/webserver/youtube"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
 )

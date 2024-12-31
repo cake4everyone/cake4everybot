@@ -15,8 +15,6 @@
 package birthday
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/util"
 	"fmt"
 	"math"
 	"strconv"
@@ -24,6 +22,8 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 var (

@@ -1,8 +1,8 @@
 package twitch
 
 import (
-	"cake4everybot/logger"
-	"cake4everybot/tools/streamelements"
+	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/tools/streamelements"
 )
 
 var (

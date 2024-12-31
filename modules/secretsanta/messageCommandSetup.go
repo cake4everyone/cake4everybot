@@ -1,10 +1,9 @@
 package secretsanta
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/util"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 // MsgCmd represents the mesaage command of the secretsanta package. It adds the ability to start a

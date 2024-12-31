@@ -15,12 +15,11 @@
 package event
 
 import (
-	"cake4everybot/database"
-	"cake4everybot/event/twitch"
-	"cake4everybot/util"
-	webTwitch "cake4everybot/webserver/twitch"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/database"
+	"github.com/cake4everyone/cake4everybot/event/twitch"
+	"github.com/cake4everyone/cake4everybot/util"
+	webTwitch "github.com/cake4everyone/cake4everybot/webserver/twitch"
 	"github.com/kesuaheli/twitchgo"
 )
 

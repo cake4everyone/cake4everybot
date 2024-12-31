@@ -15,13 +15,13 @@
 package adventcalendar
 
 import (
-	"cake4everybot/database"
-	"cake4everybot/util"
 	"fmt"
 	"slices"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/database"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 // Midnight is a scheduled function to run everyday at 0:00

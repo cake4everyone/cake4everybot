@@ -1,10 +1,9 @@
 package modal
 
 import (
-	"cake4everybot/logger"
-	"cake4everybot/modules/secretsanta"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/modules/secretsanta"
 )
 
 // Modal is an interface wrapper for all message components.

@@ -1,8 +1,6 @@
 package random
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/util"
 	"errors"
 	"fmt"
 	"math/rand/v2"
@@ -10,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 // The set subcommand. Used when executing the slash-command "/random teams".

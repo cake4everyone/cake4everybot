@@ -17,9 +17,8 @@ package event
 import (
 	"fmt"
 
-	"cake4everybot/database"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/database"
 )
 
 func addVoiceStateListeners(s *discordgo.Session) {

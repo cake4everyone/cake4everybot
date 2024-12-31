@@ -15,14 +15,12 @@
 package event
 
 import (
-	"cake4everybot/modules/adventcalendar"
-	"cake4everybot/modules/birthday"
-
-	webYT "cake4everybot/webserver/youtube"
-
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/modules/adventcalendar"
+	"github.com/cake4everyone/cake4everybot/modules/birthday"
+	webYT "github.com/cake4everyone/cake4everybot/webserver/youtube"
 	"github.com/kesuaheli/twitchgo"
 	"github.com/spf13/viper"
 )

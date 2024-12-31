@@ -15,12 +15,11 @@
 package event
 
 import (
-	"cake4everybot/database"
-	"cake4everybot/event/youtube"
-	"cake4everybot/util"
-	webYT "cake4everybot/webserver/youtube"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/database"
+	"github.com/cake4everyone/cake4everybot/event/youtube"
+	"github.com/cake4everyone/cake4everybot/util"
+	webYT "github.com/cake4everyone/cake4everybot/webserver/youtube"
 )
 
 func addYouTubeListeners(s *discordgo.Session) {

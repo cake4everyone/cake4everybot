@@ -19,14 +19,13 @@ import (
 	"os/signal"
 	"syscall"
 
-	"cake4everybot/config"
-	"cake4everybot/data/lang"
-	"cake4everybot/database"
-	"cake4everybot/event"
-	"cake4everybot/logger"
-	"cake4everybot/webserver"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/config"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/database"
+	"github.com/cake4everyone/cake4everybot/event"
+	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/webserver"
 	"github.com/kesuaheli/twitchgo"
 	"github.com/spf13/viper"
 )

@@ -1,7 +1,7 @@
 package secretsanta
 
 import (
-	"cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/data/lang"
 )
 
 // handleSubcommandUpdate handles the functionality of the update subcommand

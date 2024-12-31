@@ -15,9 +15,8 @@
 package util
 
 import (
-	"cake4everybot/data/lang"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
 )
 
 // TranslateLocalization returns a pointer to a map of all translations for the given key from

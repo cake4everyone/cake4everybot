@@ -15,8 +15,7 @@
 package twitch
 
 import (
-	"cake4everybot/tools/streamelements"
-
+	"github.com/cake4everyone/cake4everybot/tools/streamelements"
 	"github.com/kesuaheli/twitchgo"
 	"github.com/spf13/viper"
 )

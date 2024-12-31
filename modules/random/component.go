@@ -1,10 +1,10 @@
 package random
 
 import (
-	"cake4everybot/util"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 // The Component of the random package.

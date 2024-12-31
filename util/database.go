@@ -1,9 +1,10 @@
 package util
 
 import (
-	"cake4everybot/database"
 	"database/sql"
 	"fmt"
+
+	"github.com/cake4everyone/cake4everybot/database"
 )
 
 // ForAllPlatformIDs calls the given function for all platform IDs of the given platform.

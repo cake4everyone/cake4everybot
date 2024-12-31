@@ -1,14 +1,14 @@
 package secretsanta
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/logger"
-	"cake4everybot/util"
 	"encoding/json"
 	"fmt"
 	"os"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/util"
 	"github.com/spf13/viper"
 	"golang.org/x/exp/rand"
 )

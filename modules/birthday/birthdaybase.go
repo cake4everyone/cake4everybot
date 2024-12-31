@@ -15,10 +15,6 @@
 package birthday
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/database"
-	"cake4everybot/logger"
-	"cake4everybot/util"
 	"fmt"
 	"reflect"
 	"sort"
@@ -26,6 +22,10 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/database"
+	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 const (

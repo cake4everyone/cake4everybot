@@ -15,12 +15,12 @@
 package birthday
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/util"
 	"fmt"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 // The list subcommand. Used when executing the slash-command "/birthday list".

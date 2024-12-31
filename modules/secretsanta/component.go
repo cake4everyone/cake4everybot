@@ -1,10 +1,10 @@
 package secretsanta
 
 import (
-	"cake4everybot/util"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 // The Component of the secret santa package.

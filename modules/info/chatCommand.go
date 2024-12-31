@@ -15,12 +15,12 @@
 package info
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/status"
-	"cake4everybot/util"
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/status"
+	"github.com/cake4everyone/cake4everybot/util"
 	"github.com/spf13/viper"
 )
 

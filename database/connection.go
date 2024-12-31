@@ -15,11 +15,11 @@
 package database
 
 import (
-	"cake4everybot/logger"
 	"database/sql"
 	"fmt"
 	"time"
 
+	"github.com/cake4everyone/cake4everybot/logger"
 	// mysql driver used for database
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"

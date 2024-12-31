@@ -15,13 +15,13 @@
 package youtube
 
 import (
-	"cake4everybot/logger"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
 
+	"github.com/cake4everyone/cake4everybot/logger"
 	"github.com/spf13/viper"
 )
 

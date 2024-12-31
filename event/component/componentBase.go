@@ -1,12 +1,11 @@
 package component
 
 import (
-	"cake4everybot/logger"
-	"cake4everybot/modules/adventcalendar"
-	"cake4everybot/modules/random"
-	"cake4everybot/modules/secretsanta"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/modules/adventcalendar"
+	"github.com/cake4everyone/cake4everybot/modules/random"
+	"github.com/cake4everyone/cake4everybot/modules/secretsanta"
 )
 
 var log = logger.New("Event/Component")

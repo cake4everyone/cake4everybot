@@ -15,12 +15,12 @@
 package event
 
 import (
-	"cake4everybot/event/command"
-	"cake4everybot/event/component"
-	"cake4everybot/event/modal"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/event/command"
+	"github.com/cake4everyone/cake4everybot/event/component"
+	"github.com/cake4everyone/cake4everybot/event/modal"
 )
 
 func handleInteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {

@@ -1,4 +1,4 @@
-module cake4everybot
+module github.com/cake4everyone/cake4everybot
 
 go 1.23.1
 

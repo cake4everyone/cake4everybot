@@ -15,14 +15,14 @@
 package adventcalendar
 
 import (
-	"cake4everybot/data/lang"
-	"cake4everybot/database"
-	"cake4everybot/util"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+	"github.com/cake4everyone/cake4everybot/database"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 // The Component of the advent calendar package.

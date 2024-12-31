@@ -1,8 +1,9 @@
 package twitch
 
 import (
-	"cake4everybot/logger"
 	"time"
+
+	"github.com/cake4everyone/cake4everybot/logger"
 )
 
 const (
