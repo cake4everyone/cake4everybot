@@ -138,6 +138,7 @@ func (b *birthdayEntry) AddGuild(guildID string) error {
 		return fmt.Errorf("this entry already has %d guilds", len(b.GuildIDs))
 	}
 	b.GuildIDsRaw += "," + guildID
+	b.GuildIDsRaw = strings.Trim(b.GuildIDsRaw, ", ")
 	b.ParseGuildIDs()
 	return nil
 }
@@ -195,10 +196,17 @@ func (cmd birthdayBase) setBirthday(b *birthdayEntry) (err error) {
 }
 
 // updateBirthday updates an existing database entry with the values from b.
-func (cmd birthdayBase) updateBirthday(b birthdayEntry) (before birthdayEntry, err error) {
+func (cmd birthdayBase) updateBirthday(b *birthdayEntry) (before birthdayEntry, err error) {
 	before.ID = b.ID
 	if err = cmd.getBirthday(&before); err != nil {
 		return birthdayEntry{}, fmt.Errorf("trying to get old birthday: %v", err)
+	}
+	b.GuildIDsRaw = before.GuildIDsRaw
+	b.ParseGuildIDs()
+
+	err = b.AddGuild(cmd.Interaction.GuildID)
+	if err != nil {
+		return birthdayEntry{}, fmt.Errorf("adding guild '%s' to birthday entry: %v", cmd.Interaction.GuildID, err)
 	}
 
 	// early return if nothing changed
@@ -210,7 +218,7 @@ func (cmd birthdayBase) updateBirthday(b birthdayEntry) (before birthdayEntry, e
 		updateNames []string
 		updateVars  []any
 		oldV        reflect.Value = reflect.ValueOf(before)
-		v           reflect.Value = reflect.ValueOf(b)
+		v           reflect.Value = reflect.ValueOf(*b)
 	)
 	for i := 0; i < v.NumField(); i++ {
 		var (

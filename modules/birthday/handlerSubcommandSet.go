@@ -194,15 +194,10 @@ func (cmd subcommandSet) interactionHandler() {
 }
 
 // seperate handler for an update of the birthday
-func (cmd subcommandSet) handleUpdate(b *birthdayEntry, e *discordgo.MessageEmbed) error {
-	before, err := cmd.updateBirthday(*b)
+func (cmd subcommandSet) handleUpdate(b *birthdayEntry, e *discordgo.MessageEmbed) (err error) {
+	before, err := cmd.updateBirthday(b)
 	if err != nil {
 		return err
-	}
-	b.GuildIDsRaw = before.GuildIDsRaw
-	err = b.AddGuild(cmd.Interaction.GuildID)
-	if err != nil {
-		return fmt.Errorf("adding guild '%s' to birthday entry: %v", cmd.Interaction.GuildID, err)
 	}
 
 	if b.IsEqual(before) {
