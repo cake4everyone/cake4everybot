@@ -121,7 +121,7 @@ func (cmd subcommandSet) interactionHandler() {
 		return
 	}
 
-	b := birthdayEntry{
+	b := &birthdayEntry{
 		ID:      authorID,
 		Day:     int(cmd.day.IntValue()),
 		Month:   int(cmd.month.IntValue()),
@@ -194,13 +194,13 @@ func (cmd subcommandSet) interactionHandler() {
 }
 
 // seperate handler for an update of the birthday
-func (cmd subcommandSet) handleUpdate(b birthdayEntry, e *discordgo.MessageEmbed) error {
+func (cmd subcommandSet) handleUpdate(b *birthdayEntry, e *discordgo.MessageEmbed) (err error) {
 	before, err := cmd.updateBirthday(b)
 	if err != nil {
 		return err
 	}
 
-	if b == before {
+	if b.IsEqual(before) {
 		var age string
 		if b.Year > 0 {
 			age = fmt.Sprintf(" (%d)", b.Age()+1)

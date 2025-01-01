@@ -37,14 +37,14 @@ func (cmd Chat) subcommandAnnounce() subcommandAnnounce {
 
 func (cmd subcommandAnnounce) handler() {
 	now := time.Now()
-	b, err := getBirthdaysDate(now.Day(), int(now.Month()))
+	b, err := getBirthdaysDate(cmd.Interaction.GuildID, now.Day(), int(now.Month()))
 	if err != nil {
-		log.Printf("Error on announce birthday: %v\n", err)
+		log.Printf("Error on announce birthday in guild %s: %v\n", cmd.Interaction.GuildID, err)
 		cmd.ReplyError()
 		return
 	}
 
-	e, n := birthdayAnnounceEmbed(cmd.Session, b)
+	e, n := birthdayAnnounceEmbed(cmd.Session, cmd.Interaction.GuildID, b)
 
 	if n <= 0 {
 		cmd.ReplyHiddenEmbed(e)
