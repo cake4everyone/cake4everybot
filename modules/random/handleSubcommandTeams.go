@@ -149,6 +149,9 @@ func (cmd subcommandTeams) handleComponent(ids []string) {
 			return
 		}
 		teamSize, _ := strconv.Atoi(util.ShiftL(ids))
+
+		cmd.ReplyDeferedHidden()
+
 		members, _, err := cmd.parseTeamEmbeds(cmd.Interaction.Message.Embeds)
 		if err != nil {
 			log.Printf("ERROR: could not parse team embeds: %+v", err)
@@ -156,13 +159,16 @@ func (cmd subcommandTeams) handleComponent(ids []string) {
 			return
 		}
 
-		cmd.ReplyComplexUpdate(cmd.splitTeamsSize(members, teamSize))
+		cmd.ReplyInteractionEdit(cmd.splitTeamsSize(members, teamSize), true)
 		return
 	case "resplit_amount":
 		if cmd.originalAuthor.ID != cmd.user.ID {
 			cmd.ReplyHiddenf(lang.GetDefault(tp+"msg.error.not_author"), cmd.originalAuthor.Mention())
 			return
 		}
+
+		cmd.ReplyDeferedHidden()
+
 		members, n, err := cmd.parseTeamEmbeds(cmd.Interaction.Message.Embeds)
 		if err != nil {
 			log.Printf("ERROR: could not parse team embeds: %+v", err)
@@ -170,7 +176,7 @@ func (cmd subcommandTeams) handleComponent(ids []string) {
 			return
 		}
 
-		cmd.ReplyComplexUpdate(cmd.splitTeamsN(members, n))
+		cmd.ReplyInteractionEdit(cmd.splitTeamsN(members, n), true)
 		return
 	default:
 		log.Printf("Unknown component interaction ID in subcommand teams: %s %s", id, ids)

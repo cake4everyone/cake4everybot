@@ -24,10 +24,11 @@ import (
 // InteractionUtil is a helper for discords application interactions. It add useful methods for
 // simpler and faster coding.
 type InteractionUtil struct {
-	Session      *discordgo.Session
-	Interaction  *discordgo.InteractionCreate
-	response     *discordgo.InteractionResponse
-	acknowledged bool
+	Session         *discordgo.Session
+	Interaction     *discordgo.InteractionCreate
+	response        *discordgo.InteractionResponse
+	acknowledged    bool
+	followupMessage *discordgo.Message
 }
 
 func (i *InteractionUtil) respond() {
@@ -42,6 +43,7 @@ func (i *InteractionUtil) respond() {
 		return
 	}
 
+	var err error
 	if i.acknowledged {
 		data := &discordgo.WebhookParams{
 			AllowedMentions: i.response.Data.AllowedMentions,
@@ -55,13 +57,13 @@ func (i *InteractionUtil) respond() {
 		if i.response.Data.Attachments != nil {
 			data.Attachments = *i.response.Data.Attachments
 		}
-		_, err := i.Session.FollowupMessageCreate(i.Interaction.Interaction, true, data)
+		i.followupMessage, err = i.Session.FollowupMessageCreate(i.Interaction.Interaction, true, data)
 		if err != nil {
 			log.Printf("ERROR: could not send follow up message: %+v\n%s", err, debug.Stack())
 		}
 		return
 	}
-	err := i.Session.InteractionRespond(i.Interaction.Interaction, i.response)
+	err = i.Session.InteractionRespond(i.Interaction.Interaction, i.response)
 	if err != nil {
 		log.Printf("ERROR could not send command response: %+v\n%s", err, debug.Stack())
 		return
@@ -374,6 +376,42 @@ func (i *InteractionUtil) ReplyComponentsHiddenSimpleEmbedUpdate(components []di
 // ReplyComponentsHiddenSimpleEmbedUpdatef is like [InteractionUtil.ReplyComponentsHiddenSimpleEmbedf] but made for an update for components.
 func (i *InteractionUtil) ReplyComponentsHiddenSimpleEmbedUpdatef(components []discordgo.MessageComponent, color int, format string, a ...any) {
 	i.ReplyComponentsHiddenSimpleEmbedUpdate(components, color, fmt.Sprintf(format, a...))
+}
+
+// ReplyInteractionEdit edits the original interaction message with the given data.
+//
+// It is intended to be used after a deferred response. If the previous response was not deferred,
+// ReplyInteractionEdit will reply with an error message.
+//
+// If delete is true, the deferred response will be deleted. If there was no follow up message, a
+// simple success message will be sent as a reply and instantly deleted.
+func (i *InteractionUtil) ReplyInteractionEdit(data *discordgo.InteractionResponseData, delete bool) {
+	if i.response == nil || i.response.Type != discordgo.InteractionResponseDeferredMessageUpdate && i.response.Type != discordgo.InteractionResponseDeferredChannelMessageWithSource {
+		log.Printf("ERROR: ReplyEdit called without a previous deferred response. Preferably you should use [ReplyComplex()].\n%s", debug.Stack())
+		i.ReplyError()
+		return
+	}
+
+	messageEdit := MessageComplexEdit(data, i.Interaction.ChannelID, i.Interaction.Message.ID)
+	_, err := i.Session.ChannelMessageEditComplex(messageEdit)
+	if err != nil {
+		log.Printf("ERROR: could not edit message: %+v\n%s", err, debug.Stack())
+		i.ReplyError()
+		return
+	}
+
+	if delete {
+		if i.followupMessage == nil {
+			i.Reply("-# ✅")
+		}
+		err = i.Session.FollowupMessageDelete(i.Interaction.Interaction, i.followupMessage.ID)
+		if err != nil {
+			log.Printf("ERROR: could not delete follow up message: %+v\n%s", err, debug.Stack())
+			i.ReplyError()
+		}
+		i.followupMessage = nil
+		return
+	}
 }
 
 // ReplyComplex sends the given interaction response data to the user.
