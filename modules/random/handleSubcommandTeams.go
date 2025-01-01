@@ -69,7 +69,6 @@ func (cmd subcommandTeams) optionMembers() *discordgo.ApplicationCommandOption {
 }
 
 func (cmd subcommandTeams) optionTeamSize() *discordgo.ApplicationCommandOption {
-	minValueTwo := float64(2)
 	return &discordgo.ApplicationCommandOption{
 		Type:                     discordgo.ApplicationCommandOptionInteger,
 		Name:                     lang.GetDefault(tp + "option.teams.option.team_size"),
@@ -77,12 +76,11 @@ func (cmd subcommandTeams) optionTeamSize() *discordgo.ApplicationCommandOption 
 		Description:              lang.GetDefault(tp + "option.teams.option.team_size.description"),
 		DescriptionLocalizations: *util.TranslateLocalization(tp + "option.teams.option.team_size.description"),
 		Required:                 false,
-		MinValue:                 &minValueTwo,
+		MinValue:                 util.FloatTwo(),
 	}
 }
 
 func (cmd subcommandTeams) optionTeamAmount() *discordgo.ApplicationCommandOption {
-	minValueOne := float64(1)
 	return &discordgo.ApplicationCommandOption{
 		Type:                     discordgo.ApplicationCommandOptionInteger,
 		Name:                     lang.GetDefault(tp + "option.teams.option.team_amount"),
@@ -90,7 +88,7 @@ func (cmd subcommandTeams) optionTeamAmount() *discordgo.ApplicationCommandOptio
 		Description:              lang.GetDefault(tp + "option.teams.option.team_amount.description"),
 		DescriptionLocalizations: *util.TranslateLocalization(tp + "option.teams.option.team_amount.description"),
 		Required:                 false,
-		MinValue:                 &minValueOne,
+		MinValue:                 util.FloatOne(),
 	}
 }
 

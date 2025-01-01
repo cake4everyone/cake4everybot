@@ -20,6 +20,15 @@ import (
 
 var log = logger.New("Util")
 
+var (
+	constIntZero   int64   = 0
+	constIntOne            = constIntZero + 1
+	constIntTwo            = constIntOne + 1
+	constFloatZero float64 = 0
+	constFloatOne          = constFloatZero + 1
+	constFloatTwo          = constFloatOne + 1
+)
+
 // ContainsInt reports whether at least one of num is at least once anywhere in i.
 func ContainsInt(i []int, num ...int) bool {
 	for _, x := range i {
@@ -74,4 +83,34 @@ func ShiftL[T any](s []T, t ...T) (first T) {
 		}
 	}
 	return first
+}
+
+// IntZero returns a pointer to an [int64] with the value 0.
+func IntZero() *int64 {
+	return &constIntZero
+}
+
+// IntOne returns a pointer to an [int64] with the value 1.
+func IntOne() *int64 {
+	return &constIntOne
+}
+
+// IntTwo returns a pointer to an [int64] with the value 2.
+func IntTwo() *int64 {
+	return &constIntTwo
+}
+
+// FloatZero returns a pointer to a [float64] with the value 0.
+func FloatZero() *float64 {
+	return &constFloatZero
+}
+
+// FloatOne returns a pointer to a [float64] with the value 1.
+func FloatOne() *float64 {
+	return &constFloatOne
+}
+
+// FloatTwo returns a pointer to a [float64] with the value 2.
+func FloatTwo() *float64 {
+	return &constFloatTwo
 }

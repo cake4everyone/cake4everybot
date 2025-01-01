@@ -53,7 +53,6 @@ func (cmd subcommandDice) appCmd() *discordgo.ApplicationCommandOption {
 }
 
 func (cmd subcommandDice) optionRange() *discordgo.ApplicationCommandOption {
-	minValueTwo := float64(2)
 	return &discordgo.ApplicationCommandOption{
 		Type:                     discordgo.ApplicationCommandOptionInteger,
 		Name:                     lang.GetDefault(tp + "option.dice.option.range"),
@@ -61,7 +60,7 @@ func (cmd subcommandDice) optionRange() *discordgo.ApplicationCommandOption {
 		Description:              lang.GetDefault(tp + "option.dice.option.range.description"),
 		DescriptionLocalizations: *util.TranslateLocalization(tp + "option.dice.option.range.description"),
 		Required:                 false,
-		MinValue:                 &minValueTwo,
+		MinValue:                 util.FloatTwo(),
 	}
 }
 
