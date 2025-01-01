@@ -89,8 +89,7 @@ func birthdayAnnounceEmbed(s *discordgo.Session, guildID string, b []birthdayEnt
 	}
 
 	for _, b := range b {
-		var member *discordgo.Member
-		member = util.IsGuildMember(s, guildID, fmt.Sprint(b.ID))
+		member := util.IsGuildMember(s, guildID, fmt.Sprint(b.ID))
 		if member == nil {
 			continue
 		}
