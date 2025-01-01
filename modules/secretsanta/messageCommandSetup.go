@@ -18,9 +18,10 @@ type MsgCmd struct {
 // AppCmd (ApplicationCommand) returns the definition of the chat command
 func (cmd *MsgCmd) AppCmd() *discordgo.ApplicationCommand {
 	return &discordgo.ApplicationCommand{
-		Type:              discordgo.MessageApplicationCommand,
-		Name:              lang.GetDefault(tp + "base"),
-		NameLocalizations: util.TranslateLocalization(tp + "base"),
+		Type:                     discordgo.MessageApplicationCommand,
+		Name:                     lang.GetDefault(tp + "base"),
+		NameLocalizations:        util.TranslateLocalization(tp + "base"),
+		DefaultMemberPermissions: util.IntZero(), // Set to '0' to deny for everyone by default. See https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-using-default-permissions
 	}
 }
 

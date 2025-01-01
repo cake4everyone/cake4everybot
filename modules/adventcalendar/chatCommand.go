@@ -52,6 +52,7 @@ func (Chat) AppCmd() *discordgo.ApplicationCommand {
 				DescriptionLocalizations: *util.TranslateLocalization(tp + "option.draw.description"),
 			},
 		},
+		DefaultMemberPermissions: util.IntZero(), // Set to '0' to deny for everyone by default. See https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-using-default-permissions
 	}
 }
 
