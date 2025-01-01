@@ -42,6 +42,9 @@ func Check(s *discordgo.Session) {
 			log.Printf("Error on scanning birthday channel ID from database %v\n", err)
 			continue
 		}
+		if channelID == 0 {
+			continue
+		}
 
 		channel, err := s.Channel(fmt.Sprint(channelID))
 		if err != nil {
