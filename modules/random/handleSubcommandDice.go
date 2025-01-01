@@ -82,6 +82,10 @@ func (cmd subcommandDice) handle() {
 func (cmd subcommandDice) handleComponent(ids []string) {
 	switch id := util.ShiftL(ids); id {
 	case "reroll":
+		if cmd.originalAuthor.ID != cmd.user.ID {
+			cmd.ReplyHiddenf(lang.GetDefault(tp+"msg.error.not_author"), cmd.originalAuthor.Mention())
+			return
+		}
 		diceRange, _ := strconv.Atoi(util.ShiftL(ids))
 		cmd.ReplyComplexUpdate(cmd.roll(diceRange))
 		return

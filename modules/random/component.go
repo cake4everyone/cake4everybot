@@ -25,6 +25,12 @@ func (c Component) Handle(s *discordgo.Session, i *discordgo.InteractionCreate) 
 	}
 	c.data = i.MessageComponentData()
 
+	if c.Interaction.Message.Type == discordgo.MessageTypeChatInputCommand {
+		c.originalAuthor = c.Interaction.Message.Interaction.User
+	} else {
+		c.originalAuthor = c.Interaction.Message.Author
+	}
+
 	ids := strings.Split(c.data.CustomID, ".")
 	// pop the first level identifier
 	util.ShiftL(ids)

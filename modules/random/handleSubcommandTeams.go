@@ -144,6 +144,10 @@ func (cmd subcommandTeams) handle() {
 func (cmd subcommandTeams) handleComponent(ids []string) {
 	switch id := util.ShiftL(ids); id {
 	case "resplit_size":
+		if cmd.originalAuthor.ID != cmd.user.ID {
+			cmd.ReplyHiddenf(lang.GetDefault(tp+"msg.error.not_author"), cmd.originalAuthor.Mention())
+			return
+		}
 		teamSize, _ := strconv.Atoi(util.ShiftL(ids))
 		members, _, err := cmd.parseTeamEmbeds(cmd.Interaction.Message.Embeds)
 		if err != nil {
@@ -155,6 +159,10 @@ func (cmd subcommandTeams) handleComponent(ids []string) {
 		cmd.ReplyComplexUpdate(cmd.splitTeamsSize(members, teamSize))
 		return
 	case "resplit_amount":
+		if cmd.originalAuthor.ID != cmd.user.ID {
+			cmd.ReplyHiddenf(lang.GetDefault(tp+"msg.error.not_author"), cmd.originalAuthor.Mention())
+			return
+		}
 		members, n, err := cmd.parseTeamEmbeds(cmd.Interaction.Message.Embeds)
 		if err != nil {
 			log.Printf("ERROR: could not parse team embeds: %+v", err)

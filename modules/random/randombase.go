@@ -12,4 +12,6 @@ type randomBase struct {
 	util.InteractionUtil
 	member *discordgo.Member
 	user   *discordgo.User
+
+	originalAuthor *discordgo.User
 }

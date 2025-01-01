@@ -144,6 +144,7 @@ discord.command:
     option.teams.option.team_amount: amount
     option.teams.option.team_amount.description: How many teams should be created?
 
+    msg.error.not_author: This is the message of %s. You can't use this here! 
     msg.dice.roll: You rolled a %d
     msg.teams.missing_option: "Error: You need to specify either the team size or the team amount!"
     msg.teams.multiple_options: "Error: You can't specify both the team size and the team amount at the same time!"

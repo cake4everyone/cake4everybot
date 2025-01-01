@@ -50,6 +50,10 @@ func (cmd subcommandCoin) handle() {
 func (cmd subcommandCoin) handleComponent(ids []string) {
 	switch id := util.ShiftL(ids); id {
 	case "reflip":
+		if cmd.originalAuthor.ID != cmd.user.ID {
+			cmd.ReplyHiddenf(lang.GetDefault(tp+"msg.error.not_author"), cmd.originalAuthor.Mention())
+			return
+		}
 		cmd.ReplyComplexUpdate(cmd.flip())
 		return
 	default:
