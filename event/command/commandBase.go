@@ -22,6 +22,7 @@ import (
 	"github.com/cake4everyone/cake4everybot/logger"
 	"github.com/cake4everyone/cake4everybot/modules/adventcalendar"
 	"github.com/cake4everyone/cake4everybot/modules/birthday"
+	"github.com/cake4everyone/cake4everybot/modules/faq"
 	"github.com/cake4everyone/cake4everybot/modules/info"
 	"github.com/cake4everyone/cake4everybot/modules/random"
 	"github.com/cake4everyone/cake4everybot/modules/secretsanta"
@@ -70,13 +71,14 @@ func Register(s *discordgo.Session, guildID string) error {
 	var commandsList []Command
 
 	// chat (slash) commands
-	commandsList = append(commandsList, &birthday.Chat{})
-	commandsList = append(commandsList, &info.Chat{})
 	commandsList = append(commandsList, &adventcalendar.Chat{})
+	commandsList = append(commandsList, &birthday.Chat{})
+	commandsList = append(commandsList, &faq.Chat{})
+	commandsList = append(commandsList, &info.Chat{})
 	commandsList = append(commandsList, &random.Chat{})
 	commandsList = append(commandsList, &secretsanta.Chat{})
-	commandsList = append(commandsList, &secretsanta.MsgCmd{})
 	// messsage commands
+	commandsList = append(commandsList, &secretsanta.MsgCmd{})
 	// user commands
 	commandsList = append(commandsList, &birthday.UserShow{})
 
