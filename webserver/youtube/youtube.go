@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
+	"sync"
 	"time"
 
 	"github.com/cake4everyone/cake4everybot/logger"
@@ -26,6 +28,12 @@ import (
 )
 
 var log logger.Logger = *logger.New("Web/YouTube")
+
+// list of last 10 video IDs that were received to prevent duplicates
+var (
+	lastMessages   = make([]string, 10)
+	lastMessageMux sync.Mutex
+)
 
 type listResponse struct {
 	Item []item `json:"items,omitempty"`
@@ -189,6 +197,13 @@ const (
 // by making an API call back to youtube an trying to get the video
 // by id. It also returns some other video details.
 func checkVideo(id string, channelID string) (v *Video, ok bool) {
+	lastMessageMux.Lock()
+	defer lastMessageMux.Unlock()
+	if slices.Contains(lastMessages, id) {
+		log.Printf("Warning: video id already seen: id '%s' found in last messages: %v", id, lastMessages)
+		return nil, false
+	}
+
 	if dcSession == nil || dcHandler == nil {
 		log.Printf("Error: got video event '%s', but discord is not set up!", id)
 		return nil, false
@@ -250,5 +265,6 @@ func checkVideo(id string, channelID string) (v *Video, ok bool) {
 		return nil, false
 	}
 
+	lastMessages = append(lastMessages[1:], id)
 	return v, true
 }
