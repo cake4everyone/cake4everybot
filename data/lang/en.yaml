@@ -103,6 +103,11 @@ discord.command:
     msg.announce.with_age: "%s (turns %s)"
     msg.next: Next birthday
 
+  faq:
+    base: faq
+    base.description: Frequently Asked Questions
+    display: FAQ
+
   info:
     base: info
     base.description: Displays some infos about the bot
