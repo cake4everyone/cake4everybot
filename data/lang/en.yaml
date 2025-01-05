@@ -120,6 +120,9 @@ discord.command:
       The question you searched for was not found.
       > %s
       Check again or list all questions by not searching anything.
+    msg.error: |-
+      There was an error while loading all questions :(
+      Please contact your local administrator if this problem persists.
 
   info:
     base: info

@@ -120,6 +120,9 @@ discord.command:
       Die Frage, nach der du gesucht hast, konnte nicht gefunden werden.
       > %s
       Versuche es erneut oder schau dir alle Fragen an indem du keine Frage in der suche angibst.
+    msg.error: |-
+      Es gab einen Fehler beim Laden aller Fragen :(
+      Bitte rufen sie ihren lokalen Administrator, falls der Fehler weiterhin auftreten sollte.
 
   info:
     base: info

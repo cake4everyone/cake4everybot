@@ -33,12 +33,12 @@ func (c Component) Handle(s *discordgo.Session, i *discordgo.InteractionCreate) 
 	case "show_question":
 		if c.RequireOriginalAuthor() {
 			question := strings.Join(ids[:len(ids)-2], ".")
-			c.handleShowQuestion(question)
+			c.ReplyComplexUpdate(c.getFAQMessage(question))
 		}
 		return
 	case "all_questions":
 		if c.RequireOriginalAuthor() {
-			c.handleAllQuestions()
+			c.ReplyComplexUpdate(c.getAllFAQsMessage())
 		}
 		return
 	default:

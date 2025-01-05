@@ -131,18 +131,27 @@ func SplitToEmbedFields[S []E, E any](s *discordgo.Session, elements S, color in
 	return embeds
 }
 
-// SetEmbedFooter takes a pointer to an embeds and sets the standard footer with the given name.
+// SetEmbedFooter takes a pointer to an embeds and sets the standard footer with
+// the given name. See [EmbedFooter].
 //
 //	sectionName:
 //		translation key for the name
 func SetEmbedFooter(s *discordgo.Session, sectionName string, e *discordgo.MessageEmbed) {
-	botName := viper.GetString("discord.name")
-	name := lang.Get(sectionName, lang.FallbackLang())
-
 	if e == nil {
 		e = &discordgo.MessageEmbed{}
 	}
-	e.Footer = &discordgo.MessageEmbedFooter{
+	e.Footer = EmbedFooter(s, sectionName)
+}
+
+// EmbedFooter returns the standard footer for an embed. See [SetEmbedFooter].
+//
+//	sectionName:
+//		translation key for the name
+func EmbedFooter(s *discordgo.Session, sectionName string) *discordgo.MessageEmbedFooter {
+	botName := viper.GetString("discord.name")
+	name := lang.Get(sectionName, lang.FallbackLang())
+
+	return &discordgo.MessageEmbedFooter{
 		Text:    fmt.Sprintf("%s > %s", botName, name),
 		IconURL: s.State.User.AvatarURL(""),
 	}

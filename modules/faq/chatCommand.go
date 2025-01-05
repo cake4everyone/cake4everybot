@@ -59,8 +59,11 @@ func (cmd Chat) Handle(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	if i.Type == discordgo.InteractionApplicationCommandAutocomplete {
 		cmd.handleAutocomplete(question)
+	} else if question == "" {
+		cmd.ReplyComplex(cmd.getAllFAQsMessage())
+		return
 	} else {
-		cmd.handleCommand(question)
+		cmd.ReplyComplex(cmd.getFAQMessage(question))
 	}
 }
 
