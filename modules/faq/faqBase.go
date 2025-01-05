@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -47,6 +48,7 @@ func (faq faqBase) getAllFAQs() (map[string]string, error) {
 		if err := row.Scan(&question, &answer); err != nil {
 			return lastFAQs[faq.Interaction.GuildID], fmt.Errorf("scanning row: %w", err)
 		}
+		answer = strings.ReplaceAll(answer, "\\n", "\n")
 		lastFAQs[faq.Interaction.GuildID][question] = answer
 	}
 
