@@ -23,7 +23,6 @@ func (c Component) Handle(s *discordgo.Session, i *discordgo.InteractionCreate) 
 	} else if i.User != nil {
 		c.member = &discordgo.Member{User: i.User}
 	}
-	//lint:ignore SA4005 currently not used but will be when implementing the component
 	c.data = i.MessageComponentData()
 
 	ids := strings.Split(c.data.CustomID, ".")
@@ -31,6 +30,17 @@ func (c Component) Handle(s *discordgo.Session, i *discordgo.InteractionCreate) 
 	util.ShiftL(ids)
 
 	switch util.ShiftL(ids) {
+	case "show_question":
+		if c.RequireOriginalAuthor() {
+			question := strings.Join(ids[:len(ids)-2], ".")
+			c.handleShowQuestion(question)
+		}
+		return
+	case "all_questions":
+		if c.RequireOriginalAuthor() {
+			c.handleAllQuestions()
+		}
+		return
 	default:
 		log.Printf("Unknown component interaction ID: %s", c.data.CustomID)
 	}

@@ -458,3 +458,19 @@ func IsGuildMember(s *discordgo.Session, guildID, userID string) (member *discor
 	}
 	return nil
 }
+
+// OriginalAuthor returns the original author of the given message.
+//
+// If the message is a reply, the original author of the reply is returned. If
+// the message is an interaction response, the author of the interaction is
+// returned.
+func OriginalAuthor(m *discordgo.Message) *discordgo.User {
+	switch m.Type {
+	case discordgo.MessageTypeChatInputCommand, discordgo.MessageTypeContextMenuCommand:
+		return m.Interaction.User
+	case discordgo.MessageTypeReply:
+		return OriginalAuthor(m.ReferencedMessage)
+	default:
+		return m.Author
+	}
+}

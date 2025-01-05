@@ -25,6 +25,15 @@ func (cmd Chat) AppCmd() *discordgo.ApplicationCommand {
 		NameLocalizations:        util.TranslateLocalization(tp + "base"),
 		Description:              lang.GetDefault(tp + "base.description"),
 		DescriptionLocalizations: util.TranslateLocalization(tp + "base.description"),
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:         discordgo.ApplicationCommandOptionString,
+				Name:         lang.GetDefault(tp + "option.question"),
+				Description:  lang.GetDefault(tp + "option.question.description"),
+				Required:     false,
+				Autocomplete: true,
+			},
+		},
 	}
 }
 
@@ -37,6 +46,21 @@ func (cmd Chat) Handle(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		cmd.user = i.Member.User
 	} else if i.User != nil {
 		cmd.member = &discordgo.Member{User: i.User}
+	}
+
+	data := i.ApplicationCommandData()
+	var question string
+	for _, option := range data.Options {
+		switch option.Name {
+		case lang.GetDefault(tp + "option.question"):
+			question = option.StringValue()
+		}
+	}
+
+	if i.Type == discordgo.InteractionApplicationCommandAutocomplete {
+		cmd.handleAutocomplete(question)
+	} else {
+		cmd.handleCommand(question)
 	}
 }
 

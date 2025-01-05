@@ -69,10 +69,22 @@ event:
       name: 🔁
       #id:
       #animated: true
+    generic.back:
+      name: ↩️
+      #id:
+      #animated: true
+    generic.delete:
+      name: 🗑️
+      #id:
+      #animated: true
 
     adventcalendar:
       # Emoji for entering the advent calendar giveaway
       enter: vote.check
+
+    faq:
+      all_questions: generic.back
+
     random.coin:
       heads:
         name: 👤
@@ -129,10 +141,7 @@ event:
         name: 🏠
         #id:
         #animated: true
-      invite.delete:
-        name: 🗑️
-        #id:
-        #animated: true
+      invite.delete: generic.delete
       invite.nudge_match:
         name: 👉
         #id:

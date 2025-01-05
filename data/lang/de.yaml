@@ -7,6 +7,8 @@ discord.command:
     msg.self_hidden: Warum ist das unsichtbar?
     msg.self_hidden.desc: Da du deinen Geburtstag als nicht sichtbar eingetragen hast, kannst diese Nachricht nur du sehen. Du kannst diese Nachricht nun schließen.
     msg.page: Seite %d/%d
+    msg.button.delete: Schließen
+    msg.error.not_author: Das ist die Nachricht von %s. Du kannst das nicht verwenden!
 
   birthday:
     base: geburtstag
@@ -107,6 +109,17 @@ discord.command:
     base: faq
     base.description: Häufig gestellte Fragen
     display: FAQ
+
+    option.question: frage
+    option.question.description: Die Frage, nach der gesucht werden soll
+
+    msg.button.all_questions: Alle Fragen
+    msg.no_questions: Es hier noch keine häufig gestellten Fragen.
+    #TODO: Link slash command
+    msg.question_not_found: |-
+      Die Frage, nach der du gesucht hast, konnte nicht gefunden werden.
+      > %s
+      Versuche es erneut oder schau dir alle Fragen an indem du keine Frage in der suche angibst.
 
   info:
     base: info
