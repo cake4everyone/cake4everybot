@@ -110,6 +110,7 @@ func (faq faqBase) getAllFAQsMessage() (msg *discordgo.InteractionResponseData) 
 			nil,
 		))
 	}
+	components = append(components, util.CloseButtonComponent())
 	msg.Components = []discordgo.MessageComponent{discordgo.ActionsRow{Components: components}}
 
 	return
