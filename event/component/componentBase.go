@@ -4,6 +4,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/cake4everyone/cake4everybot/logger"
 	"github.com/cake4everyone/cake4everybot/modules/adventcalendar"
+	"github.com/cake4everyone/cake4everybot/modules/faq"
 	"github.com/cake4everyone/cake4everybot/modules/random"
 	"github.com/cake4everyone/cake4everybot/modules/secretsanta"
 )
@@ -34,6 +35,8 @@ func Register() {
 	var componentList []Component
 
 	componentList = append(componentList, adventcalendar.Component{})
+	componentList = append(componentList, faq.Component{})
+	componentList = append(componentList, GenericComponents{})
 	componentList = append(componentList, random.Component{})
 	componentList = append(componentList, secretsanta.Component{})
 

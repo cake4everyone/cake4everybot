@@ -14,7 +14,10 @@
 
 package util
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
+)
 
 // CreateButtonComponent returns a simple button component with the specified configurations.
 // Params:
@@ -48,6 +51,16 @@ func CreateURLButtonComponent(id, label, url string, emoji *discordgo.ComponentE
 		Emoji:    emoji,
 		URL:      url,
 	}
+}
+
+// CloseButtonComponent returns a button component that deletes the message when clicked.
+func CloseButtonComponent() *discordgo.Button {
+	return CreateButtonComponent(
+		"generic.delete",
+		lang.GetDefault("discord.command.generic.msg.button.delete"),
+		discordgo.DangerButton,
+		GetConfigComponentEmoji("generic.delete"),
+	)
 }
 
 // CreateTextInputComponent returns a text input form for modals with the specified configurations.

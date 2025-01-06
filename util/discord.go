@@ -131,18 +131,27 @@ func SplitToEmbedFields[S []E, E any](s *discordgo.Session, elements S, color in
 	return embeds
 }
 
-// SetEmbedFooter takes a pointer to an embeds and sets the standard footer with the given name.
+// SetEmbedFooter takes a pointer to an embeds and sets the standard footer with
+// the given name. See [EmbedFooter].
 //
 //	sectionName:
 //		translation key for the name
 func SetEmbedFooter(s *discordgo.Session, sectionName string, e *discordgo.MessageEmbed) {
-	botName := viper.GetString("discord.name")
-	name := lang.Get(sectionName, lang.FallbackLang())
-
 	if e == nil {
 		e = &discordgo.MessageEmbed{}
 	}
-	e.Footer = &discordgo.MessageEmbedFooter{
+	e.Footer = EmbedFooter(s, sectionName)
+}
+
+// EmbedFooter returns the standard footer for an embed. See [SetEmbedFooter].
+//
+//	sectionName:
+//		translation key for the name
+func EmbedFooter(s *discordgo.Session, sectionName string) *discordgo.MessageEmbedFooter {
+	botName := viper.GetString("discord.name")
+	name := lang.Get(sectionName, lang.FallbackLang())
+
+	return &discordgo.MessageEmbedFooter{
 		Text:    fmt.Sprintf("%s > %s", botName, name),
 		IconURL: s.State.User.AvatarURL(""),
 	}
@@ -457,4 +466,20 @@ func IsGuildMember(s *discordgo.Session, guildID, userID string) (member *discor
 		log.Printf("ERROR: Failed to get guild member from API (G: %s, U: %s): %v\n", guildID, userID, err)
 	}
 	return nil
+}
+
+// OriginalAuthor returns the original author of the given message.
+//
+// If the message is a reply, the original author of the reply is returned. If
+// the message is an interaction response, the author of the interaction is
+// returned.
+func OriginalAuthor(m *discordgo.Message) *discordgo.User {
+	switch m.Type {
+	case discordgo.MessageTypeChatInputCommand, discordgo.MessageTypeContextMenuCommand:
+		return m.Interaction.User
+	case discordgo.MessageTypeReply:
+		return OriginalAuthor(m.ReferencedMessage)
+	default:
+		return m.Author
+	}
 }

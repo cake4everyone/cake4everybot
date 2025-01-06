@@ -7,6 +7,8 @@ discord.command:
     msg.self_hidden: Why is this invisible?
     msg.self_hidden.desc: Since you've set your birthday to not be visible, this message is also only visible to you. You can close this message now.
     msg.page: Page %d/%d
+    msg.button.delete: Close
+    msg.error.not_author: This is the message of %s. You can't use this here! 
 
   birthday:
     base: birthday
@@ -102,6 +104,25 @@ discord.command:
     msg.announce.congratulate: Happy Birthday to
     msg.announce.with_age: "%s (turns %s)"
     msg.next: Next birthday
+
+  faq:
+    base: faq
+    base.description: Frequently Asked Questions
+    display: FAQ
+
+    option.question: question
+    option.question.description: The question you want to ask
+
+    msg.button.all_questions: All questions
+    msg.no_questions: There are no frequently asked questions yet
+    #TODO: Link slash command
+    msg.question_not_found: |-
+      The question you searched for was not found.
+      > %s
+      Check again or list all questions by not searching anything.
+    msg.error: |-
+      There was an error while loading all questions :(
+      Please contact your local administrator if this problem persists.
 
   info:
     base: info

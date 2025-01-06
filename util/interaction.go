@@ -19,6 +19,7 @@ import (
 	"runtime/debug"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/cake4everyone/cake4everybot/data/lang"
 )
 
 // InteractionUtil is a helper for discords application interactions. It add useful methods for
@@ -463,4 +464,20 @@ func (i *InteractionUtil) ReplyModal(id, title string, components ...discordgo.M
 		},
 	}
 	i.respond()
+}
+
+// RequireOriginalAuthor checks if the user who executed the current interaction
+// is the same as the original author of the interaction.
+func (i *InteractionUtil) RequireOriginalAuthor() bool {
+	originalAuthor := OriginalAuthor(i.Interaction.Message)
+	// the user who executed the current interaction
+	var user *discordgo.User = i.Interaction.User
+	if user == nil {
+		user = i.Interaction.Member.User
+	}
+	if originalAuthor.ID != user.ID {
+		i.ReplyHiddenf(lang.GetDefault("discord.command.generic.msg.error.not_author"), originalAuthor.Mention())
+		return false
+	}
+	return true
 }
