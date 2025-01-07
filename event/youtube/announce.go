@@ -73,7 +73,7 @@ func Announce(s *discordgo.Session, event *webYT.Video) {
 		} else {
 			// send with a ping
 			data := &discordgo.MessageSend{
-				Content: fmt.Sprintf("<@&%s>", announcement.RoleID),
+				Content: announcement.RoleMention(),
 				Embeds:  embeds,
 			}
 			var msg *discordgo.Message

@@ -122,7 +122,7 @@ func updateAnnouncementMessage(s *discordgo.Session, t *twitchgo.Session, announ
 			notificationContent = fmt.Sprintf(announcement.Notification, user.DisplayName)
 		}
 		if announcement.RoleID != "" {
-			notificationContent += (&discordgo.Role{ID: announcement.RoleID}).Mention()
+			notificationContent += announcement.RoleMention()
 		}
 		msgNotification, err := s.ChannelMessageSend(announcement.ChannelID, notificationContent)
 		if err != nil {

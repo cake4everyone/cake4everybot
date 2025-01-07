@@ -1,5 +1,7 @@
 package database
 
+import "fmt"
+
 // Announcement is a representation of a Discord announcement channel.
 //
 // It can be obtained by GetAnnouncement for a given channel on a platform.
@@ -104,4 +106,12 @@ func (a *Announcement) UpdateAnnouncementMessage(newID string) error {
 	)
 	a.MessageID = newID
 	return err
+}
+
+// RoleMention returns the string for mentioning string for messages.
+func (a Announcement) RoleMention() string {
+	if a.RoleID == a.GuildID {
+		return "@everyone"
+	}
+	return fmt.Sprintf("<@&%s>", a.RoleID)
 }
