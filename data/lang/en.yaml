@@ -172,6 +172,11 @@ discord.command:
     msg.teams.title: Teams
     msg.teams.team: Team %d
 
+  announcement:
+    base: announcement
+    base.description: Admin commands for announcements
+    display: Announcements
+
   secretsanta:
     base: Secret Santa
     display: Secret Santa
