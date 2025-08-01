@@ -46,9 +46,6 @@ func AddListeners(dc *discordgo.Session, t *twitchgo.Session, webChan chan struc
 	addVoiceStateListeners(dc)
 
 	t.OnChannelCommandMessage("", false, twitch.HandleGeneralCommand)
-	t.OnChannelCommandMessage("ticket", true, twitch.HandleCmdJoin)
-	t.OnChannelCommandMessage("tickets", true, twitch.HandleCmdTickets)
-	t.OnChannelCommandMessage("draw", true, twitch.HandleCmdDraw)
 	t.OnChannelMessage(twitch.MessageHandler)
 
 	addYouTubeListeners(dc)

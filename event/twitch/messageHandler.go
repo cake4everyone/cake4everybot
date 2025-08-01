@@ -56,6 +56,12 @@ func HandleGeneralCommand(t *twitchgo.Session, channel string, user *twitchgo.IR
 	case database.TwitchCommandResponseFunc:
 		var respFunc twitchgo.IRCChannelCommandMessageCallback
 		switch cmd.Response {
+		case "giveaway_join":
+			respFunc = handleGiveawayJoin
+		case "giveaway_tickets":
+			respFunc = handleGiveawayTickets
+		case "giveaway_draw":
+			respFunc = handleGiveawayDraw
 		case "adv_dc":
 			respFunc = handleAdvancedDC
 		default:
@@ -65,9 +71,9 @@ func HandleGeneralCommand(t *twitchgo.Session, channel string, user *twitchgo.IR
 	}
 }
 
-// HandleCmdJoin is the handler for a command in a twitch chat. This handler buys a giveaway ticket
+// handleGiveawayJoin is the handler for a command in a twitch chat. This handler buys a giveaway ticket
 // and removes the configured cost amount for a ticket.
-func HandleCmdJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
+func handleGiveawayJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "join."
 
@@ -177,9 +183,9 @@ func HandleCmdJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, 
 	t.SendMessagef(channel, lang.GetDefault(tp+"msg.success"), user.Nickname, joinCost, entry.Weight, sePoints.Points-joinCost)
 }
 
-// HandleCmdTickets is the handler for the tickets command in a twitch chat. This handler simply
+// handleGiveawayTickets is the handler for the tickets command in a twitch chat. This handler simply
 // prints the users amount of tickets
-func HandleCmdTickets(t *twitchgo.Session, channel string, source *twitchgo.IRCUser, args []string) {
+func handleGiveawayTickets(t *twitchgo.Session, channel string, source *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "tickets."
 
@@ -276,9 +282,9 @@ skipPoints:
 	t.SendMessage(channel, msg)
 }
 
-// HandleCmdDraw is the handler for the draw command in a twitch chat. This handler selects a random
+// handleGiveawayDraw is the handler for the draw command in a twitch chat. This handler selects a random
 // winner and removes their tickets.
-func HandleCmdDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
+func handleGiveawayDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "draw."
 
