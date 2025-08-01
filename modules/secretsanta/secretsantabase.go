@@ -3,6 +3,7 @@ package secretsanta
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand/v2"
 	"os"
 
 	"github.com/bwmarrin/discordgo"
@@ -10,7 +11,6 @@ import (
 	"github.com/cake4everyone/cake4everybot/logger"
 	"github.com/cake4everyone/cake4everybot/util"
 	"github.com/spf13/viper"
-	"golang.org/x/exp/rand"
 )
 
 const (
@@ -354,13 +354,13 @@ func derangementMatch(players map[string]*player) (map[string]*player, error) {
 	}
 
 	for i := 0; i < n-1; i++ {
-		j := i + rand.Intn(n-i-1) + 1
+		j := i + rand.IntN(n-i-1) + 1
 		if !util.ContainsString(blacklist[playersSlice[i].User.ID], playersSlice[j].Match.User.ID) {
 			log.Printf("%s would match blacklisted %s. Attempt to generate new match.", playersSlice[i].DisplayName(), playersSlice[j].Match.DisplayName())
 			// HACK: very simple attempt to avoid blacklisted matches
 			// just in case a match is blacklisted, generate a new match. If it is still
 			// blacklisted, then it will be caught by the blacklist check below.
-			j = i + rand.Intn(n-i-1) + 1
+			j = i + rand.IntN(n-i-1) + 1
 		}
 		playersSlice[i].Match, playersSlice[j].Match = playersSlice[j].Match, playersSlice[i].Match
 	}
