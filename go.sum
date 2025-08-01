@@ -20,8 +20,8 @@ github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aN
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
-github.com/kesuaheli/twitchgo v1.0.1-0.20241226023447-67ad1943851d h1:CJvrH4jc//1f63SN8gTneONZA+n/xhkdmYAIX2/cT1k=
-github.com/kesuaheli/twitchgo v1.0.1-0.20241226023447-67ad1943851d/go.mod h1:swIW1jJcFa4bWi/9JfUYH4Sf1kAvj+QUcaTPkce+6Ds=
+github.com/kesuaheli/twitchgo v1.0.1-0.20250801212021-6b81de21f2d3 h1:J3BEsbFL8Sw340/p2ruI+PdQKKIZUIbDpqm5rsd5kkE=
+github.com/kesuaheli/twitchgo v1.0.1-0.20250801212021-6b81de21f2d3/go.mod h1:swIW1jJcFa4bWi/9JfUYH4Sf1kAvj+QUcaTPkce+6Ds=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
 github.com/kr/pretty v0.3.1/go.mod h1:hoEshYVHaxMs3cyo3Yncou5ZscifuDolrwPKZanG3xk=
 github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=

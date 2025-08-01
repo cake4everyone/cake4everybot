@@ -36,6 +36,33 @@ func MessageHandler(t *twitchgo.Session, channel string, user *twitchgo.IRCUser,
 	//log.Printf("<%s@%s> %s", user.Nickname, channel, message)
 }
 
+// HandleGeneralCommand is the handler for any command in a twitch chat.
+func HandleGeneralCommand(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
+	if len(args) == 0 || args[0] == "" {
+		return
+	}
+
+	channel, _ = strings.CutPrefix(channel, "#")
+	cmd, err := database.GetTwitchCommand(channel, args[0])
+	if err != nil {
+		log.Printf("Failed to get twitch command for '%s' in channel '%s': %v", args[0], channel, err)
+		return
+	}
+	switch cmd.ResponseType {
+	case database.TwitchCommandResponseChat:
+		t.SendMessage(channel, cmd.Response)
+	case database.TwitchCommandResponseMention:
+		t.SendMessagef(channel, "@%s %s", user.Nickname, cmd.Response)
+	case database.TwitchCommandResponseFunc:
+		var respFunc twitchgo.IRCChannelCommandMessageCallback
+		switch cmd.Response {
+		default:
+			return
+		}
+		respFunc(t, channel, user, args[1:])
+	}
+}
+
 // HandleCmdJoin is the handler for a command in a twitch chat. This handler buys a giveaway ticket
 // and removes the configured cost amount for a ticket.
 func HandleCmdJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
