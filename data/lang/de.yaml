@@ -311,3 +311,6 @@ twitch.command:
     msg.no_prizes: "@%s es gibt momentan keine Preise zu gewinnen. Du kannst diesen Befehl momentan nicht ausführen."
     msg.no_entries: "@%s es gibt momentan keine Einträge und somit kann kein Gewinner gezogen werden."
     msg.winner: Glückwunsch! @%s hat %s gewonnen. Du hattest %d/10 Tickets und eine Gewinnchance von %.2f%%.
+
+  advanced_dc:
+    default: "Trete unserem Discord Server bei: %s"

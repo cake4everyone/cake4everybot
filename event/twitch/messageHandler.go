@@ -36,9 +36,44 @@ func MessageHandler(t *twitchgo.Session, channel string, user *twitchgo.IRCUser,
 	//log.Printf("<%s@%s> %s", user.Nickname, channel, message)
 }
 
-// HandleCmdJoin is the handler for a command in a twitch chat. This handler buys a giveaway ticket
+// HandleGeneralCommand is the handler for any command in a twitch chat.
+func HandleGeneralCommand(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
+	if len(args) == 0 || args[0] == "" {
+		return
+	}
+
+	channel, _ = strings.CutPrefix(channel, "#")
+	cmd, err := database.GetTwitchCommand(channel, args[0])
+	if err != nil {
+		log.Printf("Failed to get twitch command for '%s' in channel '%s': %v", args[0], channel, err)
+		return
+	}
+	switch cmd.ResponseType {
+	case database.TwitchCommandResponseChat:
+		t.SendMessage(channel, cmd.Response)
+	case database.TwitchCommandResponseMention:
+		t.SendMessagef(channel, "@%s %s", user.Nickname, cmd.Response)
+	case database.TwitchCommandResponseFunc:
+		var respFunc twitchgo.IRCChannelCommandMessageCallback
+		switch cmd.Response {
+		case "giveaway_join":
+			respFunc = handleGiveawayJoin
+		case "giveaway_tickets":
+			respFunc = handleGiveawayTickets
+		case "giveaway_draw":
+			respFunc = handleGiveawayDraw
+		case "adv_dc":
+			respFunc = handleAdvancedDC
+		default:
+			return
+		}
+		respFunc(t, channel, user, args[1:])
+	}
+}
+
+// handleGiveawayJoin is the handler for a command in a twitch chat. This handler buys a giveaway ticket
 // and removes the configured cost amount for a ticket.
-func HandleCmdJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
+func handleGiveawayJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "join."
 
@@ -148,9 +183,9 @@ func HandleCmdJoin(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, 
 	t.SendMessagef(channel, lang.GetDefault(tp+"msg.success"), user.Nickname, joinCost, entry.Weight, sePoints.Points-joinCost)
 }
 
-// HandleCmdTickets is the handler for the tickets command in a twitch chat. This handler simply
+// handleGiveawayTickets is the handler for the tickets command in a twitch chat. This handler simply
 // prints the users amount of tickets
-func HandleCmdTickets(t *twitchgo.Session, channel string, source *twitchgo.IRCUser, args []string) {
+func handleGiveawayTickets(t *twitchgo.Session, channel string, source *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "tickets."
 
@@ -247,9 +282,9 @@ skipPoints:
 	t.SendMessage(channel, msg)
 }
 
-// HandleCmdDraw is the handler for the draw command in a twitch chat. This handler selects a random
+// handleGiveawayDraw is the handler for the draw command in a twitch chat. This handler selects a random
 // winner and removes their tickets.
-func HandleCmdDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
+func handleGiveawayDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "draw."
 
@@ -292,4 +327,20 @@ func HandleCmdDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, 
 		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
+}
+
+func handleAdvancedDC(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
+	channel, _ = strings.CutPrefix(channel, "#")
+	if channel == "kesuaheli" && len(args) > 0 && args[0] != "" {
+		switch args[0] {
+		case "pose", "._.":
+			t.SendMessage(channel, "Trete dem Bored-Face Discord Server bei: discord.gg/xGHjcMh2JA")
+		case "dmm", "mapmaking":
+			t.SendMessage(channel, "Trete dem Deutschen Mapmaking bei: discord.gg/gzSgJZJsdp")
+		case "wiki":
+			t.SendMessage(channel, "Trete dem Deutschen Minecraft Wiki Discord bei: discord.gg/F75vfpd")
+		}
+		return
+	}
+	t.SendMessagef(channel, lang.GetDefault("twitch.command.advanced_dc.default"), viper.GetString("discord.invite"))
 }
