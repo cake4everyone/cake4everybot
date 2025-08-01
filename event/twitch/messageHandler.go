@@ -56,6 +56,8 @@ func HandleGeneralCommand(t *twitchgo.Session, channel string, user *twitchgo.IR
 	case database.TwitchCommandResponseFunc:
 		var respFunc twitchgo.IRCChannelCommandMessageCallback
 		switch cmd.Response {
+		case "adv_dc":
+			respFunc = handleAdvancedDC
 		default:
 			return
 		}
@@ -319,4 +321,20 @@ func HandleCmdDraw(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, 
 		t.SendMessage(channel, lang.GetDefault("twitch.command.generic.error"))
 		return
 	}
+}
+
+func handleAdvancedDC(t *twitchgo.Session, channel string, user *twitchgo.IRCUser, args []string) {
+	channel, _ = strings.CutPrefix(channel, "#")
+	if channel == "kesuaheli" && len(args) > 0 && args[0] != "" {
+		switch args[0] {
+		case "pose", "._.":
+			t.SendMessage(channel, "Trete dem Bored-Face Discord Server bei: discord.gg/xGHjcMh2JA")
+		case "dmm", "mapmaking":
+			t.SendMessage(channel, "Trete dem Deutschen Mapmaking bei: discord.gg/gzSgJZJsdp")
+		case "wiki":
+			t.SendMessage(channel, "Trete dem Deutschen Minecraft Wiki Discord bei: discord.gg/F75vfpd")
+		}
+		return
+	}
+	t.SendMessagef(channel, lang.GetDefault("twitch.command.advanced_dc.default"), viper.GetString("discord.invite"))
 }

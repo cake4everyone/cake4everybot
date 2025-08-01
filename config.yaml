@@ -19,6 +19,7 @@ languages:
 discord:
   name: Cake4Everybot
   credits: Cake4Everybot, developed by @Kesuaheli (Discord) and the ideas of the community ♥
+  invite: https://discord.cake4everyone.de
 
 event:
   # Time (24h format) to trigger daily events like birthday check and advent calendar post
