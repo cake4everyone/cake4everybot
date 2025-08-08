@@ -35,9 +35,9 @@ func PostRegister(dc *discordgo.Session, t *twitchgo.Session, guildID string) er
 	component.Register()
 	modal.Register()
 
-	twitch.Register(t)
+	err = twitch.Register(t)
 
-	return nil
+	return err
 }
 
 // AddListeners adds all event handlers to the given bots.

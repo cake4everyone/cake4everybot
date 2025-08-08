@@ -15,6 +15,7 @@
 package twitch
 
 import (
+	"github.com/cake4everyone/cake4everybot/event/twitch/timer"
 	"github.com/cake4everyone/cake4everybot/tools/streamelements"
 	"github.com/kesuaheli/twitchgo"
 	"github.com/spf13/viper"
@@ -22,12 +23,17 @@ import (
 
 // Register is setting up the twitch bot. Like joining channels and other stuff that is available
 // after the bot is connected
-func Register(t *twitchgo.Session) {
+func Register(t *twitchgo.Session) (err error) {
 	channels := viper.GetStringSlice("twitch.channels")
 	for _, channel := range channels {
 		t.JoinChannel(channel)
 	}
 	log.Printf("Channel list set to %v\n", channels)
+	err = timer.RegisterTimer(t, channels)
+	if err != nil {
+		return err
+	}
 
 	se = streamelements.New(viper.GetString("streamelements.token"))
+	return nil
 }
