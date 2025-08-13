@@ -1,6 +1,9 @@
 package database
 
-import "fmt"
+import (
+	"database/sql"
+	"fmt"
+)
 
 // Announcement is a representation of a Discord announcement channel.
 //
@@ -89,11 +92,12 @@ func GetAnnouncement(platform Platform, platformID string) ([]*Announcement, err
 	defer rows.Close()
 	announcements := make([]*Announcement, 0)
 	for rows.Next() {
-		var guildID, channelID, messageID, roleID, notification string
+		var guildID, channelID, messageID, roleID string
+		var notification sql.NullString
 		if err := rows.Scan(&guildID, &channelID, &messageID, &roleID, &notification); err != nil {
 			return []*Announcement{}, err
 		}
-		announcements = append(announcements, &Announcement{guildID, channelID, messageID, roleID, platform, platformID, notification})
+		announcements = append(announcements, &Announcement{guildID, channelID, messageID, roleID, platform, platformID, notification.String})
 	}
 	return announcements, err
 }
