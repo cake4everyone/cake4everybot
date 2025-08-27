@@ -31,14 +31,13 @@ func GetAllTwitchTimers() (twitchTimers []TwitchTimer, err error) {
 		if err != nil {
 			return nil, fmt.Errorf("scan timers row: %w", err)
 		}
+		if title.Valid {
+			tt.Title, err = regexp.Compile(title.String)
+			if err != nil {
+				return nil, fmt.Errorf("compile title regexp: %w", err)
+			}
+		}
 		twitchTimers = append(twitchTimers, tt)
-		if !title.Valid {
-			continue
-		}
-		tt.Title, err = regexp.Compile(title.String)
-		if err != nil {
-			return nil, fmt.Errorf("compile title regexp: %w", err)
-		}
 	}
 	return twitchTimers, nil
 }
