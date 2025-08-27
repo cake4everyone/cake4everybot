@@ -8,7 +8,6 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/kesuaheli/twitchgo v1.0.1-0.20250801212021-6b81de21f2d3
 	github.com/spf13/viper v1.20.1
-	golang.org/x/exp v0.0.0-20250718183923-645b1fa84792
 )
 
 require (

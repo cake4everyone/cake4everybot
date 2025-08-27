@@ -5,12 +5,14 @@ import (
 	"github.com/kesuaheli/twitchgo"
 )
 
-var dcSession *discordgo.Session
-var tSession *twitchgo.Session
-var dcChannelUpdateHandler func(*discordgo.Session, *twitchgo.Session, *ChannelUpdateEvent)
-var dcStreamOnlineHandler func(*discordgo.Session, *twitchgo.Session, *StreamOnlineEvent)
-var dcStreamOfflineHandler func(*discordgo.Session, *twitchgo.Session, *StreamOfflineEvent)
-var subscriptions = make(map[string]bool)
+var (
+	dcSession              *discordgo.Session
+	tSession               *twitchgo.Session
+	dcChannelUpdateHandler func(*discordgo.Session, *twitchgo.Session, *ChannelUpdateEvent)
+	dcStreamOnlineHandler  func(*discordgo.Session, *twitchgo.Session, *StreamOnlineEvent)
+	dcStreamOfflineHandler func(*discordgo.Session, *twitchgo.Session, *StreamOfflineEvent)
+	subscriptions          = make(map[string]bool)
+)
 
 // SetDiscordSession sets the discordgo.Session to use for calling
 // event handlers.
