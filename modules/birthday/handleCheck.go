@@ -74,7 +74,7 @@ func Check(s *discordgo.Session) {
 }
 
 // birthdayAnnounceEmbed returns the embed, that contains all birthdays and 'n' as the number of
-// birthdays, which is always len(b)
+// birthdays.
 func birthdayAnnounceEmbed(s *discordgo.Session, guildID string, b []birthdayEntry) (e *discordgo.MessageEmbed, n int) {
 	var title, fValue string
 
@@ -101,6 +101,7 @@ func birthdayAnnounceEmbed(s *discordgo.Session, guildID string, b []birthdayEnt
 			format += "\n"
 			fValue += fmt.Sprintf(format, member.Mention(), fmt.Sprint(b.Age()))
 		}
+		n++
 	}
 
 	e = &discordgo.MessageEmbed{
@@ -108,7 +109,7 @@ func birthdayAnnounceEmbed(s *discordgo.Session, guildID string, b []birthdayEnt
 		Color: 0xFFD700,
 	}
 
-	if len(b) == 0 {
+	if n == 0 {
 		e.Color = 0xFF0000
 		e.Description = lang.Get(tp+"msg.announce.0.description", lang.FallbackLang())
 	} else {
@@ -121,5 +122,5 @@ func birthdayAnnounceEmbed(s *discordgo.Session, guildID string, b []birthdayEnt
 
 	util.SetEmbedFooter(s, tp+"display", e)
 
-	return e, len(b)
+	return e, n
 }
