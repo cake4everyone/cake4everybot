@@ -35,9 +35,12 @@ func RegisterTimer(t *twitchgo.Session, channels []string) (err error) {
 }
 
 func runTimer(t *twitchgo.Session, timer database.TwitchTimer) {
+	const randomMultiplier = 0.1
 	for {
-		randomSeconds := time.Duration(rand.IntN(60)) * time.Second
-		time.Sleep(time.Duration(timer.Minutes)*time.Minute + randomSeconds)
+		randomRange := int(float32(timer.Minutes*60) * randomMultiplier)
+		randomOffset := time.Duration(rand.IntN(randomRange*2)-randomRange) * time.Second
+		time.Sleep(time.Duration(timer.Minutes)*time.Minute + randomOffset)
+
 		streams, err := t.GetStreamsByName(timer.ChannelName)
 		if err != nil {
 			log.Printf("ERROR: Could not get stream for channel '%s': %+v\n", timer.ChannelName, err)
