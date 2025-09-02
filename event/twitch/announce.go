@@ -110,8 +110,13 @@ func updateAnnouncementMessage(s *discordgo.Session, t *twitchgo.Session, announ
 
 	if stream != nil {
 		setOnlineEmbed(embed, title, user, stream)
+		err = updateChannelName(s, announcement, announcement.ChannelNameOnline)
 	} else {
 		setOfflineEmbed(embed, user)
+		err = updateChannelName(s, announcement, announcement.ChannelNameOffline)
+	}
+	if err != nil {
+		return fmt.Errorf("update channel name: %w", err)
 	}
 
 	if sendNotification {
@@ -186,4 +191,15 @@ func setOfflineEmbed(embed *discordgo.MessageEmbed, user *twitchgo.User) {
 
 	embed.Fields = nil
 	embed.Image.URL = user.OfflineImageURL
+}
+
+func updateChannelName(s *discordgo.Session, announcement *database.Announcement, title string) (err error) {
+	if title == "" {
+		return nil
+	}
+
+	_, err = s.ChannelEdit(announcement.ChannelID, &discordgo.ChannelEdit{
+		Name: title,
+	})
+	return err
 }

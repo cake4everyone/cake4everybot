@@ -9,13 +9,15 @@ import (
 //
 // It can be obtained by GetAnnouncement for a given channel on a platform.
 type Announcement struct {
-	GuildID      string
-	ChannelID    string
-	MessageID    string
-	RoleID       string
-	Platform     Platform
-	PlatformID   string
-	Notification string
+	GuildID            string
+	ChannelID          string
+	MessageID          string
+	RoleID             string
+	Platform           Platform
+	PlatformID         string
+	Notification       string
+	ChannelNameOnline  string
+	ChannelNameOffline string
 }
 
 // Platform is the type of platform a Announcement can be made
@@ -85,7 +87,7 @@ func GetAllAnnouncementIDs(platform Platform) (platformIDs []string, err error) 
 // If no result matches the given platform and channel ID the returned error will be sql.ErrNoRows.
 // Other errors may exist.
 func GetAnnouncement(platform Platform, platformID string) ([]*Announcement, error) {
-	rows, err := Query("SELECT guild_id,channel_id,message_id,role_id,notification FROM announcements WHERE platform=? AND platform_id=?", platform, platformID)
+	rows, err := Query("SELECT guild_id,channel_id,message_id,role_id,notification,channel_name_online,channel_name_offline FROM announcements WHERE platform=? AND platform_id=?", platform, platformID)
 	if err != nil {
 		return []*Announcement{}, err
 	}
@@ -93,11 +95,21 @@ func GetAnnouncement(platform Platform, platformID string) ([]*Announcement, err
 	announcements := make([]*Announcement, 0)
 	for rows.Next() {
 		var guildID, channelID, messageID, roleID string
-		var notification sql.NullString
-		if err := rows.Scan(&guildID, &channelID, &messageID, &roleID, &notification); err != nil {
+		var notification, channelNameOnline, channelNameOffline sql.NullString
+		if err := rows.Scan(&guildID, &channelID, &messageID, &roleID, &notification, &channelNameOnline, &channelNameOffline); err != nil {
 			return []*Announcement{}, err
 		}
-		announcements = append(announcements, &Announcement{guildID, channelID, messageID, roleID, platform, platformID, notification.String})
+		announcements = append(announcements, &Announcement{
+			guildID,
+			channelID,
+			messageID,
+			roleID,
+			platform,
+			platformID,
+			notification.String,
+			channelNameOnline.String,
+			channelNameOffline.String,
+		})
 	}
 	return announcements, err
 }
