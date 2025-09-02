@@ -77,7 +77,7 @@ func RefreshSubscriptions() {
 		return
 	}
 	for _, s := range getSubscriptions {
-		if s.Status == twitchgo.SubscriptionStatusWebhookCallbackVerificationFailed {
+		if s.Status == twitchgo.SubscriptionStatusWebhookCallbackVerificationFailed || s.Status == twitchgo.SubscriptionStatusNotificationFailuresExceeded {
 			err = tSession.DeleteSubscription(s.ID)
 			if err != nil {
 				log.Printf("Error on deleting failed subscription '%s' for %s (%s): %v", s.Type, s.Condition["broadcaster_user_id"], s.ID, err)
