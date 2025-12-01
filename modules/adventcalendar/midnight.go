@@ -51,6 +51,7 @@ func Midnight(s *discordgo.Session) {
 		return
 	}
 
+	prefix := fmt.Sprintf("xmas%d", time.Now().Year()-2000)
 	for guild := range adventChannels {
 		var logChannel string
 		var ok bool
@@ -59,7 +60,7 @@ func Midnight(s *discordgo.Session) {
 			continue
 		}
 
-		entries := database.GetAllGiveawayEntries("xmas", database.AnnouncementPlatformDiscord, guild)
+		entries := database.GetAllGiveawayEntries(prefix, database.AnnouncementPlatformDiscord, guild)
 		if len(entries) == 0 {
 			log.Printf("No entries for guild '%s'", guild)
 			continue

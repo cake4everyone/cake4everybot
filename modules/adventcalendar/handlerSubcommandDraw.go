@@ -2,6 +2,7 @@ package adventcalendar
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/cake4everyone/cake4everybot/data/lang"
@@ -10,7 +11,14 @@ import (
 )
 
 func (cmd Chat) handleSubcommandDraw() {
-	winner, totalTickets := database.DrawGiveawayWinner(database.GetAllGiveawayEntries("xmas", database.AnnouncementPlatformDiscord, cmd.Interaction.GuildID))
+	now := time.Now()
+	year := now.Year() - 2000
+	if now.Month() < time.December || (now.Month() == time.December && now.Day() < 25) {
+		// draw from last year's entries instead
+		year--
+	}
+	prefix := fmt.Sprintf("xmas%d", year)
+	winner, totalTickets := database.DrawGiveawayWinner(database.GetAllGiveawayEntries(prefix, database.AnnouncementPlatformDiscord, cmd.Interaction.GuildID))
 	if totalTickets == 0 {
 		cmd.ReplyHidden(lang.GetDefault(tp + "msg.no_entries.draw"))
 		return
