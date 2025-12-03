@@ -39,7 +39,7 @@ func (i *InteractionUtil) respond() {
 		i.response.Data.Content == "" &&
 		len(i.response.Data.Embeds) == 0 &&
 		len(i.response.Data.Components) == 0 {
-		log.Printf("ERROR: Reply called without contens! Need at least one of Content, Embed, Component.\n%s", debug.Stack())
+		log.Printf("ERROR: Reply called without content! Need at least one of Content, Embed, Component.\n%s", debug.Stack())
 		i.ReplyError()
 		return
 	}
@@ -99,12 +99,12 @@ func (i *InteractionUtil) respondMessage(update, deferred bool) (sucess bool) {
 // ReplyError sends a simple message to the user to indicate, that something failed or unexpected
 // happened during the execution of the interaction.
 func (i *InteractionUtil) ReplyError() {
-	i.ReplyHidden("Somthing went wrong :(")
+	i.ReplyHidden("Something went wrong :(")
 }
 
 // ReplyErrorUpdate is like ReplyError but made for an update message for components.
 func (i *InteractionUtil) ReplyErrorUpdate() {
-	i.ReplyUpdate("Somthing went wrong :(")
+	i.ReplyUpdate("Something went wrong :(")
 }
 
 // ReplyDefered points out to the user that the bots answer could take some time. It also allows the
