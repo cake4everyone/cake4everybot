@@ -139,14 +139,14 @@ func AddGiveawayWeight(prefix, userID string, amount int, platform Platform, pla
 	lastEntry, _ := time.Parse(time.DateOnly, dateValue)
 
 	if new {
-		_, err = Exec("INSERT INTO giveaway (id,weight,last_entry_id) VALUES (?,?,?)", userID, weight, lastEntryID)
+		_, err = Exec("INSERT INTO giveaway (id,weight,last_entry_id,platform,platform_id) VALUES (?,?,?,?,?)", userID, weight, lastEntryID, platform, platformID)
 		if err != nil {
 			log.Printf("Database failed to insert giveaway for '%s': %v", userID, err)
 			return GiveawayEntry{}
 		}
 		return GiveawayEntry{userID, weight, lastEntry, platform, platformID}
 	}
-	_, err = Exec("UPDATE giveaway SET weight=?,last_entry_id=? WHERE id=?", weight, lastEntryID, userID)
+	_, err = Exec("UPDATE giveaway SET weight=?,last_entry_id=? WHERE id=? AND platform=? AND platform_id=?", weight, lastEntryID, userID, platform, platformID)
 	if err != nil {
 		log.Printf("Database failed to update weight (new: %d) for '%s': %v", weight, userID, err)
 		return GiveawayEntry{}
