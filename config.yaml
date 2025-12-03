@@ -1,5 +1,5 @@
 # Version of the bot. DO NOT CHANGE
-version: 2.4.1
+version: 2.4.2
 
 # Loading aditional files. This is primarily used to load tokens,
 # keys, and other cridentials from files that are filtered by the
