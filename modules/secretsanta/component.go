@@ -59,12 +59,22 @@ func (c Component) HandleModal(s *discordgo.Session, i *discordgo.InteractionCre
 	// pop the first level identifier
 	util.ShiftL(ids)
 
-	switch util.ShiftL(ids) {
+	modalID := util.ShiftL(ids)
+	c.Interaction.GuildID = util.ShiftL(ids)
+	if c.Interaction.GuildID != "" {
+		if err := c.getPlayer(); err != nil {
+			log.Printf("ERROR: could not get player: %+v", err)
+			c.ReplyError()
+			return
+		}
+	}
+
+	switch modalID {
 	case "set_address":
-		c.handleModalSetAddress(ids)
+		c.handleModalSetAddress()
 		return
 	case "add_package_tracking":
-		c.handleModalAddPackageTracking(ids)
+		c.handleModalAddPackageTracking()
 		return
 	default:
 		log.Printf("Unknown modal submit ID: %s", c.modal.CustomID)

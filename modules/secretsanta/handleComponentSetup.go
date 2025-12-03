@@ -56,7 +56,8 @@ func (c Component) handleSetupInvite() {
 		return
 	}
 
-	err = c.setPlayers(players)
+	allPlayers[c.Interaction.GuildID] = players
+	err = c.setPlayers()
 	if err != nil {
 		log.Printf("ERROR: could not save players to file: %+v", err)
 		c.ReplyError()
