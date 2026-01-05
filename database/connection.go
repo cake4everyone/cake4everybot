@@ -23,10 +23,13 @@ import (
 	// mysql driver used for database
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var log = logger.New("Database")
 var db *sql.DB
+var GormDB *gorm.DB
 
 type connectionConfig struct {
 	User     string `mapstructure:"user"`
@@ -68,6 +71,11 @@ func Connect() {
 		log.Fatalf("Could not ping database: %v", err)
 	}
 
+	GormDB, err = gorm.Open(mysql.Open(dataSourceName), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Could not open Gorm database connection: %v", err)
+	}
+
 	log.Printf("Connected to database %s@%s:%d/%s\n", config.User, config.Host, config.Port, config.Database)
 }
 
@@ -79,7 +87,12 @@ func Connect() {
 // long-lived and shared between many goroutines.
 func Close() {
 	db.Close()
-	log.Println("Closed connection to database")
+	if underlyingDB, err := GormDB.DB(); err == nil {
+		underlyingDB.Close()
+		log.Println("Closed connection to database")
+	} else {
+		log.Printf("Could not close database connection: %v", err)
+	}
 }
 
 // Ping verifies a connection to the database is still alive,
