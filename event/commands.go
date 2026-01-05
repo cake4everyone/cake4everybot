@@ -21,6 +21,7 @@ import (
 	"github.com/cake4everyone/cake4everybot/event/command"
 	"github.com/cake4everyone/cake4everybot/event/component"
 	"github.com/cake4everyone/cake4everybot/event/modal"
+	"github.com/cake4everyone/cake4everybot/util"
 )
 
 func handleInteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -46,8 +47,13 @@ func handleInteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreat
 
 	case discordgo.InteractionModalSubmit:
 		data := i.ModalSubmitData()
-		if m, ok := modal.ModalMap[strings.Split(data.CustomID, ".")[0]]; ok {
+		topLevelID := strings.Split(data.CustomID, ".")[0]
+		if topLevelID == "noop" {
+			util.InteractionUtil{Session: s, Interaction: i}.QuitSilently()
+		} else if m, ok := modal.ModalMap[topLevelID]; ok {
 			m.HandleModal(s, i)
+		} else {
+			log.Printf("got modal interaction from unknown module '%s' (full id '%s')", topLevelID, data.CustomID)
 		}
 	}
 }
