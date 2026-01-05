@@ -402,17 +402,20 @@ func (i *InteractionUtil) ReplyInteractionEdit(data *discordgo.InteractionRespon
 	}
 
 	if delete {
-		if i.followupMessage == nil {
-			i.Reply("-# ✅")
-		}
-		err = i.Session.FollowupMessageDelete(i.Interaction.Interaction, i.followupMessage.ID)
-		if err != nil {
-			log.Printf("ERROR: could not delete follow up message: %+v\n%s", err, debug.Stack())
-			i.ReplyError()
-		}
-		i.followupMessage = nil
-		return
+		i.deleteFollowupMessage()
 	}
+}
+
+func (i *InteractionUtil) deleteFollowupMessage() {
+	if i.followupMessage == nil {
+		i.ReplyHidden("-# ✅")
+	}
+	err := i.Session.FollowupMessageDelete(i.Interaction.Interaction, i.followupMessage.ID)
+	if err != nil {
+		log.Printf("ERROR: could not delete follow up message: %+v\n%s", err, debug.Stack())
+		i.ReplyError()
+	}
+	i.followupMessage = nil
 }
 
 // ReplyComplex sends the given interaction response data to the user.
@@ -480,4 +483,13 @@ func (i *InteractionUtil) RequireOriginalAuthor() bool {
 		return false
 	}
 	return true
+}
+
+// QuitSilently ends the interaction without any response to the user.
+//
+// It actually sends an ephemeral (hidden) deferred response and deletes it
+// immediately.
+func (i InteractionUtil) QuitSilently() {
+	i.ReplyDeferedHidden()
+	i.deleteFollowupMessage()
 }
