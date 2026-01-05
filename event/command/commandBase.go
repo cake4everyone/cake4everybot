@@ -26,6 +26,7 @@ import (
 	"github.com/cake4everyone/cake4everybot/modules/info"
 	"github.com/cake4everyone/cake4everybot/modules/random"
 	"github.com/cake4everyone/cake4everybot/modules/secretsanta"
+	"github.com/cake4everyone/cake4everybot/modules/sudo"
 	"github.com/cake4everyone/cake4everybot/util"
 )
 
@@ -81,6 +82,7 @@ func Register(s *discordgo.Session, guildID string) error {
 	commandsList = append(commandsList, &secretsanta.MsgCmd{})
 	// user commands
 	commandsList = append(commandsList, &birthday.UserShow{})
+	commandsList = append(commandsList, &sudo.UserDisconnect{})
 
 	// early return when there're no commands to add, and remove all previously registered commands
 	if len(commandsList) == 0 {

@@ -254,6 +254,23 @@ discord.command:
     msg.invite.modal.add_package_tracking.placeholder: If you have any you can provide a tracking reference.
       e.g. Tracking number or URL
 
+  sudo:
+    base: sudo
+    base.description: Act as a superuser
+    display: Sudo
+
+    user.disconnect:
+      base: Disconnect user from VC
+    
+    msg.disconnect.modal.no_voice.title: No voice channel
+    msg.disconnect.modal.no_voice.content:
+      This user is currently not in a voice channel!
+      You can close this with any button...
+    msg.disconnect.modal.no_permission.title: Permission denied
+    msg.disconnect.modal.no_permission.content:
+      You don't have permission to disconnect this user from voice channels!
+      You can close this with any button... 
+
 module:
   adventcalendar:
     post.message: Just sleep %d more times! Its time for **door %d**.

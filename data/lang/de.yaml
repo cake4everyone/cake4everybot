@@ -254,6 +254,23 @@ discord.command:
     msg.invite.modal.add_package_tracking.placeholder: Wenn du eine hast, kannst du sie hier deinem Partner schicken
       zB Sendungsverfolgungsnummer oder Link
 
+  sudo:
+    base: sudo
+    base.description: Als Superuser arbeiten
+    display: Sudo
+
+    user.disconnect:
+      base: Trenne Benutzer vom Sprachkanal
+    
+    msg.disconnect.modal.no_voice.title: Kein Sprachkanal
+    msg.disconnect.modal.no_voice.content:
+      Diese Person ist momentan in keinem Sprachkanal!
+      Du kannst diese Meldung mit einem beliebigen Button schließen...
+    msg.disconnect.modal.no_permission.title: Keine Berechtigung
+    msg.disconnect.modal.no_permission.content:
+      Du hast keine Berechtigung, diese Person aus dem Sprachkanal zu trennen!
+      Du kannst diese Meldung mit einem beliebigen Button schließen...
+
 module:
   adventcalendar:
     post.message: Noch %d Mal schlafen bis Heilig Abend! Heute öffnet sich das **Türchen %d**.
