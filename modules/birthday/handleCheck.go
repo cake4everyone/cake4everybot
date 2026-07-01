@@ -78,16 +78,6 @@ func Check(s *discordgo.Session) {
 func birthdayAnnounceEmbed(s *discordgo.Session, guildID string, b []birthdayEntry) (e *discordgo.MessageEmbed, n int) {
 	var title, fValue string
 
-	switch len(b) {
-	case 0:
-		title = lang.Get(tp+"msg.announce.0", lang.FallbackLang())
-	case 1:
-		title = lang.Get(tp+"msg.announce.1", lang.FallbackLang())
-	default:
-		format := lang.Get(tp+"msg.announce", lang.FallbackLang())
-		title = fmt.Sprintf(format, fmt.Sprint(len(b)))
-	}
-
 	for _, b := range b {
 		member := util.IsGuildMember(s, guildID, fmt.Sprint(b.ID))
 		if member == nil {
@@ -102,6 +92,16 @@ func birthdayAnnounceEmbed(s *discordgo.Session, guildID string, b []birthdayEnt
 			fValue += fmt.Sprintf(format, member.Mention(), fmt.Sprint(b.Age()))
 		}
 		n++
+	}
+
+	switch n {
+	case 0:
+		title = lang.Get(tp+"msg.announce.0", lang.FallbackLang())
+	case 1:
+		title = lang.Get(tp+"msg.announce.1", lang.FallbackLang())
+	default:
+		format := lang.Get(tp+"msg.announce", lang.FallbackLang())
+		title = fmt.Sprintf(format, fmt.Sprint(len(b)))
 	}
 
 	e = &discordgo.MessageEmbed{
