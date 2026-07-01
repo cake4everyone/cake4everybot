@@ -9,7 +9,7 @@ import (
 	"github.com/cake4everyone/cake4everybot/util"
 )
 
-// The User command of the sudo package.
+// UserDisconnect is the user command of the sudo package.
 type UserDisconnect struct {
 	sudoBase
 
@@ -82,5 +82,10 @@ func (cmd UserDisconnect) GetID() string {
 func (cmd UserDisconnect) isDisconnectable(targetID string) bool {
 	log.Printf("//TODO: implement sudo permission check for %s disconnecting %s", cmd.user.ID, targetID)
 	isSelf := cmd.user.ID == targetID
-	return isSelf || database.HasSudoCommandPermission(cmd.user.ID, targetID, database.PermissionDisconnectUsers)
+	sudoCmd := database.SudoCommand{
+		ID:          cmd.user.ID,
+		TargetUser:  targetID,
+		Permissions: database.PermissionDisconnectUsers,
+	}
+	return isSelf || sudoCmd.IsAllowed()
 }

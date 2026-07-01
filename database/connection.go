@@ -29,6 +29,8 @@ import (
 
 var log = logger.New("Database")
 var db *sql.DB
+
+// GormDB is the main batabase instance
 var GormDB *gorm.DB
 
 type connectionConfig struct {
