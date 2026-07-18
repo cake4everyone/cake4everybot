@@ -10,6 +10,11 @@ discord.command:
     msg.button.delete: Schließen
     msg.error.not_author: Das ist die Nachricht von %s. Du kannst das nicht verwenden!
 
+  announcement:
+    base: ankündigungen
+    base.description: Admin Commands für Ankündigungen
+    display: Ankündigungen
+
   birthday:
     base: geburtstag
     base.description: Verschiedene Einstellungen für den Geburtstagsbot
