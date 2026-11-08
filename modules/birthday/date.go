@@ -130,7 +130,7 @@ func yearChoices(start string, day, month int) (choices []*discordgo.Application
 	maxDate := time.Now().AddDate(-16, 0, 0)
 
 	// represents the last century: list of the last 10 decades
-	var decades []int = make([]int, 0, 10)
+	var decades = make([]int, 0, 10)
 	curDecade := maxDate.Year() / 10 * 10
 	for y := curDecade; y > curDecade-100; y = y - 10 {
 		decades = append(decades, y)

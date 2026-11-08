@@ -1,3 +1,5 @@
+// Package timer registers and handles a twitch timer used by the twitch
+// package.
 package timer
 
 import (

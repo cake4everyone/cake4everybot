@@ -1,3 +1,4 @@
+// Package streamelements is the main interface for Streamelements' API.
 package streamelements
 
 import (

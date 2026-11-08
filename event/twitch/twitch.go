@@ -1,3 +1,4 @@
+// Package twitch handles the interface with Twitch's API.
 package twitch
 
 import (

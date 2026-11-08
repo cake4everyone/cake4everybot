@@ -222,7 +222,7 @@ func (cmd subcommandTeams) splitTeamsN(members []*discordgo.Member, n int) (data
 	if n > len(members) {
 		n = len(members)
 	}
-	var teams [][]*discordgo.Member = make([][]*discordgo.Member, n)
+	var teams = make([][]*discordgo.Member, n)
 	for i, member := range members {
 		teams[i%n] = append(teams[i%n], member)
 	}

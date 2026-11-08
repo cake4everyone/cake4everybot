@@ -1,3 +1,4 @@
+// Package secretsanta is a module to manage a games of secret santa
 package secretsanta
 
 import (

@@ -189,7 +189,7 @@ func handleGiveawayTickets(t *twitchgo.Session, channel string, source *twitchgo
 	channel, _ = strings.CutPrefix(channel, "#")
 	const tp = tp + "tickets."
 
-	var userID string = source.Nickname
+	var userID = source.Nickname
 	if len(args) >= 1 {
 		if s, _ := strings.CutPrefix(args[0], "@"); s != "" {
 			userID = strings.ToLower(s)

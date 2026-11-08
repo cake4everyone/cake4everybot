@@ -1,3 +1,5 @@
+// Package sudo is a module to allow configured users to run configured actions
+// with configured parameters, which otherwise would require global permission.
 package sudo
 
 import (

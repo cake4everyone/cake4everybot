@@ -10,7 +10,7 @@ import (
 // GetChannels returns a list of all channels the current user has access to. The current user is
 // defined by the used bearer token.
 func (se *Streamelements) GetChannels() ([]*Channel1, error) {
-	var channels []*Channel1 = make([]*Channel1, 0)
+	var channels = make([]*Channel1, 0)
 
 	r, err := se.doReq(http.MethodGet, "/users/channels", []byte{}, nil)
 	if err != nil {

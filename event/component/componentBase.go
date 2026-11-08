@@ -1,3 +1,4 @@
+// Package component provides the common interface for how a component is built.
 package component
 
 import (

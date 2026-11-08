@@ -1,3 +1,5 @@
+// Package logger provides the main interface for how logging should happen in
+// different packages throughout the project.
 package logger
 
 import (

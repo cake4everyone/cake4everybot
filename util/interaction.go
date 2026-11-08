@@ -474,7 +474,7 @@ func (i *InteractionUtil) ReplyModal(id, title string, components ...discordgo.M
 func (i *InteractionUtil) RequireOriginalAuthor() bool {
 	originalAuthor := OriginalAuthor(i.Interaction.Message)
 	// the user who executed the current interaction
-	var user *discordgo.User = i.Interaction.User
+	var user = i.Interaction.User
 	if user == nil {
 		user = i.Interaction.Member.User
 	}

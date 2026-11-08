@@ -1,3 +1,4 @@
+// Package modal provides the common interface for how a modal is built.
 package modal
 
 import (

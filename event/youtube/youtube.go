@@ -1,3 +1,4 @@
+// Package youtube handles the interface with YouTube's API.
 package youtube
 
 import (

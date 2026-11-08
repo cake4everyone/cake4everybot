@@ -239,7 +239,7 @@ func (cmd subcommandSet) handleUpdate(b *birthdayEntry, e *discordgo.MessageEmbe
 	//  2nd       => month changed
 	//  3rd       => year changed
 	//  4th (MSB) => visibility changed
-	var changedBits int = util.Btoi(before.Day != b.Day) |
+	var changedBits = util.Btoi(before.Day != b.Day) |
 		util.Btoi(before.Month != b.Month)<<1 |
 		util.Btoi(before.Year != b.Year)<<2
 

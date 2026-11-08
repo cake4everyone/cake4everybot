@@ -1,3 +1,4 @@
+// Package faq is a module to provide simple answers for common question.
 package faq
 
 import (

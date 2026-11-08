@@ -1,3 +1,5 @@
+// Package random is a module to provide some randomizer and shuffle features
+// for users and teams.
 package random
 
 import (
