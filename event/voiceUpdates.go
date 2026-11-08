@@ -21,19 +21,14 @@ import (
 	"github.com/cake4everyone/cake4everybot/database"
 )
 
-func addVoiceStateListeners(s *discordgo.Session) {
-	handler := func(s *discordgo.Session, e *discordgo.VoiceStateUpdate) {
+func handleVoiceStateUpdate(s *discordgo.Session, e *discordgo.VoiceStateUpdate) {
+	isAfk := isInAfkVoiceChannel(s, e)
 
-		isAfk := isInAfkVoiceChannel(s, e)
-
-		if isVoiceChannelUpdate(e) && (e.ChannelID == "" || isAfk) {
-			setNoMicPermission(s, e, false)
-		} else if isVoiceChannelUpdate(e) {
-			setNoMicPermission(s, e, true)
-		}
+	if isVoiceChannelUpdate(e) && (e.ChannelID == "" || isAfk) {
+		setNoMicPermission(s, e, false)
+	} else if isVoiceChannelUpdate(e) {
+		setNoMicPermission(s, e, true)
 	}
-
-	s.AddHandler(handler)
 }
 
 func isVoiceChannelUpdate(e *discordgo.VoiceStateUpdate) bool {

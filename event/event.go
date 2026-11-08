@@ -43,7 +43,7 @@ func PostRegister(dc *discordgo.Session, t *twitchgo.Session, guildID string) er
 // AddListeners adds all event handlers to the given bots.
 func AddListeners(dc *discordgo.Session, t *twitchgo.Session, webChan chan struct{}) {
 	dc.AddHandler(handleInteractionCreate)
-	addVoiceStateListeners(dc)
+	dc.AddHandler(handleVoiceStateUpdate)
 
 	t.OnChannelCommandMessage("", false, twitch.HandleGeneralCommand)
 	t.OnChannelMessage(twitch.MessageHandler)
