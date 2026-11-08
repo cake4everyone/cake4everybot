@@ -6,6 +6,7 @@ import (
 	"github.com/cake4everyone/cake4everybot/modules/adventcalendar"
 	"github.com/cake4everyone/cake4everybot/modules/faq"
 	"github.com/cake4everyone/cake4everybot/modules/random"
+	"github.com/cake4everyone/cake4everybot/modules/scamdetection"
 	"github.com/cake4everyone/cake4everybot/modules/secretsanta"
 )
 
@@ -38,6 +39,7 @@ func Register() {
 	componentList = append(componentList, faq.Component{})
 	componentList = append(componentList, GenericComponents{})
 	componentList = append(componentList, random.Component{})
+	componentList = append(componentList, scamdetection.Component{})
 	componentList = append(componentList, secretsanta.Component{})
 
 	if len(componentList) == 0 {

@@ -21,6 +21,7 @@ import (
 	"github.com/cake4everyone/cake4everybot/event/modal"
 	"github.com/cake4everyone/cake4everybot/event/twitch"
 	"github.com/cake4everyone/cake4everybot/logger"
+	"github.com/cake4everyone/cake4everybot/modules/scamdetection"
 	"github.com/kesuaheli/twitchgo"
 )
 
@@ -44,6 +45,8 @@ func PostRegister(dc *discordgo.Session, t *twitchgo.Session, guildID string) er
 func AddListeners(dc *discordgo.Session, t *twitchgo.Session, webChan chan struct{}) {
 	dc.AddHandler(handleInteractionCreate)
 	dc.AddHandler(handleVoiceStateUpdate)
+	dc.AddHandler(scamdetection.HandleMessage)
+	dc.AddHandler(scamdetection.HandleGuildJoin)
 
 	t.OnChannelCommandMessage("", false, twitch.HandleGeneralCommand)
 	t.OnChannelMessage(twitch.MessageHandler)
